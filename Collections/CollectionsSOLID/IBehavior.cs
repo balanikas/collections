@@ -13,6 +13,9 @@ namespace CollectionsSOLID
         Type GetObjectType();
         Type GetCollectionType();
       
+
+
+
     }
 
     
