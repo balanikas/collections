@@ -1,0 +1,65 @@
+TODO:
+* get correct sizeof
+* styling of app, maybe use the metri modern ui
+* file access error handling, and general error handling
+* present a cpu/mem metrics or graphs to the user?
+* show how many background workers are available, visualize them
+* use Roslyn as a compiler (problematic?, needs vs2012 stuff)
+* kunna styra exakt vilka actions och hur många ggr
+* add links to msdn doc. user must be able to easily go to official doc when mouse over stuff.... or similar
+* add blc types into object list
+* gui classes must have events like clicked, right clicked, hovered, etc
+* the custom shapes could be defined as xaml resources
+* micromanage the threading/task handling to get more smooth and instant feedback. dont burden the ui thread.
+* IMPORTANT: most often code will not be simple, i.e. it will be complex, contain references to other assemblies, etc.
+user should be able to select an assembly to work with, when selected, all types are listed in listObjects. dont show code.
+
+* must not be able to compile other than "from folder", or own code
+when compiled, everything related must refresh
+* coloranimation, alignments, size, tooltips, links on the info presented
+* general fixes (alignements, sizes,colors, icons) in mainwindow
+* handle many more cases (static classes, parameter types, etc)
+* present more info of the run (stats, metering, comparisons, etc)
+* syntax coloring in code box
+
+
+* add support for non generic collections OK
+* setting: switch between impl with bw and impl with tpl OK
+* add support for actions with more than 1 param, such as Dictionary.Add(key,value) and non generic SorttedList.Add(key,value) OK
+
+
+CONCEPT:
+* koncept, if game it must be fun.
+
+USE CASES:
+* Chris want to find out what are the performance characteristics of each collection, experiment with different methods, objects, etc..is fun for a few minutes at most
+* Elaine wants to know how much mem her objects consumes, and perhaps how much 1000 of her objects consume.
+* Mike wants to run code and see how the system is affected (cpu,mem)
+
+
+
+Enemies
+* good1: destroys current missile, thus dealoocating all memory
+
+* bad1: freezes current missile for 5 seconds, thus
+freezes the memory. 
+
+* bonus1: new weapon type
+
+* bonus2: new ammo type
+
+UI:
+
+* Game area, canvas + progressbars + enemies
+
+* weapon/ammo selection
+
+* sounds
+
+* memory viewer, cpu viewer, score, life, etc.
+
+
+
+///////////////////// before christmas ////////
+
+* 
