@@ -21,10 +21,11 @@ namespace CollectionsSOLID
         IEnumerable _actions;
         List<MethodInfo> _methods;
         object _objectInstance;
+        ILogger _logger;
 
-
-        public ObjectBehavior(Type type, IEnumerable<MethodInfo> actions)
+        public ObjectBehavior(Type type, IEnumerable<MethodInfo> actions, ILogger logger)
         {
+            _logger = logger;
             _objectType = type;
             _actions = actions;
             _methods = new List<MethodInfo>();
@@ -70,7 +71,7 @@ namespace CollectionsSOLID
             {
                 _methods.Add(action);
             }
-            
+            _logger.Write("hello");
 
         }
         public void Update()

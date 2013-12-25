@@ -70,6 +70,7 @@
       <DependentUpon>SettingsFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="SimpleCommand.cs" />
+    <Compile Include="TextboxLogger.cs" />
     <Compile Include="UCTypes.xaml.cs">
       <DependentUpon>UCTypes.xaml</DependentUpon>
     </Compile>

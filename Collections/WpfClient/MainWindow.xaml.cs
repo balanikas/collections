@@ -23,6 +23,8 @@ namespace WpfClient
         Canvas _canvas;
         Game _game;
         CancellationTokenSource _cts;
+        ILogger _logger;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -30,7 +32,7 @@ namespace WpfClient
             _cts = new CancellationTokenSource();
 
             LoadGuiData();
-
+            _logger = new TextboxLogger(txtLog);
             _game = new Game();
             _canvas = new Canvas();
             _canvas.Background = this.Resources["CanvasGameStopped"] as LinearGradientBrush;
@@ -66,7 +68,7 @@ namespace WpfClient
             }
             
             //IBehavior behavior = new CollectionBehavior(objectType, collection.Key, actions);
-            IBehavior behavior = new ObjectBehavior(objectType,  actions);
+            IBehavior behavior = new ObjectBehavior(objectType,  actions,_logger);
             IRunner runner = ObjectFactory.Get(Settings.ThreadingType,behavior, gui,Settings.Loops);
 
             runner.Start();
