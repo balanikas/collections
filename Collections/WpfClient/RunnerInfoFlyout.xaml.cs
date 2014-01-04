@@ -8,21 +8,21 @@ using CollectionsSOLID;
 namespace WpfClient
 {
 
-    public partial class SettingsFlyout : Flyout, INotifyPropertyChanged
+    public partial class RunnerInfoFlyout : Flyout, INotifyPropertyChanged
     {
-      
 
-        public SettingsFlyout()
+
+        public RunnerInfoFlyout()
         {
 
             InitializeComponent();
 
-            var drawTypes = Enum.GetValues(typeof(DrawTypes)).Cast<DrawTypes>();
-            cmbGraphics.ItemsSource = drawTypes;
         }
-
-     
-
+        public void AddContent(RunnerMessage message)
+        {
+            txtType.Text = message.ObjectType.ToString();
+            txtExecutionTime.Text = message.ExecutionTime.ToString();
+        }
         private bool canCloseFlyout;
 
         public bool CanCloseFlyout
@@ -63,27 +63,6 @@ namespace WpfClient
             }
         }
 
-        private void sldLoopCount_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
-        {
-            Settings.Loops = (int)e.NewValue;
-        }
 
-        private void cmbGraphics_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            Settings.DrawAs = (DrawTypes)cmbGraphics.SelectedItem;
-            
-        }
-
-        private void radUseTPL_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            if(radUseBW.IsChecked == true)
-            {
-                Settings.ThreadingType = ObjectType.BackgroundWorkerBased;
-            }
-            else
-            {
-                Settings.ThreadingType = ObjectType.ParallelTaskBased;
-            }
-        }
     }
 }

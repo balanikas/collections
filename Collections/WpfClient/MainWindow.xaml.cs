@@ -10,6 +10,7 @@ using CollectionsSOLID;
 
 using MahApps.Metro.Controls;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace WpfClient
 {
@@ -19,64 +20,57 @@ namespace WpfClient
     public partial class MainWindow : MetroWindow
     {
         
-
+        
 
         Canvas _canvas;
-        Runtime _game;
-        CancellationTokenSource _cts;
+        Runtime _runtime;
         ILogger _logger;
 
         public MainWindow()
         {
             InitializeComponent();
-           
-            
-            _cts = new CancellationTokenSource();
 
-            LoadGuiData();
             _logger = new TextboxLogger(txtLog);
             
             _canvas = new Canvas();
             _canvas.MouseDown += _canvas_MouseDown;
-            
+            _canvas.Background = this.Resources["CanvasGameStarted"] as LinearGradientBrush;
+
             gridGameArea.Children.Add(_canvas);
 
-
-            _game = new Runtime();
-            _canvas.Background = this.Resources["CanvasGameStarted"] as LinearGradientBrush;
-            Task task = Task.Factory.StartNew(() =>
-            {
-                _game.Start();
-            }, _cts.Token);
-
+            _runtime = new Runtime();
+            
+            _runtime.Start();
         }
 
-     
+        
 
-        private void CreateGuiObject(Point p)
+        private void CreateRunner(Point location)
         {
             LoadedType objectType = ucTypes.SelectedType;
             if(objectType == null)
             {
                 return;
             }
-            //var actions = lstActions.SelectedItems.Cast<string>().ToList();
-            var actions = ucTypes.SelectedMethods;
+
+            var methods = ucTypes.SelectedMethods;
            
 
             IGui gui = null;
-            var drawType = Settings.DrawAs;
+            var drawType =  Settings.DrawAs;
             if(drawType == DrawTypes.Circle)
             {
-                var circle = new CustomCircle(_canvas.Children, p);
-               // circle.OnRightClick += new RightClickEventHandler(RightClickHandler);
+                var circle = new CustomCircle(_canvas.Children, location);
+                
+             
                 circle.OnMouseOver += new MouseOverEventHandler(MouseOverHandler);
                 gui = circle;
             }
             else if (drawType == DrawTypes.Rectangle)
             {
-                var rectangle = new CustomRectangle(_canvas.Children, p);
-               // rectangle.OnRightClick += new RightClickEventHandler(RightClickHandler);
+                var rectangle = new CustomRectangle(_canvas.Children, location);
+
+
                 rectangle.OnMouseOver += new MouseOverEventHandler(MouseOverHandler);
                 gui = rectangle;
             }
@@ -85,7 +79,7 @@ namespace WpfClient
             IRunner runner;
             try
             {
-                behavior = new ObjectBehavior(objectType.TypeInfo, actions);
+                behavior = new ObjectBehavior(objectType.TypeInfo, methods);
             }
             catch (Exception e)
             {
@@ -93,24 +87,33 @@ namespace WpfClient
                 
                 runner = ObjectFactory.Get(Settings.ThreadingType, null, gui, _logger, Settings.Loops);
                 gui.Draw();
-                _game.Add(runner);
+                _runtime.Add(runner);
                 gui.Update(guiMessage);
                 return;
             }
+
+            runner = ObjectFactory.Get(Settings.ThreadingType, behavior, gui, _logger, Settings.Loops);
             
+            var ctxMenu = ShapeContextMenu.Get((s, e) => _runtime.Remove(runner.Id), (s,e) => ToggleFlyout(1, _runtime.GetById(runner.Id)));
+            ((CustomShape)gui).AddContextMenu(ctxMenu);
 
-
-            runner = ObjectFactory.Get(Settings.ThreadingType,behavior, gui,_logger,Settings.Loops);
-
+            _runtime.Add(runner);
             runner.Start();
-            
-            _game.Add(runner);
             
         }
 
+        //void menuInfo_Click(object sender, RoutedEventArgs e)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        //void menuClose_Click(object sender, RoutedEventArgs e)
+        //{
+        //    _runtime.Remove(runner.Id);
+        //}
+
         private void RightClickHandler(object source, RightClickEventArgs e)
         {
-            _game.Remove(e.EventInfo);
+            _runtime.Remove(e.EventInfo);
         }
 
         private void MouseOverHandler(object source, MouseOverEventArgs e)
@@ -123,7 +126,7 @@ namespace WpfClient
         {
 
             
-            _game.Clear();
+            _runtime.Clear();
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
@@ -131,14 +134,14 @@ namespace WpfClient
 
         void _canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(!_game.IsRunning())
+            if(!_runtime.IsRunning())
             {
                 return;
             }
             Point p = Mouse.GetPosition(_canvas);
             if(e.LeftButton == MouseButtonState.Pressed)
             {
-                CreateGuiObject(p);
+                CreateRunner(p);
             }
             //if (e.RightButton == MouseButtonState.Pressed)
             //{
@@ -152,19 +155,6 @@ namespace WpfClient
             
         }
 
-       
-
-        private void LoadGuiData()
-        {
-            var collectionTypes = CollectionsSOLID.SupportedTypes.Get();
-            
-            lstCollectionTypes.ItemsSource = collectionTypes;
-
-            
-        }
-
-      
-
         private void lstCollectionTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var x = (KeyValuePair<Type, List<string>>)lstCollectionTypes.SelectedItem;
@@ -173,12 +163,17 @@ namespace WpfClient
         }
 
 
-        private void ToggleFlyout(int index)
+        private void ToggleFlyout(int index, IRunner userState = null)
         {
             var flyout = this.Flyouts.Items[index] as Flyout;
             if (flyout == null)
             {
                 return;
+            }
+
+            if(flyout is RunnerInfoFlyout)
+            {
+                ((RunnerInfoFlyout)flyout).AddContent((RunnerMessage)userState.GetState());
             }
 
             flyout.IsOpen = !flyout.IsOpen;

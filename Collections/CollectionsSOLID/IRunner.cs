@@ -16,6 +16,7 @@ namespace CollectionsSOLID
         void Start();
         void Destroy();
         bool IsAlive();
+        Message GetState();
     }
 
 

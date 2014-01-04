@@ -133,5 +133,11 @@ namespace CollectionsSOLID
 
             return false;
         }
+
+
+        public Message GetState()
+        {
+            return null;
+        }
     }
 }

@@ -24,6 +24,7 @@
             </LinearGradientBrush.GradientStops>
         </LinearGradientBrush>
 
+      
 
     </Controls:MetroWindow.Resources>
 
@@ -38,6 +39,7 @@
         <Controls:FlyoutsControl>
 
             <local:SettingsFlyout Header="Settings" Position="Right" CanCloseFlyout="True" />
+            <local:RunnerInfoFlyout Header="Info" Position="Bottom" Width="800" CanCloseFlyout="True" />
 
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
@@ -115,9 +117,9 @@
 
 
 
-        <Expander Grid.Column="2" Header="Log" ExpandDirection="Left" HorizontalAlignment="Right" Opacity="0.5" >
+        <Expander Grid.Row="1" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Left" Opacity="0.8" >
 
-            <RichTextBox  x:Name="txtLog" ScrollViewer.VerticalScrollBarVisibility="Auto"    Width="400"  >
+            <RichTextBox  x:Name="txtLog" ScrollViewer.VerticalScrollBarVisibility="Auto"    Height="Auto"  >
                 <FlowDocument>
                     <Paragraph>
                         <Run Text="RichTextBox"/>
@@ -125,6 +127,8 @@
                 </FlowDocument>
             </RichTextBox>
         </Expander>
+
+
     </Grid>
 </Controls:MetroWindow>
 

@@ -44,6 +44,7 @@
     <Compile Include="ObjectBehavior.cs" />
     <Compile Include="ObjectFactory.cs" />
     <Compile Include="CollectionBehavior.cs" />
+    <Compile Include="RunnerMessage.cs" />
     <Compile Include="Runtime.cs" />
     <Compile Include="IBehavior.cs" />
     <Compile Include="IRunner.cs" />

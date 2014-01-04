@@ -54,10 +54,6 @@ UI:
 
 * memory viewer, cpu viewer, score, life, etc.
 
+/////////////////////
 
-
-26/12/2013
-
-
-* Did "sloppy refactorings" , started on contextmenu for shapes, error handling for behavior creation, ui thread is less frequenlty updated....
-* after tenerifa I will have great ideas how to continue with this awesome project!!!!!!!!!!!!!! :) tralallalla life is good!!!!
+* exaclty what info is interesting? expand on the info data, collect more stats...

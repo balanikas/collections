@@ -21,6 +21,7 @@ namespace CollectionsSOLID
         int _loopCount;
         ILogger _logger;
         Stopwatch _watch;
+        Message _lastMessage;
         public string Id { get; private set; }
 
         public BWBasedRunner(IBehavior behavior, IGui gui, ILogger logger, int loopCount = 1000000 )
@@ -142,7 +143,7 @@ namespace CollectionsSOLID
 
             ObjectState state = e.ProgressPercentage == 100 ? ObjectState.Finished : ObjectState.Running;
 
-            var msg = new RunnerMessage(
+            _lastMessage = new RunnerMessage(
                        _behavior.GetObjectType(),
                        _behavior.GetCollectionType(),
                        _watch.Elapsed,
@@ -150,8 +151,13 @@ namespace CollectionsSOLID
                        1 * e.ProgressPercentage,
                        state);
 
-            _gui.Update((RunnerMessage)msg);
+            _gui.Update(_lastMessage);
 
+        }
+
+        public Message GetState()
+        {
+            return _lastMessage;
         }
     }
 }

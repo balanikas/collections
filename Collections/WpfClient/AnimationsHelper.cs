@@ -76,7 +76,7 @@ namespace WpfClient
             };
            
             _storyboard.Children.Add(colorAnimation);
-            Storyboard.SetTargetProperty(colorAnimation, new PropertyPath("(Ellipse.Fill).(SolidColorBrush.Color)"));
+            Storyboard.SetTargetProperty(colorAnimation, new PropertyPath("(" + el.GetType().Name + ".Fill).(SolidColorBrush.Color)"));
             Storyboard.SetTarget(colorAnimation, el);
 
             _storyboard.Begin(el, true);

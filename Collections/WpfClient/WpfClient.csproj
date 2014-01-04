@@ -68,6 +68,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AnimationsHelper.cs" />
+    <Compile Include="RunnerInfoFlyout.xaml.cs">
+      <DependentUpon>RunnerInfoFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ShapeContextMenu.cs" />
     <Compile Include="CustomCircle.cs" />
     <Compile Include="CustomRectangle.cs" />
     <Compile Include="Samples\AvalonEdit\BraceFoldingStrategy.cs" />
@@ -106,6 +110,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Samples\AvalonEdit\Window1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="RunnerInfoFlyout.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

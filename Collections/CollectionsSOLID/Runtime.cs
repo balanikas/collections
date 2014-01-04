@@ -4,16 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Threading;
 
 namespace CollectionsSOLID
 {
     public class Runtime
     {
+        CancellationTokenSource _cts;
         IDictionary<string,IRunner> _gObjects;
         bool _isRunning = false;
+
         public Runtime()
         {
             _gObjects = new Dictionary<string, IRunner>();
+            _cts = new CancellationTokenSource();
 
         }
         public void Stop() 
@@ -24,14 +28,18 @@ namespace CollectionsSOLID
        
         public void Start() 
         {
-            
+            Task task = Task.Factory.StartNew(() =>
+            {
+
+                while (_isRunning)
+                {
+                }
+
+                Clear();
+            }, _cts.Token);
+
             _isRunning = true;
 
-            while (_isRunning)
-            {
-            }
-
-            Clear();
         
         }
 
@@ -43,18 +51,28 @@ namespace CollectionsSOLID
             }
         }
 
-        public void Add(IRunner obj)
+        public void Add(IRunner runner)
         {
-            _gObjects.Add(obj.Id,obj);
+            _gObjects.Add(runner.Id,runner);
 
         }
 
-        public void Remove(string objId)
+        public IRunner GetById(string id)
         {
             IRunner obj;
-            if(_gObjects.TryGetValue(objId, out obj))
+            if (_gObjects.TryGetValue(id, out obj))
             {
-                _gObjects.Remove(objId);
+                return obj;
+            }
+            return null;
+        }
+
+        public void Remove(string runnerId)
+        {
+            IRunner obj;
+            if(_gObjects.TryGetValue(runnerId, out obj))
+            {
+                _gObjects.Remove(runnerId);
                 obj.Destroy();
             }
                         

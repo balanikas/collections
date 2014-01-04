@@ -30,29 +30,36 @@ namespace WpfClient
             _label = new Label();
             _label.FontSize = 4;
             _grid = new Grid();
-            
-
+            _grid.Visibility = Visibility.Collapsed;
             _grid.Width = 70;
             _grid.Height = 70;
             _grid.SetValue(Canvas.LeftProperty, position.X - (_grid.Width / 2));
             _grid.SetValue(Canvas.TopProperty, position.Y - (_grid.Height / 2));
             _grid.MouseDown += _grid_MouseDown;
             _grid.MouseMove += _grid_MouseMove;
-
             
 
             _label.Content = title;
             _animationsHelper = new AnimationsHelper();
 
             _parent = parent;
+            _parent.Add(_grid);
         }
 
 
-       
+        public void AddContextMenu(ContextMenu ctxMenu)
+        {
+            _grid.ContextMenu = ctxMenu;
+        }
+
+        void menuClose_Click(object sender, RoutedEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public virtual void Draw()
         {
-            _parent.Add(_grid);
+            _grid.Visibility = Visibility.Visible;
         }
 
         public virtual void Update(CollectionsSOLID.Message msg)
