@@ -7,6 +7,8 @@ using System;
 using System.Reflection;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading;
+using System.Globalization;
 
 namespace CollectionsSOLID
 {
@@ -17,15 +19,19 @@ namespace CollectionsSOLID
         private IGui _gui;
         private BackgroundWorker _bw = new BackgroundWorker();
         int _loopCount;
-
+        ILogger _logger;
+        Stopwatch _watch;
         public string Id { get; private set; }
 
-        public BWBasedRunner(IBehavior behavior, IGui gui, int loopCount = 1000000)
+        public BWBasedRunner(IBehavior behavior, IGui gui, ILogger logger, int loopCount = 1000000 )
         {
 
             _gui = gui;
             _behavior = behavior;
             _loopCount = loopCount;
+            _logger = logger;
+            _watch = new Stopwatch();
+
             _bw.WorkerReportsProgress = true;
             _bw.WorkerSupportsCancellation = true;
             _bw.DoWork += new DoWorkEventHandler(bw_DoWork);
@@ -40,7 +46,7 @@ namespace CollectionsSOLID
 
         public void Start()
         {
-            _gui.Init();
+            _gui.Draw();
 
             if (_bw.IsBusy != true)
             {
@@ -70,48 +76,48 @@ namespace CollectionsSOLID
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+
             BackgroundWorker worker = sender as BackgroundWorker;
 
-          
-            int sizeOfObject = 1;// Utils.GetObjectSize(Activator.CreateInstance(_behavior.GetObjectType()));
-
+            int errorCount = 0;
+            bool successfulUpdate;
            
-            var watch = new Stopwatch();
-            watch.Start();
-            for (int i = 1; (i <= _loopCount); i++)
+            _watch.Start();
+
+            for (int i = 1; i <= _loopCount; i++)
             {
-                if ((worker.CancellationPending == true))
+                if (worker.CancellationPending)
                 {
                     e.Cancel = true;
                     break;
                 }
+
+                if (i % (_loopCount / 10) == 0 || i == _loopCount)
+                {
+                    successfulUpdate = _behavior.UpdateAndLog(_logger);
+
+                    var progressCount = (int)(i / (double)_loopCount * 100);
+                    worker.ReportProgress(progressCount);
+                }
                 else
                 {
-                    _behavior.Update();
-
-                    if (i % 100 == 0 || i == _loopCount)
-                    {
-                        ObjectState state = ObjectState.Running;
-                        if (i == _loopCount)    
-                        {
-                            watch.Stop();
-                            state = ObjectState.Finished;
-                        }
-
-                        var msg = new Message(
-                            _behavior.GetObjectType(), 
-                            _behavior.GetCollectionType(), 
-                            watch.Elapsed,
-                            (int)(i / (double)_loopCount * 100), 
-                            sizeOfObject * i,
-                            state);
-
-                        worker.ReportProgress(msg.Progress, msg);
-                    }
-
+                    successfulUpdate = _behavior.Update(_logger);
                 }
+
+                if(!successfulUpdate)
+                {
+                    if(++errorCount >= 10)
+                    {
+                        _logger.Flush();
+                        e.Cancel = true;
+                        break;
+                    }
+                }
+                
+                
             }
-            watch.Stop();
+            _watch.Stop();
         }
 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -132,7 +138,19 @@ namespace CollectionsSOLID
         }
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            _gui.Update((Message)e.UserState);
+            _logger.Info(Id + ": " + e.ProgressPercentage.ToString());
+
+            ObjectState state = e.ProgressPercentage == 100 ? ObjectState.Finished : ObjectState.Running;
+
+            var msg = new RunnerMessage(
+                       _behavior.GetObjectType(),
+                       _behavior.GetCollectionType(),
+                       _watch.Elapsed,
+                       e.ProgressPercentage,
+                       1 * e.ProgressPercentage,
+                       state);
+
+            _gui.Update((RunnerMessage)msg);
 
         }
     }

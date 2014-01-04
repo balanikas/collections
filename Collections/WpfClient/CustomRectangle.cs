@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace WpfClient
@@ -27,13 +16,29 @@ namespace WpfClient
         {
             _rect = new Rectangle();
             _rect.Fill = new SolidColorBrush(Colors.Yellow);
-
+            _grid.ContextMenu = Application.Current.Resources["ctxMenu"] as ContextMenu;
+            _grid.MouseEnter += _grid_MouseEnter;
+            _grid.MouseLeave += _grid_MouseLeave;
         }
 
 
-        public override void Init()
+
+        void _grid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            base.Init();
+            _rect.StrokeThickness = 0;
+        }
+
+        void _grid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            _rect.StrokeThickness = 1;
+            _rect.Stroke = Brushes.Black;
+        }
+
+
+
+        public override void Draw()
+        {
+            base.Draw();
             _grid.Children.Add(_rect);
             _grid.Children.Add(_label);
            
@@ -46,7 +51,7 @@ namespace WpfClient
             _rect.Dispatcher.BeginInvoke((new Action(delegate()
             {
                 _label.Content = i.ToString();
-                if(i.Progress >= 100 || i.ObjectState == CollectionsSOLID.ObjectState.Finished)
+                if(i.Progress >= 100)
                 {
                     _animationsHelper.Pause(_grid);
                     _rect.Fill = new SolidColorBrush(Colors.Gray);

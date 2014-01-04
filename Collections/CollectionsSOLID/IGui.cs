@@ -9,7 +9,7 @@ namespace CollectionsSOLID
     public interface IGui
     {
         string Id { get; set; }
-        void Init();
+        void Draw();
         void Update(Message message);
         void Destroy();
     }

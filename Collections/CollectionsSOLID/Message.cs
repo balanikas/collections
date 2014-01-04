@@ -14,13 +14,35 @@ namespace CollectionsSOLID
 
     public class Message
     {
+        public int Progress { get; protected set; }
+    }
+
+    public class ErrorMessage : Message
+    {
+        
+        public string Message { get; private set; }
+
+        public ErrorMessage(string message, int progress)
+        {
+            Message = message;
+            Progress = progress;
+        }
+        public override string ToString()
+        {
+            return Message;
+                
+        }
+    }
+
+
+    public class RunnerMessage : Message
+    {
         public ObjectState ObjectState { get; private set; }
         public Type ObjectType { get; private set; }
         public Type CollectionType { get; private set; }
         public TimeSpan ExecutionTime { get; private set; }
-        public int Progress { get; private set; }
         public int AllocatedMemory { get; private set; }
-        public Message(Type objectType, Type collectionType, TimeSpan timeElapsed, int progress, int allocatedMemory, ObjectState state)
+        public RunnerMessage(Type objectType, Type collectionType, TimeSpan timeElapsed, int progress, int allocatedMemory, ObjectState state)
         {
             ObjectType = objectType;
             CollectionType = collectionType;

@@ -40,10 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ILogger.cs" />
+    <Compile Include="LoadedType.cs" />
     <Compile Include="ObjectBehavior.cs" />
     <Compile Include="ObjectFactory.cs" />
     <Compile Include="CollectionBehavior.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="Runtime.cs" />
     <Compile Include="IBehavior.cs" />
     <Compile Include="IRunner.cs" />
     <Compile Include="IGui.cs" />
@@ -61,8 +62,16 @@
     <Compile Include="TplBasedRunner.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="resources\publicsampletypes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\sampletypes\visualbasic.vb" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y $(ProjectDir)\resources\sampletypes\*.* $(ProjectDir)\resources\publicsampletypes\</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

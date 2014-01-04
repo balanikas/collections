@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CollectionsSOLID;
 using ColorCode;
 
 
@@ -26,13 +27,15 @@ namespace WpfClient
         public UCTypes()
         {
             InitializeComponent();
+            
+
         }
 
-        public Type SelectedType
+        public LoadedType SelectedType
         {
             get
             {
-                return ((KeyValuePair<TypeInfo, string>)lstObjects.SelectedItem).Key;
+                return lstTypes.SelectedItem != null ? (LoadedType)lstTypes.SelectedItem : null;
             }
         }
 
@@ -41,7 +44,7 @@ namespace WpfClient
             get
             {
                 var result = new List<MethodInfo>();
-                foreach (var item in lstActions.SelectedItems)
+                foreach (var item in lstMethods.SelectedItems)
 	            {
                     result.Add(((KeyValuePair<string, MethodInfo>)item).Value);
 	            }
@@ -71,26 +74,30 @@ namespace WpfClient
 
         private void LoadTypes()
         {
-            Dictionary<TypeInfo, string> types = new Dictionary<TypeInfo, string>();
+            var allTypes = new List<LoadedType>();
 
             if (chkBclTypes.IsChecked == true)
             {
-                var t = CollectionsSOLID.Utils.LoadBclTypes();
-                types = types.Union(t).ToDictionary(k => k.Key, v => v.Value);
+                var types = CollectionsSOLID.Utils.LoadBclTypes();
+                allTypes.AddRange(types);
             }
             if (chkFromAssembly.IsChecked == true)
             {
-                var t = CollectionsSOLID.Utils.LoadTypesFromAssembly(txtAssemblyLocation.Text);
-                types = types.Union(t).ToDictionary(k => k.Key, v => v.Value);
+                var types = CollectionsSOLID.Utils.LoadTypesFromAssembly(txtAssemblyLocation.Text);
+                allTypes.AddRange(types);
             }
             if (chkFromFiles.IsChecked == true)
             {
-                var t = CollectionsSOLID.Utils.LoadTypesFromDisc(txtFolderLocation.Text);
-                types = types.Union(t).ToDictionary(k => k.Key, v => v.Value);
+                var types = CollectionsSOLID.Utils.LoadTypesFromDisc(txtFolderLocation.Text);
+                allTypes.AddRange(types);
             }
 
 
-            lstObjects.ItemsSource = types;
+            lstTypes.ItemsSource = allTypes;
+            if(allTypes.Count > 0)
+            {
+                lstTypes.SelectedIndex = 0;
+            }
         }
 
         private void chkFromAssembly_Unchecked(object sender, RoutedEventArgs e)
@@ -110,72 +117,47 @@ namespace WpfClient
 
         private void lstObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (lstObjects.SelectedItem == null)
+            if (lstTypes.SelectedItem == null)
             {
+                lstMethods.ItemsSource = null;
+                SetCodeText(String.Empty);
                 return;
             }
-            var selectedType = (KeyValuePair<TypeInfo, string>)lstObjects.SelectedItem;
+            var selectedType = (LoadedType)lstTypes.SelectedItem;
 
-            SetCodeText(selectedType.Value);
+            SetCodeText(selectedType.Source);
 
 
             var actions = new Dictionary<string,MethodInfo>();
-            foreach (MethodInfo method in selectedType.Key.GetMethods())
+            foreach (MethodInfo method in selectedType.TypeInfo.GetMethods())
             {
                 actions.Add(method.ToString(), method);
               
             }
 
-            lstActions.ItemsSource = actions; // selectedType.Key.GetMethods().Select(x => x.Name);
+            lstMethods.ItemsSource = actions; // selectedType.Key.GetMethods().Select(x => x.Name);
+            if (actions.Count > 0)
+            {
+                lstMethods.SelectedIndex = 0;
+            }
         }
 
         private void btnCompile_Click(object sender, RoutedEventArgs e)
         {
-            if (lstObjects.SelectedItem == null)
+            if (lstTypes.SelectedItem == null)
             {
                 return;
             }
-            var x = (KeyValuePair<TypeInfo, string>)lstObjects.SelectedItem;
+            var type = (LoadedType)lstTypes.SelectedItem;
+           
+            CollectionsSOLID.Utils.CompileAndSaveType(new LoadedType {  FilePath = type.FilePath, Source = avalonEdit.Text, TypeInfo = type.TypeInfo});
 
-            CollectionsSOLID.Utils.SaveType("", x.Key.ToString());
-
-            var tt = CollectionsSOLID.Utils.LoadTypesFromDisc();
-            lstObjects.ItemsSource = tt;
+            LoadTypes();
         }
 
         private void SetCodeText(string source)
         {
-
-            string colorizedSourceCode = new CodeColorizer().Colorize(source, Languages.CSharp);
-
-            FlowDocument myFlowDoc = new FlowDocument();
-
-            // Add paragraphs to the FlowDocument.
-            myFlowDoc.Blocks.Add(new Paragraph(new Run(colorizedSourceCode)));
-            myFlowDoc.Blocks.Add(new Paragraph(new Run("Paragraph 2")));
-            myFlowDoc.Blocks.Add(new Paragraph(new Run("Paragraph 3")));
-            RichTextBox myRichTextBox = new RichTextBox();
-
-            // Add initial content to the RichTextBox.
-            txtCode.Document = myFlowDoc;
+            avalonEdit.Text = source;
         }
-
-        private string GetCodeText()
-        {
-            var textRange = new TextRange(txtCode.Document.ContentStart, txtCode.Document.ContentEnd);
-            return textRange.Text;
-        }
-
-        private void SetCodeTextAsHtml(string source)
-        {
-
-            string colorizedSourceCode = new CodeColorizer().Colorize(source, Languages.CSharp);
-
-           // codeEditor.NavigateToString(source);
-        
-        }
-
-
-
     }
 }

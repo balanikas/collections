@@ -21,11 +21,9 @@ namespace CollectionsSOLID
         IEnumerable _actions;
         List<MethodInfo> _methods;
         object _objectInstance;
-        ILogger _logger;
 
-        public ObjectBehavior(Type type, IEnumerable<MethodInfo> actions, ILogger logger)
+        public ObjectBehavior(Type type, IEnumerable<MethodInfo> actions)
         {
-            _logger = logger;
             _objectType = type;
             _actions = actions;
             _methods = new List<MethodInfo>();
@@ -71,49 +69,68 @@ namespace CollectionsSOLID
             {
                 _methods.Add(action);
             }
-            _logger.Write("hello");
+            
 
         }
-        public void Update()
+        public bool Update(ILogger logger)
         {
             foreach (MethodInfo method in _actions)
             {
-
-
-                if (!method.GetParameters().Any())
+                var parameters = new List<object>();
+                foreach (var p in method.GetParameters())
                 {
-                    method.Invoke(_objectInstance, new object[] { });
-                }
-                else
-                {
-                    if (method.GetParameters().Length > 0)
-                    {
-                       
-                        var parameters = new List<object>();
-                        foreach (var p in method.GetParameters())
-                        {
-                            var paramValue = Utils.RandomizeParamValue(p.ParameterType.Name);
-                            parameters.Add(paramValue);
-                            //Debug.WriteLine(" {0} ",paramValue);
-                        }
-                        try
-                        {
-                            var result = method.Invoke(_objectInstance, parameters.ToArray());
-                        }
-                        catch 
-                        {
-                            
-                            
-                        }
-                        
-
-                        //Debug.WriteLine("output: {0} ", result);
-                    }
-                   
-
+                    var paramValue = Utils.RandomizeParamValue(p.ParameterType.Name);
+                    parameters.Add(paramValue);
                 }
 
+                try
+                {
+                    var result = method.Invoke(_objectInstance, parameters.ToArray());
+                }
+                catch (System.Exception e)
+                {
+                    var errorMsg = e.InnerException != null ? e.InnerException.Message : e.Message;
+                    logger.Error(errorMsg);
+                    return false;
+                }
+                
             }
+
+            return true;
+        }
+
+        public bool UpdateAndLog(ILogger logger)
+        {
+            foreach (MethodInfo method in _actions)
+            {
+                var parameters = new List<object>();
+                foreach (var p in method.GetParameters())
+                {
+                    var paramValue = Utils.RandomizeParamValue(p.ParameterType.Name);
+                    parameters.Add(paramValue);
+                }
+
+                object result;
+                try
+                {
+                    result = method.Invoke(_objectInstance, parameters.ToArray());
+                    var methodToWrite = "called: " + method.ToString();
+                    var paramsToWrite = "with params: " + String.Join(",", parameters.ToArray());
+                    var returnValueToWrite = "returned: " + result;
+                    var message = methodToWrite + Environment.NewLine + paramsToWrite + Environment.NewLine + returnValueToWrite + Environment.NewLine;
+                    logger.Info(message);
+                }
+                catch (System.Exception e)
+                {
+                    var errorMsg = e.InnerException != null ? e.InnerException.Message : e.Message;
+                    logger.Error(errorMsg);
+                    return false;
+                }
+
+                
+            }
+
+            return true;
         }
 
         public Type GetObjectType()

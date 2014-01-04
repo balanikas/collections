@@ -30,6 +30,7 @@ namespace WpfClient
             _label = new Label();
             _label.FontSize = 4;
             _grid = new Grid();
+            
 
             _grid.Width = 70;
             _grid.Height = 70;
@@ -38,15 +39,18 @@ namespace WpfClient
             _grid.MouseDown += _grid_MouseDown;
             _grid.MouseMove += _grid_MouseMove;
 
+            
+
             _label.Content = title;
             _animationsHelper = new AnimationsHelper();
 
             _parent = parent;
         }
 
+
        
 
-        public virtual void Init()
+        public virtual void Draw()
         {
             _parent.Add(_grid);
         }
@@ -87,6 +91,9 @@ namespace WpfClient
 
         void _grid_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
+
+            
+
             if (OnMouseOver != null)
             {
                 OnMouseOver(this, new MouseOverEventArgs(Id));

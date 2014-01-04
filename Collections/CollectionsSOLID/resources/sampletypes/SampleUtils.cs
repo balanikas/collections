@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 
 [Serializable]
@@ -7,9 +8,19 @@ public class SampleUtils
 {
     public static string ConcatenateStrings(string s1, string s2)
     {
-        return s1 + s2;
+       if(s1.StartsWith("AAAA"))
+       {
+           throw new ArgumentException("check");
+       }
+        
+        
+        return s1 + s2 + "";
     }
 
+    public static void UsingThreading()
+    {
+        Thread.Sleep(1);
+    }
     public static void Calculate()
     {
         int x = 0;

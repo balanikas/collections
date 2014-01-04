@@ -1,14 +1,12 @@
 TODO:
-* get correct sizeof
-* styling of app, maybe use the metri modern ui
+* get correct sizeof ... IMPOSSSIBLE
 * file access error handling, and general error handling
-* present a cpu/mem metrics or graphs to the user?
-* show how many background workers are available, visualize them
-* use Roslyn as a compiler (problematic?, needs vs2012 stuff)
+* present a cpu/mem metrics or graphs to the user? WHY?
+* show how many background workers are available, visualize them WHY?
+* use Roslyn as a compiler (problematic?, needs vs2012 stuff)..maybe, its not really ready yet...btw, whats the purpose of that?
 * kunna styra exakt vilka actions och hur många ggr
 * add links to msdn doc. user must be able to easily go to official doc when mouse over stuff.... or similar
 * add blc types into object list
-* gui classes must have events like clicked, right clicked, hovered, etc
 * the custom shapes could be defined as xaml resources
 * micromanage the threading/task handling to get more smooth and instant feedback. dont burden the ui thread.
 * IMPORTANT: most often code will not be simple, i.e. it will be complex, contain references to other assemblies, etc.
@@ -20,12 +18,10 @@ when compiled, everything related must refresh
 * general fixes (alignements, sizes,colors, icons) in mainwindow
 * handle many more cases (static classes, parameter types, etc)
 * present more info of the run (stats, metering, comparisons, etc)
-* syntax coloring in code box
-
+* syntax coloring in code box..i use webbrowser control, but doesnt appear in runtime..is metro gui fucking it up?
+* consider using DLR instead of reflection, for increased performance. At least it  will be fun to implement!
 
 * add support for non generic collections OK
-* setting: switch between impl with bw and impl with tpl OK
-* add support for actions with more than 1 param, such as Dictionary.Add(key,value) and non generic SorttedList.Add(key,value) OK
 
 
 CONCEPT:
@@ -60,6 +56,8 @@ UI:
 
 
 
-///////////////////// before christmas ////////
+26/12/2013
 
-* 
+
+* Did "sloppy refactorings" , started on contextmenu for shapes, error handling for behavior creation, ui thread is less frequenlty updated....
+* after tenerifa I will have great ideas how to continue with this awesome project!!!!!!!!!!!!!! :) tralallalla life is good!!!!

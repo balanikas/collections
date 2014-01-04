@@ -3,43 +3,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="568" Width="604">
+             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             mc:Ignorable="d" Height="836" Width="602">
     <Grid>
-        <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstObjects" HorizontalAlignment="Left" Height="260" Margin="10,145,0,0" VerticalAlignment="Top" Width="242" RenderTransformOrigin="0.5,0.5" SelectedIndex="0" FontSize="16" SelectionChanged="lstObjects_SelectionChanged" SelectionMode="Single">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn  Width="{Binding RelativeSource={RelativeSource FindAncestor, 
+        <StackPanel>
+            <Grid>
+                <CheckBox Grid.Column="0" Grid.Row="0" x:Name="chkBclTypes" Content="Bcl types" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top" Checked="chkBclTypes_Checked" Unchecked="chkBclTypes_Unchecked" Height="18" Width="91"/>
+                <CheckBox Grid.Column="0" Grid.Row="1" x:Name="chkFromFiles" Content="From folder" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top" Checked="chkFromFiles_Checked" Unchecked="chkFromFiles_Unchecked" Height="19" Width="110"/>
+                <CheckBox Grid.Column="0" Grid.Row="2" x:Name="chkFromAssembly" Content="From assembly" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top" Checked="chkFromAssembly_Checked" Unchecked="chkFromAssembly_Unchecked" Height="20" Width="131"/>
+                <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtFolderLocation" HorizontalAlignment="Left" Height="26" Margin="146,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="452" Text="C:\Users\grillo\Documents\GitHub\collections\Collections\CollectionsSOLID\resources\publicsampletypes"/>
+                <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtAssemblyLocation" HorizontalAlignment="Left" Height="26" Margin="146,77,0,0" TextWrapping="Wrap" Text="C:\dev\collections\Collections\CollectionsSOLID\bin\Debug\CollectionsSOLID.dll" VerticalAlignment="Top" Width="452"/>
+
+
+            </Grid>
+            <StackPanel Orientation="Horizontal">
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstTypes" HorizontalAlignment="Left" Height="224"  VerticalAlignment="Top" Width="270" RenderTransformOrigin="0.5,0.5" SelectedIndex="0"  SelectionChanged="lstObjects_SelectionChanged" SelectionMode="Single">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn  Width="{Binding RelativeSource={RelativeSource FindAncestor, 
                                         AncestorType=ListView}, Path=ActualWidth}"
-						DisplayMemberBinding="{Binding Key}" Header="TYPES"  />
-                </GridView>
-            </ListView.View>
+						DisplayMemberBinding="{Binding TypeInfo}" Header="TYPES"  />
+                        </GridView>
+                    </ListView.View>
 
 
-        </ListView>
-        <Button x:Name="btnCompile" Content="Compile" HorizontalAlignment="Left" Margin="497,421,0,0" VerticalAlignment="Top" Width="97" RenderTransformOrigin="1.013,-0.545" Click="btnCompile_Click" Height="27"/>
-        <CheckBox x:Name="chkBclTypes" Content="Bcl types" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top" Checked="chkBclTypes_Checked" Unchecked="chkBclTypes_Unchecked" Height="18" Width="91"/>
-        <CheckBox x:Name="chkFromFiles" Content="From folder" HorizontalAlignment="Left" Margin="10,59,0,0" VerticalAlignment="Top" Checked="chkFromFiles_Checked" Unchecked="chkFromFiles_Unchecked" Height="19" Width="110"/>
-        <CheckBox x:Name="chkFromAssembly" Content="From assembly" HorizontalAlignment="Left" Margin="10,101,0,0" VerticalAlignment="Top" Checked="chkFromAssembly_Checked" Unchecked="chkFromAssembly_Unchecked" Height="20" Width="131"/>
-        <TextBox x:Name="txtFolderLocation" HorizontalAlignment="Left" Height="26" Margin="146,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="452" Text="C:\dev\collections\Collections\CollectionsSOLID\resources\sampletypes"/>
-        <TextBox x:Name="txtAssemblyLocation" HorizontalAlignment="Left" Height="26" Margin="146,99,0,0" TextWrapping="Wrap" Text="C:\dev\collections\Collections\CollectionsSOLID\bin\Debug\CollectionsSOLID.dll" VerticalAlignment="Top" Width="452"/>
-        <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstActions" HorizontalAlignment="Left" Height="137" Margin="10,421,0,0" VerticalAlignment="Top" Width="428" SelectedIndex="0" RenderTransformOrigin="0.5,0.5" FontSize="16">
+                </ListView>
+
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstMethods" HorizontalAlignment="Left" Height="224"  VerticalAlignment="Top" Width="328" SelectedIndex="0" RenderTransformOrigin="0.5,0.5" >
 
 
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn  Width="{Binding RelativeSource={RelativeSource FindAncestor, 
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn  Width="{Binding RelativeSource={RelativeSource FindAncestor, 
                                         AncestorType=ListView}, Path=ActualWidth}"
-						 Header="ACTION"  />
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <RichTextBox x:Name="txtCode" HorizontalAlignment="Left" Height="260" Margin="275,145,0,0" VerticalAlignment="Top" Width="286" IsDocumentEnabled="True">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text="RichTextBox"/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
+						 Header="METHODS"  />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
 
+            <avalonEdit:TextEditor Background="Azure"
+				x:Name="avalonEdit"
+				FontFamily="Consolas"
+				FontSize="10pt"
+				SyntaxHighlighting="C#" Height="482"/>
+            <Button x:Name="btnCompile" Content="Compile" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="97" RenderTransformOrigin="1.013,-0.545" Click="btnCompile_Click" Height="27"/>
+
+        </StackPanel>
     </Grid>
 </UserControl>

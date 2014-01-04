@@ -54,7 +54,7 @@ namespace CollectionsSOLID
 
             
         }
-        public void Update()
+        public bool Update(ILogger logger)
         {
             foreach (string method in _actions)
             {
@@ -85,6 +85,13 @@ namespace CollectionsSOLID
                 }
 
             }
+
+            return true;
+        }
+
+        public bool UpdateAndLog(ILogger logger)
+        {
+            return true;
         }
 
         public Type GetObjectType()

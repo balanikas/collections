@@ -9,6 +9,8 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
 using System.Diagnostics;
+using System.Linq;
+using System.CodeDom.Compiler;
 
 namespace CollectionsSOLID
 {
@@ -109,6 +111,7 @@ namespace CollectionsSOLID
                      {
                          return new object();
                      }
+                case "Char*":
                 case "String":
                      {
                          var size = 10;
@@ -138,85 +141,70 @@ namespace CollectionsSOLID
             }
         }
 
-        public static Dictionary<TypeInfo, string> LoadTypesFromDisc(string filePath = null)
+        public static List<LoadedType> LoadTypesFromDisc(string filePath)
         {
-            
-            var data = new Dictionary<TypeInfo, string>();
-
-            var compiler = new CSharpCodeProvider();
-            
-            var parms = new System.CodeDom.Compiler.CompilerParameters
+            bool isEmpty = String.IsNullOrEmpty(filePath);
+            bool isValid = filePath.IndexOfAny(Path.GetInvalidPathChars()) == -1;
+            if (isEmpty || !isValid)
             {
-                GenerateExecutable = false,
-                GenerateInMemory = true,
-                 
-            };
-            parms.ReferencedAssemblies.Add("System.dll");
-            //parms.ReferencedAssemblies.Add("System.Collections.Generic.dll");
+                throw new ArgumentException("bad args: " + filePath);
 
-            if (String.IsNullOrEmpty(filePath))
-            {
-                filePath = _defaultResourceDirectory;
             }
 
-            var files = new Dictionary<string, string>();
-            foreach (string file in Directory.EnumerateFiles(filePath, "*.cs"))
+            bool isFile = filePath.EndsWith(".cs") || filePath.EndsWith(".vb");
+
+            var types = new List<LoadedType>();
+
+            if (isFile)
+            {
+                var fileContent = File.ReadAllText(filePath);
+                var results = CompileFromFile(filePath);
+                foreach (var definedType in results.CompiledAssembly.DefinedTypes)
+                {
+                    if (definedType.Name == filePath)
+                    {
+                        types.Add(new LoadedType { FilePath = filePath, Source = fileContent, TypeInfo = definedType });
+                    }
+                }
+                return types;
+            }
+
+            var files = Directory.EnumerateFiles(filePath, "*.*", SearchOption.AllDirectories)
+                .Where(s => s.EndsWith(".cs") || s.EndsWith(".vb"));
+            foreach (string file in files) 
             {
                 var fileName = System.IO.Path.GetFileNameWithoutExtension(file);
                 var fileContent = File.ReadAllText(file);
-                files.Add(fileName, File.ReadAllText(file));
 
-                var results = compiler.CompileAssemblyFromSource(parms, fileContent);
-
-
-                
-                if (results.Errors.Count == 0)
+                var results = CompileFromFile(file);
+               
+                foreach(var definedType in results.CompiledAssembly.DefinedTypes)
                 {
-                    foreach(var definedType in results.CompiledAssembly.DefinedTypes)
+                    if(definedType.Name == fileName) //for vb files My.MyApplication is generated...wtf
                     {
-                        if(definedType.Name == fileName)
-                        {
-                            if(!String.IsNullOrEmpty(definedType.Namespace))
-                            {
-                                
-                                //data.Add(results.CompiledAssembly.CreateInstance(definedType.FullName), fileContent);
-                                data.Add(definedType, fileContent);
-                            }
-                            else
-                            {
-                                
-                                //data.Add(results.CompiledAssembly.CreateInstance(definedType.Name), fileContent);
-                                data.Add(definedType, fileContent);
-                            }
-                            
-                        }
+                        types.Add(new LoadedType { FilePath = Path.Combine(filePath,file), Source = fileContent, TypeInfo = definedType});
                     }
-                    
                 }
-
-
+                 
             }
-            return data;
+            return types;
            
         }
 
-        public static Dictionary<TypeInfo, string> LoadBclTypes()
+        public static List<LoadedType> LoadBclTypes()
         {
-            var data = new Dictionary<TypeInfo, string>();
-            
+            var data = new List<LoadedType>();
 
-            data.Add(typeof(int).GetTypeInfo(), "N/A");
-            data.Add(typeof(string).GetTypeInfo(), "N/A");
-            data.Add(typeof(DateTime).GetTypeInfo(), "N/A");
-            data.Add(typeof(Uri).GetTypeInfo(), "N/A");
-            data.Add(typeof(Console).GetTypeInfo(), "N/A");
-            data.Add(typeof(Debug).GetTypeInfo(), "N/A");
+
+            data.Add(new LoadedType { TypeInfo = typeof(int).GetTypeInfo() , Source = "N/A", FilePath = "N/A"});
+            data.Add(new LoadedType { TypeInfo = typeof(string).GetTypeInfo(), Source = "N/A", FilePath = "N/A" });
+          
             return data;
         }
 
-        public static Dictionary<TypeInfo, string> LoadTypesFromAssembly(string filePath)
+        public static List<LoadedType> LoadTypesFromAssembly(string filePath)
         {
-            var data = new Dictionary<TypeInfo, string>();
+            var data = new List<LoadedType>();
 
             bool isEmpty = String.IsNullOrEmpty(filePath);
             bool isValid = filePath.IndexOfAny(Path.GetInvalidPathChars()) == -1;
@@ -227,7 +215,7 @@ namespace CollectionsSOLID
             }
 
 
-            bool isFile = filePath.EndsWith(".dll");
+            bool isFile = filePath.EndsWith(".dll") || filePath.EndsWith(".exe");
 
             var filePaths = new List<string>();
             if(isFile)
@@ -236,7 +224,9 @@ namespace CollectionsSOLID
             }
             else
             {
-                filePaths.AddRange(Directory.GetFiles(filePath, "*.dll"));
+                var files = Directory.EnumerateFiles(filePath, "*.*", SearchOption.AllDirectories)
+                    .Where(s => s.EndsWith(".dll") || s.EndsWith(".exe"));
+                filePaths.AddRange(files);
             }
 
             foreach (var path in filePaths)
@@ -249,7 +239,7 @@ namespace CollectionsSOLID
                     {
                         continue;
                     }
-                    data.Add(definedType, "N/A");
+                    data.Add(new LoadedType { TypeInfo = definedType, FilePath = filePath, Source = "N/A" });
                 }
             }
 
@@ -258,33 +248,68 @@ namespace CollectionsSOLID
             return data;
         }
 
-        private const string _defaultResourceDirectory = @"C:\dev\collections\Collections\CollectionsSOLID\resources\sampletypes";
-        public static void SaveType(string content, string fileName, string filePath = null)
+        private static CompilerResults CompileFromSource(string source, string language = "CSharp")
         {
-            if(String.IsNullOrEmpty(filePath))
+            var compiler =  CodeDomProvider.CreateProvider(language);
+           
+            var parms = new System.CodeDom.Compiler.CompilerParameters
             {
-                filePath = _defaultResourceDirectory;
+                GenerateExecutable = false,
+                GenerateInMemory = true,
+
+            };
+
+            var compilationResults = compiler.CompileAssemblyFromSource(parms, source);
+
+            if (compilationResults.Errors.Count > 0)
+            {
+                string message = String.Empty;
+                foreach (CompilerError error in compilationResults.Errors)
+                {
+                    message += error.ErrorText + Environment.NewLine;
+                }
+                throw new Exception(message);
             }
 
+            return compilationResults;
+        }
 
-            if(File.Exists(Path.Combine(filePath, fileName + ".cs")))
+        private static CompilerResults CompileFromFile(string filePath)
+        {
+            string language;
+            
+            if(filePath.EndsWith(".cs"))
             {
-                File.Delete(Path.Combine(filePath, fileName + ".cs"));
+                language = "CSharp";
             }
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(Path.Combine(filePath, fileName + ".cs"), true))
+            else if (filePath.EndsWith(".vb"))
             {
-                file.Write(content);
+                language = "VisualBasic";
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
+
+            var source = File.ReadAllText(filePath);
+
+            return CompileFromSource(source, language);
+        }
+
+        public static void CompileAndSaveType(LoadedType type)
+        {
+
+            var compilationResults = CompileFromFile(type.FilePath);
+
+            if (File.Exists(type.FilePath))
+            {
+                File.Delete(type.FilePath);
+            }
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(type.FilePath, true))
+            {
+                file.Write(type.Source);
             }
         }
 
-        public static int GetObjectSize(object TestObject)
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            MemoryStream ms = new MemoryStream();
-            byte[] Array;
-            bf.Serialize(ms, TestObject);
-            Array = ms.ToArray();
-            return Array.Length;
-        }
     }
 }

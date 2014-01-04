@@ -15,14 +15,15 @@ namespace CollectionsSOLID
         int _loopCount;
         CancellationTokenSource _cts;
         Task _task;
+        ILogger _logger;
         public string Id { get; private set; }
-        public TplBasedRunner(IBehavior behavior, IGui gui, int loopCount = 1000000)
+        public TplBasedRunner(IBehavior behavior, IGui gui,ILogger logger, int loopCount = 1000000)
         {
 
             _gui = gui;
             _behavior = behavior;
             _loopCount = loopCount;
-
+            _logger = logger;
             _cts = new CancellationTokenSource();
 
             Id = Guid.NewGuid().ToString();
@@ -31,7 +32,7 @@ namespace CollectionsSOLID
 
          public void Start()
         {
-            _gui.Init();
+            _gui.Draw();
 
 
             _task = Task.Factory.StartNew(() =>
@@ -72,33 +73,44 @@ namespace CollectionsSOLID
 
              var watch = new Stopwatch();
              watch.Start();
+
              for (int i = 1; (i <= _loopCount); i++)
              {
                  CancellationToken ct = _cts.Token;
                  ct.ThrowIfCancellationRequested();
                  
 
-                _behavior.Update();
+               
 
                 //check if end of loop, or check every now and then
-                if (i % 100 == 0 || i == _loopCount)
+                if (i % ( _loopCount / 10) == 0 || i == _loopCount)
                 {
+                    _behavior.UpdateAndLog(_logger);
+
                     ObjectState state = ObjectState.Running;
                     if (i == _loopCount)
                     {
                         watch.Stop();
                         state = ObjectState.Finished;
+                        _logger.Flush();
                     }
 
-                    var msg = new Message(
+                    var progressCount = (int)(i / (double)_loopCount * 100);
+                    _logger.Info(Id + ": " + progressCount.ToString());
+
+                    var msg = new RunnerMessage(
                         _behavior.GetObjectType(), 
                         _behavior.GetCollectionType(), 
                         watch.Elapsed,
-                        (int)(i/ (double)_loopCount * 100), 
+                        progressCount, 
                         sizeOfObject * i,
                         state);
 
                     _gui.Update(msg);
+                }
+                else
+                {
+                    _behavior.Update(_logger);
                 }
 
                  

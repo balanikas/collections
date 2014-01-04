@@ -9,6 +9,7 @@ using System.Windows.Media;
 using CollectionsSOLID;
 
 using MahApps.Metro.Controls;
+using System.Globalization;
 
 namespace WpfClient
 {
@@ -21,55 +22,85 @@ namespace WpfClient
 
 
         Canvas _canvas;
-        Game _game;
+        Runtime _game;
         CancellationTokenSource _cts;
         ILogger _logger;
 
         public MainWindow()
         {
             InitializeComponent();
-
+           
+            
             _cts = new CancellationTokenSource();
 
             LoadGuiData();
             _logger = new TextboxLogger(txtLog);
-            _game = new Game();
+            
             _canvas = new Canvas();
-            _canvas.Background = this.Resources["CanvasGameStopped"] as LinearGradientBrush;
             _canvas.MouseDown += _canvas_MouseDown;
             
             gridGameArea.Children.Add(_canvas);
+
+
+            _game = new Runtime();
+            _canvas.Background = this.Resources["CanvasGameStarted"] as LinearGradientBrush;
+            Task task = Task.Factory.StartNew(() =>
+            {
+                _game.Start();
+            }, _cts.Token);
+
         }
 
      
 
         private void CreateGuiObject(Point p)
         {
-            Type objectType = ucTypes.SelectedType;
+            LoadedType objectType = ucTypes.SelectedType;
+            if(objectType == null)
+            {
+                return;
+            }
             //var actions = lstActions.SelectedItems.Cast<string>().ToList();
             var actions = ucTypes.SelectedMethods;
-            var collection = (KeyValuePair<Type, List<string>>)lstCollectionTypes.SelectedItem;
+           
 
             IGui gui = null;
             var drawType = Settings.DrawAs;
             if(drawType == DrawTypes.Circle)
             {
                 var circle = new CustomCircle(_canvas.Children, p);
-                circle.OnRightClick += new RightClickEventHandler(RightClickHandler);
+               // circle.OnRightClick += new RightClickEventHandler(RightClickHandler);
                 circle.OnMouseOver += new MouseOverEventHandler(MouseOverHandler);
                 gui = circle;
             }
             else if (drawType == DrawTypes.Rectangle)
             {
                 var rectangle = new CustomRectangle(_canvas.Children, p);
-                rectangle.OnRightClick += new RightClickEventHandler(RightClickHandler);
+               // rectangle.OnRightClick += new RightClickEventHandler(RightClickHandler);
                 rectangle.OnMouseOver += new MouseOverEventHandler(MouseOverHandler);
                 gui = rectangle;
             }
             
-            //IBehavior behavior = new CollectionBehavior(objectType, collection.Key, actions);
-            IBehavior behavior = new ObjectBehavior(objectType,  actions,_logger);
-            IRunner runner = ObjectFactory.Get(Settings.ThreadingType,behavior, gui,Settings.Loops);
+            IBehavior behavior;
+            IRunner runner;
+            try
+            {
+                behavior = new ObjectBehavior(objectType.TypeInfo, actions);
+            }
+            catch (Exception e)
+            {
+                var guiMessage = new ErrorMessage(e.Message, 100);
+                
+                runner = ObjectFactory.Get(Settings.ThreadingType, null, gui, _logger, Settings.Loops);
+                gui.Draw();
+                _game.Add(runner);
+                gui.Update(guiMessage);
+                return;
+            }
+            
+
+
+            runner = ObjectFactory.Get(Settings.ThreadingType,behavior, gui,_logger,Settings.Loops);
 
             runner.Start();
             
@@ -87,35 +118,12 @@ namespace WpfClient
             
         }
 
-        private void btnStart_Click(object sender, RoutedEventArgs e)
-        {
-            _canvas.Background = this.Resources["CanvasGameStarted"] as LinearGradientBrush;
-            Task task = Task.Factory.StartNew(() =>
-            {
-                _game.Start();
-            }, _cts.Token);
-
-            //task.ContinueWith((t)=>
-            //{
-                
-            //    if(t.Status == TaskStatus.Canceled)
-            //    {
-            //        _game.Stop();
-                   
-            //    }
-            //},_cancellation.Token);
-            
-        }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
 
-            _game.Stop();
-            //_cancellation.Cancel();
-            System.Diagnostics.Trace.WriteLine("cancelling");
-
-            //gridGameArea.Children.Clear();
-            _canvas.Background = _canvas.Background = this.Resources["CanvasGameStopped"] as LinearGradientBrush;
+            
+            _game.Clear();
             GC.Collect();
             GC.WaitForPendingFinalizers();
 

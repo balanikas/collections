@@ -15,14 +15,14 @@ namespace CollectionsSOLID
     {
 
 
-        public static IRunner Get (ObjectType type,IBehavior behavior, IGui gui, int loopCount = 1000000)
+        public static IRunner Get (ObjectType type,IBehavior behavior, IGui gui, ILogger logger, int loopCount = 1000000)
         {
             switch (type)
             {
                 case ObjectType.BackgroundWorkerBased:
-                    return new BWBasedRunner(behavior, gui, loopCount);
+                    return new BWBasedRunner(behavior, gui, logger,loopCount);
                 case ObjectType.ParallelTaskBased:
-                    return new TplBasedRunner(behavior, gui, loopCount);
+                    return new TplBasedRunner(behavior, gui, logger,loopCount);
                 default:
                     throw new NotImplementedException();
                     

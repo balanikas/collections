@@ -7,36 +7,40 @@ using System.Diagnostics;
 
 namespace CollectionsSOLID
 {
-    public class Game
+    public class Runtime
     {
         IDictionary<string,IRunner> _gObjects;
         bool _isRunning = false;
-        public Game()
+        public Runtime()
         {
             _gObjects = new Dictionary<string, IRunner>();
 
         }
-        public void Stop() {
+        public void Stop() 
+        {
             _isRunning = false;
-            Debug.WriteLine("game stopped");
+            
         }
        
         public void Start() 
         {
-            Debug.WriteLine("game started");
+            
             _isRunning = true;
 
             while (_isRunning)
             {
-                
-                //System.Threading.Thread.Sleep(500);
             }
 
+            Clear();
+        
+        }
+
+        public void Clear()
+        {
             foreach (var go in _gObjects.Values)
             {
                 go.Destroy();
             }
-        
         }
 
         public void Add(IRunner obj)
