@@ -42,7 +42,7 @@
 
     <StackPanel Orientation="Vertical"
                 Margin="10">
-        <Slider x:Name="sldLoopCount" HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Maximum="1000000" LargeChange="10000" SmallChange="10" Value="500000" AutoToolTipPlacement="TopLeft" Height="26" ValueChanged="sldLoopCount_ValueChanged"/>
+        <Slider x:Name="sldLoopCount" HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Maximum="10000000" LargeChange="100000" SmallChange="10" Value="1000000" AutoToolTipPlacement="TopLeft" Height="26" ValueChanged="sldLoopCount_ValueChanged"/>
         <ComboBox x:Name="cmbGraphics" HorizontalAlignment="Left" VerticalAlignment="Top" Width="214" SelectedIndex="0" Height="26" SelectionChanged="cmbGraphics_SelectionChanged"/>
 
 
@@ -53,6 +53,7 @@
                                          Content="Use Background Workers"
                                          GroupName="1"
                                          IsChecked="True" />
+        <CheckBox x:Name="chkOptimizeRunners" Content="CheckBox" IsChecked="True" Checked="chkOptimizeRunners_Checked"/>
     </StackPanel>
 
 </controls:Flyout>

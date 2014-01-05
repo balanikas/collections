@@ -17,6 +17,7 @@ namespace WpfClient
     {
         public event RightClickEventHandler OnRightClick;
         public event MouseOverEventHandler OnMouseOver;
+        public event KeyPressedEventHandler OnKeyPressed;
 
         protected AnimationsHelper _animationsHelper;
         protected Grid _grid;
@@ -37,6 +38,7 @@ namespace WpfClient
             _grid.SetValue(Canvas.TopProperty, position.Y - (_grid.Height / 2));
             _grid.MouseDown += _grid_MouseDown;
             _grid.MouseMove += _grid_MouseMove;
+            _grid.KeyDown += _grid_KeyDown;
             
 
             _label.Content = title;
@@ -45,6 +47,7 @@ namespace WpfClient
             _parent = parent;
             _parent.Add(_grid);
         }
+
 
 
         public void AddContextMenu(ContextMenu ctxMenu)
@@ -104,6 +107,15 @@ namespace WpfClient
             if (OnMouseOver != null)
             {
                 OnMouseOver(this, new MouseOverEventArgs(Id));
+            }
+        }
+
+
+        void _grid_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (OnKeyPressed != null)
+            {
+                OnKeyPressed(this, new KeyPressedEventArgs(Id, e.Key));
             }
         }
 

@@ -64,6 +64,7 @@ namespace WpfClient
                 
              
                 circle.OnMouseOver += new MouseOverEventHandler(MouseOverHandler);
+                circle.OnKeyPressed += circle_OnKeyPressed;
                 gui = circle;
             }
             else if (drawType == DrawTypes.Rectangle)
@@ -83,6 +84,7 @@ namespace WpfClient
             }
             catch (Exception e)
             {
+                _logger.ErrorNow(e.Message);
                 var guiMessage = new ErrorMessage(e.Message, 100);
                 
                 runner = ObjectFactory.Get(Settings.ThreadingType, null, gui, _logger, Settings.Loops);
@@ -100,6 +102,18 @@ namespace WpfClient
             _runtime.Add(runner);
             runner.Start();
             
+        }
+
+        void circle_OnKeyPressed(object source, KeyPressedEventArgs e)
+        {
+            if(e.Key == Key.D1)
+            {
+                _runtime.Remove(e.EventInfo);
+            }
+            else if (e.Key == Key.D2)
+            {
+                ToggleFlyout(1, _runtime.GetById(e.EventInfo));
+            }
         }
 
         //void menuInfo_Click(object sender, RoutedEventArgs e)
@@ -171,7 +185,7 @@ namespace WpfClient
                 return;
             }
 
-            if(flyout is RunnerInfoFlyout)
+            if(flyout is RunnerInfoFlyout && userState != null)
             {
                 ((RunnerInfoFlyout)flyout).AddContent((RunnerMessage)userState.GetState());
             }
@@ -182,6 +196,16 @@ namespace WpfClient
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ToggleFlyout(0);
+        }
+
+        private void btnAbout_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleFlyout(2);
+        }
+
+        private void btnClearLog(object sender, RoutedEventArgs e)
+        {
+            txtLog.Document.Blocks.Clear();
         }
       
 

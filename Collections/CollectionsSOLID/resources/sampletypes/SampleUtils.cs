@@ -1,18 +1,18 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-
+using System.Text.RegularExpressions;
 
 [Serializable]
-public class SampleUtils
+public static class SampleUtils
 {
     public static string ConcatenateStrings(string s1, string s2)
     {
        if(s1.StartsWith("AAAA"))
        {
-           throw new ArgumentException("check");
+           throw new ArgumentException("ConcatenateStrings threw exception");
        }
-        
+       var qqq = new System.Text.StringBuilder();
         
         return s1 + s2 + "";
     }
@@ -30,28 +30,20 @@ public class SampleUtils
         }
     }
 
-    public void NonStaticCalculate()
-    {
-        int x = 0;
-        for (int i = 0; i < 1000; i++)
-        {
-            x++;
-        }
-    }
 
-    private void Secret()
+    private static void Secret()
     {
 
     }
 
-    public string AddDifferentTypes(sbyte sb, byte by, Int16 i16, UInt16 ui16, Int32 i32, UInt32 ui32, Int64 i64, UInt64 ui64, 
+    public static string AddDifferentTypes(sbyte sb, byte by, Int16 i16, UInt16 ui16, Int32 i32, UInt32 ui32, Int64 i64, UInt64 ui64, 
         float f, double d, bool bo, char c, object o, string s)
     {
 
         return "";
     }
 
-    public string ConcatenateObjects(object o1, object o2)
+    public static string ConcatenateObjects(object o1, object o2)
     {
         return o1.ToString() + o2.ToString();
     }

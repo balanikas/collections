@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>appicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ColorCode">
       <HintPath>..\packages\ColorCode.1.0.1\lib\ColorCode.dll</HintPath>
@@ -70,6 +73,9 @@
     <Compile Include="AnimationsHelper.cs" />
     <Compile Include="RunnerInfoFlyout.xaml.cs">
       <DependentUpon>RunnerInfoFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AboutFlyout.xaml.cs">
+      <DependentUpon>AboutFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="ShapeContextMenu.cs" />
     <Compile Include="CustomCircle.cs" />
@@ -114,6 +120,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="RunnerInfoFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AboutFlyout.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -168,6 +178,7 @@
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="appicon.ico" />
     <Content Include="Samples\AvalonEdit\article.html" />
     <Content Include="Samples\AvalonEdit\document.html" />
     <Content Include="Samples\AvalonEdit\rendering.html" />

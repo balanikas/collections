@@ -30,17 +30,18 @@
 
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
-            <Button Content="settings" Click="Button_Click"  />
-
+            <Button Content="Settings" Click="Button_Click"  />
+            <Button Content="About" Click="btnAbout_Click"  />
         </Controls:WindowCommands>
+       
     </Controls:MetroWindow.WindowCommands>
 
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
 
             <local:SettingsFlyout Header="Settings" Position="Right" CanCloseFlyout="True" />
-            <local:RunnerInfoFlyout Header="Info" Position="Bottom" Width="800" CanCloseFlyout="True" />
-
+            <local:RunnerInfoFlyout Header="Info" Position="Bottom" Width="500" CanCloseFlyout="True" />
+            <local:AboutFlyout Header="About" Position="Right" Width="500"  CanCloseFlyout="True" />
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
 
@@ -117,15 +118,20 @@
 
 
 
-        <Expander Grid.Row="1" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Left" Opacity="0.8" >
-
-            <RichTextBox  x:Name="txtLog" ScrollViewer.VerticalScrollBarVisibility="Auto"    Height="Auto"  >
-                <FlowDocument>
-                    <Paragraph>
-                        <Run Text="RichTextBox"/>
-                    </Paragraph>
-                </FlowDocument>
-            </RichTextBox>
+        <Expander Grid.Row="1" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Left" Opacity="0.9" IsExpanded="True" Height="500" VerticalAlignment="Bottom" >
+            <DockPanel >
+                <Button Content="Clear log" Click="btnClearLog" DockPanel.Dock="Top"/>
+                <RichTextBox  x:Name="txtLog" ScrollViewer.VerticalScrollBarVisibility="Auto"  DockPanel.Dock="Bottom"  >
+                    <FlowDocument>
+                        <Paragraph>
+                            <Run Text="RichTextBox"/>
+                        </Paragraph>
+                    </FlowDocument>
+                </RichTextBox>
+                
+                
+            </DockPanel> 
+          
         </Expander>
 
 

@@ -33,6 +33,7 @@ namespace CollectionsSOLID
 
                 while (_isRunning)
                 {
+                    Thread.Sleep(10000);
                 }
 
                 Clear();

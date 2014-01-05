@@ -12,7 +12,13 @@ namespace WpfClient
 {
     class TextboxLogger : ILogger
     {
-        Queue<string> _logBuffer;
+        class LogMessage
+        {
+            public string Message { get; set; }
+            public bool IsError { get; set; }
+        }
+
+        Queue<LogMessage> _logBuffer;
         RichTextBox _textOutput;
         int _errorCount = 0;
 
@@ -21,7 +27,7 @@ namespace WpfClient
             _textOutput = textBox;
             FlowDocument doc = new FlowDocument();
             _textOutput.Document = doc;
-            _logBuffer = new Queue<string>();
+            _logBuffer = new Queue<LogMessage>();
         }
 
         public int Count { 
@@ -40,7 +46,7 @@ namespace WpfClient
 
         public void Info(string message)
         {
-            _logBuffer.Enqueue(message);
+            _logBuffer.Enqueue(new LogMessage { IsError = false, Message = message });
         }
 
         public void InfoNow(string message)
@@ -48,8 +54,9 @@ namespace WpfClient
             _textOutput.Dispatcher.BeginInvoke((new Action(delegate()
             {
                 var paragraph = new Paragraph(new Run(message));
+                paragraph.Foreground = new SolidColorBrush(Colors.White);
                 _textOutput.Document.Blocks.Add(paragraph);
-
+                _textOutput.ScrollToEnd();
             })));
 
             
@@ -58,7 +65,7 @@ namespace WpfClient
         public void Error(string message)
         {
             _errorCount++;
-            _logBuffer.Enqueue(message);
+            _logBuffer.Enqueue(new LogMessage {  IsError = true, Message = message });
         }
 
         public void ErrorNow(string message)
@@ -67,8 +74,9 @@ namespace WpfClient
             _textOutput.Dispatcher.BeginInvoke((new Action(delegate()
             {
                 var paragraph = new Paragraph(new Run(message));
+                paragraph.Foreground = new SolidColorBrush(Colors.Red);
                 _textOutput.Document.Blocks.Add(paragraph);
-
+                _textOutput.ScrollToEnd();
             })));
 
 
@@ -76,22 +84,22 @@ namespace WpfClient
 
         public void Flush()
         {
-            var contentToFlush = new StringBuilder();
-
+            var paragraph = new Paragraph();
             while(_logBuffer.Count > 0)
             {
-                contentToFlush.Append(_logBuffer.Dequeue() + Environment.NewLine);
-            }
-            
+                var logMessage = _logBuffer.Dequeue() ;
 
-            _textOutput.Dispatcher.BeginInvoke((new Action(delegate()
-            {
-                var paragraph = new Paragraph(new Run(contentToFlush.ToString()));
-                paragraph.Foreground = Utils.PickBrush();
-                _textOutput.Document.Blocks.Add(paragraph);
-                _textOutput.ScrollToEnd();
-            })));
-            
+                paragraph.Inlines.Add(new Run(logMessage.Message + Environment.NewLine));
+                paragraph.Foreground = logMessage.IsError ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.White);
+
+                _textOutput.Dispatcher.BeginInvoke((new Action(delegate()
+                {
+                    
+                    _textOutput.Document.Blocks.Add(paragraph);
+                    _textOutput.ScrollToEnd();
+                })));
+            }
+
         }
     }
 }

@@ -46,7 +46,7 @@ namespace WpfClient
             base.Draw();
             
             _animationsHelper.AddGrowthAnimation(_grid, TimeSpan.FromSeconds(10), 1, 3);
-            _animationsHelper.AddColorAnimation(_rect, TimeSpan.FromSeconds(3), Colors.Green, Colors.Red);
+            _animationsHelper.AddColorAnimation(_rect, TimeSpan.FromSeconds(10), Colors.Green, Colors.Red);
         }
 
         private void Freeze()

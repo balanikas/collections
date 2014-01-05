@@ -20,6 +20,11 @@ namespace WpfClient
         }
         public void AddContent(RunnerMessage message)
         {
+            if(message == null)
+            {
+                return;
+            }
+
             txtType.Text = message.ObjectType.ToString();
             txtExecutionTime.Text = message.ExecutionTime.ToString();
         }

@@ -85,6 +85,7 @@ namespace CollectionsSOLID
             bool successfulUpdate;
            
             _watch.Start();
+            worker.ReportProgress(0);
 
             for (int i = 1; i <= _loopCount; i++)
             {
@@ -108,9 +109,9 @@ namespace CollectionsSOLID
 
                 if(!successfulUpdate)
                 {
+                    _logger.Flush();
                     if(++errorCount >= 10)
                     {
-                        _logger.Flush();
                         e.Cancel = true;
                         break;
                     }
@@ -123,6 +124,7 @@ namespace CollectionsSOLID
 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            _logger.Flush();
             if ((e.Cancelled == true))
             {
                 _gui.Destroy();
@@ -139,7 +141,7 @@ namespace CollectionsSOLID
         }
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            _logger.Info(Id + ": " + e.ProgressPercentage.ToString());
+            _logger.Info("RUNNERID " + Id + ": " + e.ProgressPercentage.ToString() + "%");
 
             ObjectState state = e.ProgressPercentage == 100 ? ObjectState.Finished : ObjectState.Running;
 

@@ -85,5 +85,12 @@ namespace WpfClient
                 Settings.ThreadingType = ObjectType.ParallelTaskBased;
             }
         }
+
+        private void chkOptimizeRunners_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            
+            Settings.OptimizeRunners = chkOptimizeRunners.IsChecked.Value;
+            
+        }
     }
 }

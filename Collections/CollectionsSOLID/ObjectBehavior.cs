@@ -18,68 +18,112 @@ namespace CollectionsSOLID
     public class ObjectBehavior : IBehavior
     {
         Type _objectType;
-        IEnumerable _actions;
+        
         List<MethodInfo> _methods;
         object _objectInstance;
+       
+        ThreadSafeRandom _randomizer;
 
-        public ObjectBehavior(Type type, IEnumerable<MethodInfo> actions)
+        public ObjectBehavior(Type type, IEnumerable<MethodInfo> methods)
         {
             _objectType = type;
-            _actions = actions;
-            _methods = new List<MethodInfo>();
-
-            ConstructorInfo ci = null;
-
-            if (_objectType.IsValueType)
+            var areMethodsValid = Utils.MethodsUseSupportedTypes(methods);
+            if(!areMethodsValid)
             {
-                _objectInstance = Activator.CreateInstance(_objectType);
+                throw new ArgumentException("method(s) contains unsupported types");
+            }
+             _methods = methods.ToList();
+            _objectInstance = CreateInstanceFromType(_objectType);
+            if(_objectInstance == null)
+            {
+                var staticMethods = _methods.Where(m => !m.IsStatic);
+                if (staticMethods.Any())
+                {
+                    throw new ArgumentException("cannot invoke non-static method of static class");
+                }
+            }
+           
+
+        }
+
+      
+
+        private object CreateInstanceFromType(Type type)
+        {
+            object obj = null;
+
+            if (type.IsValueType)
+            {
+                obj = Activator.CreateInstance(type);
             }
             else
             {
-                ci = _objectType.GetConstructor(Type.EmptyTypes);
+                ConstructorInfo ci = null;
+                ci = type.GetConstructor(Type.EmptyTypes);
                 if (ci == null)
                 {
-                    var parameters = new List<object>();
-
-                    //no paramless constructor
-                    var constructors = _objectType.GetConstructors();
-                    foreach(var c in constructors)
+                    if (!type.IsSealed && type.IsAbstract)
                     {
-                        var constructorParameters = c.GetParameters();
-                        ci = _objectType.GetConstructor(constructorParameters.Select(p=> p.ParameterType).ToArray());
-                        
-                        foreach (var item in constructorParameters)
-                        {
-                            parameters.Add(Utils.RandomizeParamValue(item.ParameterType.Name));
-                        }
-                        _objectInstance = ci.Invoke(parameters.ToArray());
-
+                        //abstract class
+                        throw new Exception("abstract classes are not allowed");
                     }
+                    if(type.IsSealed && type.IsAbstract)
+                    {
+                       //static class
+                        return null;
+                    }
+                    throw new Exception("only types with empty constructors are allowed");
+                    //todo: this doesnt work because lets say a type has many ctors with params,
+                    //which one to choose? lets limit now to only allow empty constructors...until a better solution
+                    //var parameters = new List<object>();
+
+
+                    //var constructors = type.GetConstructors();
+                    //foreach (var c in constructors)
+                    //{
+                    //    var constructorParameters = c.GetParameters();
+                    //    ci = type.GetConstructor(constructorParameters.Select(p => p.ParameterType).ToArray());
+
+                    //    foreach (var item in constructorParameters)
+                    //    {
+                    //        parameters.Add(Randomizer.RandomizeParamValue(item.ParameterType.Name));
+                    //    }
+                    //    obj = ci.Invoke(parameters.ToArray());
+
+                    //}
 
                 }
                 else
                 {
-                    _objectInstance = ci.Invoke(new object[] { });
+                    //constructor is paramless
+                    obj = ci.Invoke(new object[] { });
                 }
-                
-            }
-            
-          
-            foreach (MethodInfo action in _actions)
-            {
-                _methods.Add(action);
-            }
-            
 
+            }
+            return obj;
         }
+
+        private ThreadSafeRandom Randomizer
+        {
+            get
+            {
+                if(_randomizer == null)
+                {
+                    _randomizer = new ThreadSafeRandom();
+                }
+                return _randomizer;
+            }
+        }
+    
         public bool Update(ILogger logger)
         {
-            foreach (MethodInfo method in _actions)
+            foreach (MethodInfo method in _methods)
             {
+
                 var parameters = new List<object>();
                 foreach (var p in method.GetParameters())
                 {
-                    var paramValue = Utils.RandomizeParamValue(p.ParameterType.Name);
+                    var paramValue = Randomizer.RandomizeParamValue(p.ParameterType.Name);
                     parameters.Add(paramValue);
                 }
 
@@ -101,12 +145,12 @@ namespace CollectionsSOLID
 
         public bool UpdateAndLog(ILogger logger)
         {
-            foreach (MethodInfo method in _actions)
+            foreach (MethodInfo method in _methods)
             {
                 var parameters = new List<object>();
                 foreach (var p in method.GetParameters())
                 {
-                    var paramValue = Utils.RandomizeParamValue(p.ParameterType.Name);
+                    var paramValue = Randomizer.RandomizeParamValue(p.ParameterType.Name);
                     parameters.Add(paramValue);
                 }
 
@@ -114,10 +158,10 @@ namespace CollectionsSOLID
                 try
                 {
                     result = method.Invoke(_objectInstance, parameters.ToArray());
-                    var methodToWrite = "called: " + method.ToString();
-                    var paramsToWrite = "with params: " + String.Join(",", parameters.ToArray());
-                    var returnValueToWrite = "returned: " + result;
-                    var message = methodToWrite + Environment.NewLine + paramsToWrite + Environment.NewLine + returnValueToWrite + Environment.NewLine;
+                    var methodToWrite = "CALLED: " + method.ToString();
+                    var paramsToWrite = "ARGS: " + String.Join(",", parameters.ToArray());
+                    var returnValueToWrite = "RETURNED: " + result;
+                    var message = methodToWrite +"," + paramsToWrite + "," + returnValueToWrite;
                     logger.Info(message);
                 }
                 catch (System.Exception e)

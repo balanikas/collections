@@ -36,6 +36,7 @@
                         <GridView>
                             <GridViewColumn  Width="{Binding RelativeSource={RelativeSource FindAncestor, 
                                         AncestorType=ListView}, Path=ActualWidth}"
+                                             DisplayMemberBinding="{Binding Key}"
 						 Header="METHODS"  />
                         </GridView>
                     </ListView.View>

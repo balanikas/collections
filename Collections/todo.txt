@@ -1,24 +1,15 @@
 TODO:
 * get correct sizeof ... IMPOSSSIBLE
-* file access error handling, and general error handling
-* present a cpu/mem metrics or graphs to the user? WHY?
-* show how many background workers are available, visualize them WHY?
 * use Roslyn as a compiler (problematic?, needs vs2012 stuff)..maybe, its not really ready yet...btw, whats the purpose of that?
 * kunna styra exakt vilka actions och hur många ggr
 * add links to msdn doc. user must be able to easily go to official doc when mouse over stuff.... or similar
-* add blc types into object list
-* the custom shapes could be defined as xaml resources
 * micromanage the threading/task handling to get more smooth and instant feedback. dont burden the ui thread.
 * IMPORTANT: most often code will not be simple, i.e. it will be complex, contain references to other assemblies, etc.
 user should be able to select an assembly to work with, when selected, all types are listed in listObjects. dont show code.
 
 * must not be able to compile other than "from folder", or own code
-when compiled, everything related must refresh
-* coloranimation, alignments, size, tooltips, links on the info presented
-* general fixes (alignements, sizes,colors, icons) in mainwindow
 * handle many more cases (static classes, parameter types, etc)
-* present more info of the run (stats, metering, comparisons, etc)
-* syntax coloring in code box..i use webbrowser control, but doesnt appear in runtime..is metro gui fucking it up?
+
 * consider using DLR instead of reflection, for increased performance. At least it  will be fun to implement!
 
 * add support for non generic collections OK
@@ -34,26 +25,32 @@ USE CASES:
 
 
 
-Enemies
-* good1: destroys current missile, thus dealoocating all memory
-
-* bad1: freezes current missile for 5 seconds, thus
-freezes the memory. 
-
-* bonus1: new weapon type
-
-* bonus2: new ammo type
-
-UI:
-
-* Game area, canvas + progressbars + enemies
-
-* weapon/ammo selection
-
-* sounds
-
-* memory viewer, cpu viewer, score, life, etc.
-
-/////////////////////
-
 * exaclty what info is interesting? expand on the info data, collect more stats...
+
+1. type
+2. method
+3. params
+
+
+1. test utility classes
+2. test collections performance
+3. 
+
+
+
+* add samples:
+1. different ways to call methods, slowest to fastest
+2. boxing/unboxing
+3. other (google it)
+
+* 
+more stats:
+per update
+1. minimum time elapsed
+2. max time elapsed
+3. avg time elapsed
+
+
+* optimize reflection
+* add quickcommands for close and show info
+* text must show in shape immediately

@@ -22,5 +22,7 @@ namespace WpfClient
 
         public static ObjectType ThreadingType { get; set; }
 
+        public static bool OptimizeRunners { get; set; }
+
     }
 }
