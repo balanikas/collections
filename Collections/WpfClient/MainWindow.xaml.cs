@@ -19,8 +19,8 @@ namespace WpfClient
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        
-        
+
+        static MainWindow _self;
 
         Canvas _canvas;
         Runtime _runtime;
@@ -30,6 +30,7 @@ namespace WpfClient
         {
             InitializeComponent();
 
+            _self = this;
             _logger = new TextboxLogger(txtLog);
             
             _canvas = new Canvas();
@@ -43,7 +44,14 @@ namespace WpfClient
             _runtime.Start();
         }
 
-        
+        public static void ShowProgressBar()
+        {
+            _self.prgBar.Visibility = Visibility.Visible;
+        }
+        public static void HideProgressBar()
+        {
+            _self.prgBar.Visibility = Visibility.Hidden;
+        }
 
         private void CreateRunner(Point location)
         {

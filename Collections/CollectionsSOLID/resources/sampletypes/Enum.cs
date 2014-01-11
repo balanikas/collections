@@ -1,8 +1,10 @@
 ﻿using System;
 
-[Serializable]
-public enum Enum
+namespace Samples
 {
-    One,
-    Two
+    public enum Enum
+    {
+        One,
+        Two
+    }
 }

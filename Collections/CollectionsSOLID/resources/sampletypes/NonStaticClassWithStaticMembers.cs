@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
+namespace Samples
+{
     class NonStaticClassWithStaticMembers
     {
         public static void Calculate1()
@@ -27,3 +28,6 @@ using System.Threading.Tasks;
         }
     }
 
+
+}
+    

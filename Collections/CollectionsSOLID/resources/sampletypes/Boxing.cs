@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-
+namespace Samples
+{
     class Boxing
     {
         public void Box()
@@ -19,4 +20,6 @@ using System.Threading.Tasks;
         }
 
     }
+}
+  
 

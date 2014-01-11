@@ -63,28 +63,5 @@ per update
 4. add test cases
 
 
+* investigate best practices for async await
 
-
-* window icon
-* min win size?
-* modal flyouts?
-* add quickcommands for close and show info
-* over time add test cases 
-* progress bar
-
-
-
-typename
-methodname
-10 samples, each sample has :
-execution time 
-args value
-return value
-
-total executiontime
-
-
-error table:
-
-methodname	argvalues	returnvalue	success	errormessage	exectime	
-dowork		x,y,2		32			false	exxc.Message	2ms

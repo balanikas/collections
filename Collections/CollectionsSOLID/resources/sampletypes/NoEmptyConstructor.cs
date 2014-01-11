@@ -1,12 +1,15 @@
 ﻿using System;
 
-[Serializable]
-public class NoEmptyConstructor
+namespace Samples
 {
-    public NoEmptyConstructor(int p1)
+    public class NoEmptyConstructor
     {
+        public NoEmptyConstructor(int p1)
+        {
 
+        }
     }
-}
 
+
+}
 

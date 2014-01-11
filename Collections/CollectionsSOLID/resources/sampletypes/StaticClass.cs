@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CollectionsSOLID.resources.sampletypes
+namespace Samples
 {
     public static class StaticClass
     {

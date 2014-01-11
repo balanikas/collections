@@ -11,7 +11,7 @@ namespace CollectionsSOLID.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            var types = Utils.LoadTypesFromAssembly(@"C:\dev\collections\Collections\CollectionsSOLID\bin\Debug\CollectionsSOLID.dll");
+            var types = Utils.FromAssembly(@"C:\dev\collections\Collections\CollectionsSOLID\bin\Debug\CollectionsSOLID.dll");
 
             
 

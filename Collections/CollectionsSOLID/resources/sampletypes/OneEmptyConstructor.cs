@@ -1,9 +1,12 @@
 ﻿using System;
 
-[Serializable]
-public class OneEmptyConstructor
+namespace Samples
 {
-}
+    public class OneEmptyConstructor
+    {
+    }
 
+
+}
 
 

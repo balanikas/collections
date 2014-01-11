@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace A
+namespace Samples
 {
     namespace B
     {

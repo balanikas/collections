@@ -44,6 +44,7 @@
     <Compile Include="LoadedType.cs" />
     <Compile Include="MethodExecution.cs" />
     <Compile Include="ObjectBehavior.cs" />
+    <Compile Include="resources\sampletypes\MethodInvocations.cs" />
     <Compile Include="RunnerFactory.cs" />
     <Compile Include="resources\sampletypes\AbstractClass.cs" />
     <Compile Include="resources\sampletypes\Accessibility.cs" />

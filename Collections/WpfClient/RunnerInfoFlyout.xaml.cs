@@ -27,8 +27,11 @@ namespace WpfClient
             
             txtType.Text = message.ObjectType.ToString();
             txtExecutionTime.Text = message.ExecutionTime.ToString();
-            txtFailRate.Text =  (((double)message.FailedExecutionsCount / (double)message.ExecutionsCount) * 100) + "%";
+            txtMethod.Text = message.MethodName;
+            var failpercentage = (((double)message.FailedExecutionsCount / (double)message.ExecutionsCount) * 100) + "%";
 
+            txtFailRate.Text = failpercentage + " (" + message.FailedExecutionsCount + "/" + message.ExecutionsCount + ")";
+            txtAvgMethodExecutionTime.Text = message.AvgMethodExecutionTimeInMs + " ms";
         }
         private bool canCloseFlyout;
 

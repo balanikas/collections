@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
+namespace Samples
+{
     public abstract class AbstractClass
     {
         public abstract void Calculate();
@@ -14,4 +15,6 @@ using System.Threading.Tasks;
 
         }
     }
+}
+  
 

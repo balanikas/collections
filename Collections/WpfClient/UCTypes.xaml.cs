@@ -28,7 +28,7 @@ namespace WpfClient
         {
             InitializeComponent();
             
-
+            
         }
 
         public LoadedType SelectedType
@@ -72,32 +72,39 @@ namespace WpfClient
             LoadTypes();
         }
 
-        private void LoadTypes()
+        private async void LoadTypes()
         {
-            var allTypes = new List<LoadedType>();
+            MainWindow.ShowProgressBar();
 
-            if (chkBclTypes.IsChecked == true)
+            var loadBclTypes = chkBclTypes.IsChecked == true;
+            var loadAssemblyTypes = chkFromAssembly.IsChecked == true;
+            var loadFileTypes = chkFromFiles.IsChecked == true;
+
+            var allTypes = new List<LoadedType>();
+            if (loadBclTypes)
             {
-                var types = CollectionsSOLID.Utils.LoadBclTypes();
+                var types = await CollectionsSOLID.Utils.FromBCLAsync();
                 allTypes.AddRange(types);
             }
-            if (chkFromAssembly.IsChecked == true)
+            if (loadAssemblyTypes)
             {
-                var types = CollectionsSOLID.Utils.LoadTypesFromAssembly(txtAssemblyLocation.Text);
+                var types = await CollectionsSOLID.Utils.FromAssemblyAsync(txtAssemblyLocation.Text);
                 allTypes.AddRange(types);
             }
-            if (chkFromFiles.IsChecked == true)
+            if (loadFileTypes)
             {
-                var types = CollectionsSOLID.Utils.LoadTypesFromDisc(txtFolderLocation.Text);
+                var types = await CollectionsSOLID.Utils.FromDiscAsync(txtFolderLocation.Text);
                 allTypes.AddRange(types);
             }
 
 
             lstTypes.ItemsSource = allTypes;
-            if(allTypes.Count > 0)
+            if (allTypes.Count > 0)
             {
                 lstTypes.SelectedIndex = 0;
             }
+            MainWindow.HideProgressBar();
+
         }
 
         private void chkFromAssembly_Unchecked(object sender, RoutedEventArgs e)

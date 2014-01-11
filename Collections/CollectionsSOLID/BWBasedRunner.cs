@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Globalization;
+using System.Collections.Concurrent;
 
 namespace CollectionsSOLID
 {
@@ -21,7 +22,7 @@ namespace CollectionsSOLID
         ILogger _logger;
         Stopwatch _watch;
         Message _lastMessage;
-        List<MethodExecution> _methodExecutions;
+        ConcurrentBag<MethodExecution> _methodExecutions;
         List<IGui> _uiListeners;
 
         public string Id { get; private set; }
@@ -34,7 +35,7 @@ namespace CollectionsSOLID
             _loopCount = loopCount;
             _logger = logger;
             _watch = new Stopwatch();
-            _methodExecutions = new List<MethodExecution>();
+            _methodExecutions = new ConcurrentBag<MethodExecution>();
 
             _bw.WorkerReportsProgress = true;
             _bw.WorkerSupportsCancellation = true;
@@ -113,30 +114,20 @@ namespace CollectionsSOLID
                     break;
                 }
 
+                var beforeExecution = _watch.Elapsed; 
+                methodExecution = _behavior.Update();
+                methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
+
                 if (i % (_loopCount / 10) == 0 || i == _loopCount)
                 {
-                    methodExecution = _behavior.Update();
                     
                     var progressCount = (int)(i / (double)_loopCount * 100);
                     worker.ReportProgress(progressCount, methodExecution);
                 }
-                else
-                {
-                    methodExecution = _behavior.Update();
-                    methodExecution.ExecutionTime = _watch.Elapsed;
-                }
+               
 
                 _methodExecutions.Add(methodExecution);
-                //if(!successfulUpdate)
-                //{
-                //    _logger.Flush();
-                //    if(++errorCount >= 10)
-                //    {
-                //        e.Cancel = true;
-                //        break;
-                //    }
-                //}
-                
+               
                 
             }
             _watch.Stop();
@@ -189,7 +180,7 @@ namespace CollectionsSOLID
 
         public RunSummaryMessage GetState()
         {
-            var msg = new RunSummaryMessage(_behavior.GetObjectType(), _watch.Elapsed, 100, _methodExecutions);
+            var msg = new RunSummaryMessage(_behavior.GetObjectType(), _watch.Elapsed, _methodExecutions);
             return msg;
         }
     }

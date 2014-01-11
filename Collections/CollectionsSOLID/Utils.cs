@@ -20,8 +20,31 @@ namespace CollectionsSOLID
     public static class Utils
     {
        
+        public static async Task<List<LoadedType>> FromDiscAsync(string filePath)
+        {
+            return await Task.Factory.StartNew<List<LoadedType>>(() =>
+            {
+                return FromDisc(filePath);
+            });
+        }
 
-        public static List<LoadedType> LoadTypesFromDisc(string filePath)
+        public static async Task<List<LoadedType>> FromBCLAsync()
+        {
+            return await Task.Factory.StartNew<List<LoadedType>>(() =>
+            {
+                return FromBCL();
+            });
+        }
+
+        public static async Task<List<LoadedType>> FromAssemblyAsync(string filePath)
+        {
+            return await Task.Factory.StartNew<List<LoadedType>>(() =>
+            {
+                return FromAssembly(filePath);
+            });
+        }
+
+        public static List<LoadedType> FromDisc(string filePath)
         {
             bool isEmpty = String.IsNullOrEmpty(filePath);
             bool isValid = filePath.IndexOfAny(Path.GetInvalidPathChars()) == -1;
@@ -71,7 +94,7 @@ namespace CollectionsSOLID
            
         }
 
-        public static List<LoadedType> LoadBclTypes()
+        public static List<LoadedType> FromBCL()
         {
             var data = new List<LoadedType>();
 
@@ -82,7 +105,7 @@ namespace CollectionsSOLID
             return data;
         }
 
-        public static List<LoadedType> LoadTypesFromAssembly(string filePath)
+        public static List<LoadedType> FromAssembly(string filePath)
         {
             var data = new List<LoadedType>();
 

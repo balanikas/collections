@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace ServiceStack
+namespace Samples.ServiceStack
 {
     public static class StringUtils
     {

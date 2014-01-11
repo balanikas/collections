@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
+namespace Samples
+{
     public class Accessibility
     {
         public void PublicCalculate()
@@ -33,4 +34,6 @@ using System.Threading.Tasks;
         }
 
     }
+}
+   
 

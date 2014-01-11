@@ -1,7 +1,9 @@
 ﻿using System;
 
-[Serializable]
-public struct SimpleStruct
+namespace Samples
 {
+    public struct SimpleStruct
+    {
 
+    }
 }

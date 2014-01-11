@@ -2,8 +2,10 @@
 
 using System;
 
-    [Serializable]
-    public class SimpleClass
+namespace Samples
 {
+    public class SimpleClass
+    {
 
+    }
 }

@@ -16,8 +16,8 @@ namespace WpfClient
         {
 
             InitializeComponent();
-
-            var drawTypes = Enum.GetValues(typeof(DrawTypes)).Cast<DrawTypes>();
+            
+            var drawTypes = System.Enum.GetValues(typeof(DrawTypes)).Cast<DrawTypes>();
             cmbGraphics.ItemsSource = drawTypes;
         }
 
