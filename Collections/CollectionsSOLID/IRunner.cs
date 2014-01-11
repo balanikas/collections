@@ -16,7 +16,9 @@ namespace CollectionsSOLID
         void Start();
         void Destroy();
         bool IsAlive();
-        Message GetState();
+        RunSummaryMessage GetState();
+
+        void AddUIListener(IGui listener);
     }
 
 

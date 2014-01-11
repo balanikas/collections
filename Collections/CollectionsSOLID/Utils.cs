@@ -43,7 +43,7 @@ namespace CollectionsSOLID
                 {
                     if (definedType.Name == filePath)
                     {
-                        types.Add(new LoadedType { FilePath = filePath, Source = fileContent, TypeInfo = definedType });
+                        types.Add(new LoadedType { FilePath = filePath, Source = fileContent, TypeInfo = definedType,  IsCompilable = true });
                     }
                 }
                 return types;
@@ -62,7 +62,7 @@ namespace CollectionsSOLID
                 {
                     if(definedType.Name == fileName) //for vb files My.MyApplication is generated...wtf
                     {
-                        types.Add(new LoadedType { FilePath = Path.Combine(filePath,file), Source = fileContent, TypeInfo = definedType});
+                        types.Add(new LoadedType { FilePath = Path.Combine(filePath, file), Source = fileContent, TypeInfo = definedType, IsCompilable = true });
                     }
                 }
                  
@@ -76,8 +76,8 @@ namespace CollectionsSOLID
             var data = new List<LoadedType>();
 
 
-            data.Add(new LoadedType { TypeInfo = typeof(int).GetTypeInfo() , Source = "N/A", FilePath = "N/A"});
-            data.Add(new LoadedType { TypeInfo = typeof(string).GetTypeInfo(), Source = "N/A", FilePath = "N/A" });
+            data.Add(new LoadedType { TypeInfo = typeof(int).GetTypeInfo(), Source = "N/A", FilePath = "N/A", IsCompilable = false });
+            data.Add(new LoadedType { TypeInfo = typeof(string).GetTypeInfo(), Source = "N/A", FilePath = "N/A", IsCompilable = false });
           
             return data;
         }
@@ -119,7 +119,7 @@ namespace CollectionsSOLID
                     {
                         continue;
                     }
-                    data.Add(new LoadedType { TypeInfo = definedType, FilePath = filePath, Source = "N/A" });
+                    data.Add(new LoadedType { TypeInfo = definedType, FilePath = filePath, Source = "N/A" , IsCompilable = false});
                 }
             }
 
@@ -180,10 +180,8 @@ namespace CollectionsSOLID
             return CompileFromSource(source, language);
         }
 
-        public static void CompileAndSaveType(LoadedType type)
+        public static void SaveType(LoadedType type)
         {
-
-            var compilationResults = CompileFromFile(type.FilePath);
 
             if (File.Exists(type.FilePath))
             {
@@ -193,6 +191,22 @@ namespace CollectionsSOLID
             {
                 file.Write(type.Source);
             }
+        }
+
+        public static bool TryCompileFromSource(string source)
+        {
+            try
+            {
+                var compilationResult = CompileFromSource(source);
+            }
+            catch 
+            {
+
+                return false;
+            }
+
+            return true;
+
         }
 
         public static bool MethodsUseSupportedTypes(IEnumerable<MethodInfo> methods)

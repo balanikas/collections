@@ -85,16 +85,16 @@ namespace WpfClient
             catch (Exception e)
             {
                 _logger.ErrorNow(e.Message);
-                var guiMessage = new ErrorMessage(e.Message, 100);
+                //var guiMessage = new ErrorMessage(e.Message, 100);
                 
-                runner = ObjectFactory.Get(Settings.ThreadingType, null, gui, _logger, Settings.Loops);
-                gui.Draw();
-                _runtime.Add(runner);
-                gui.Update(guiMessage);
+                //runner = ObjectFactory.Get(Settings.ThreadingType, null, gui, _logger, Settings.Loops);
+                //gui.Draw();
+                //_runtime.Add(runner);
+                //gui.Update(guiMessage);
                 return;
             }
 
-            runner = ObjectFactory.Get(Settings.ThreadingType, behavior, gui, _logger, Settings.Loops);
+            runner = RunnerFactory.Get(Settings.ThreadingType, behavior, gui, _logger, Settings.Loops);
             
             var ctxMenu = ShapeContextMenu.Get((s, e) => _runtime.Remove(runner.Id), (s,e) => ToggleFlyout(1, _runtime.GetById(runner.Id)));
             ((CustomShape)gui).AddContextMenu(ctxMenu);
@@ -187,7 +187,7 @@ namespace WpfClient
 
             if(flyout is RunnerInfoFlyout && userState != null)
             {
-                ((RunnerInfoFlyout)flyout).AddContent((RunnerMessage)userState.GetState());
+                ((RunnerInfoFlyout)flyout).AddContent((RunSummaryMessage)userState.GetState());
             }
 
             flyout.IsOpen = !flyout.IsOpen;

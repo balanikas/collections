@@ -114,9 +114,11 @@ namespace CollectionsSOLID
                 return _randomizer;
             }
         }
-    
-        public bool Update(ILogger logger)
+
+        public MethodExecution Update()
         {
+            var methodExecution = new MethodExecution();
+
             foreach (MethodInfo method in _methods)
             {
 
@@ -125,66 +127,42 @@ namespace CollectionsSOLID
                 {
                     var paramValue = Randomizer.RandomizeParamValue(p.ParameterType.Name);
                     parameters.Add(paramValue);
+                    
                 }
+
+                methodExecution.Name = method.Name;
+                methodExecution.ArgsValues.Add(parameters);
+                
 
                 try
                 {
                     var result = method.Invoke(_objectInstance, parameters.ToArray());
+                    methodExecution.ReturnValue = result;
+                    methodExecution.Success = true;
+                    
+                    
                 }
                 catch (System.Exception e)
                 {
+                    methodExecution.Success = false;
+                    
                     var errorMsg = e.InnerException != null ? e.InnerException.Message : e.Message;
-                    logger.Error(errorMsg);
-                    return false;
+         
+                    methodExecution.ErrorMessage = errorMsg;
+
+                    
                 }
                 
             }
 
-            return true;
+            return methodExecution;
         }
 
-        public bool UpdateAndLog(ILogger logger)
-        {
-            foreach (MethodInfo method in _methods)
-            {
-                var parameters = new List<object>();
-                foreach (var p in method.GetParameters())
-                {
-                    var paramValue = Randomizer.RandomizeParamValue(p.ParameterType.Name);
-                    parameters.Add(paramValue);
-                }
-
-                object result;
-                try
-                {
-                    result = method.Invoke(_objectInstance, parameters.ToArray());
-                    var methodToWrite = "CALLED: " + method.ToString();
-                    var paramsToWrite = "ARGS: " + String.Join(",", parameters.ToArray());
-                    var returnValueToWrite = "RETURNED: " + result;
-                    var message = methodToWrite +"," + paramsToWrite + "," + returnValueToWrite;
-                    logger.Info(message);
-                }
-                catch (System.Exception e)
-                {
-                    var errorMsg = e.InnerException != null ? e.InnerException.Message : e.Message;
-                    logger.Error(errorMsg);
-                    return false;
-                }
-
-                
-            }
-
-            return true;
-        }
 
         public Type GetObjectType()
         {
             return _objectType;
         }
 
-        public Type GetCollectionType()
-        {
-            return _objectType;
-        }
     }
 }

@@ -11,7 +11,7 @@ namespace CollectionsSOLID
         BackgroundWorkerBased,
         ParallelTaskBased
     }
-    public static class ObjectFactory
+    public static class RunnerFactory
     {
 
 

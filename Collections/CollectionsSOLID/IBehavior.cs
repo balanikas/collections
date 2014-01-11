@@ -9,14 +9,10 @@ namespace CollectionsSOLID
 {
     public interface IBehavior
     {
-        bool Update(ILogger logger);
+        MethodExecution Update();
 
-        bool UpdateAndLog(ILogger logger);
         Type GetObjectType();
-        Type GetCollectionType();
-      
-
-
+       
 
     }
 

@@ -8,28 +8,19 @@ using CollectionsSOLID;
 namespace WpfClient
 {
 
-    public partial class RunnerInfoFlyout : Flyout, INotifyPropertyChanged
+    public partial class AboutFlyout : Flyout, INotifyPropertyChanged
     {
 
 
-        public RunnerInfoFlyout()
+        public AboutFlyout()
         {
 
             InitializeComponent();
-
-        }
-        public void AddContent(RunSummaryMessage message)
-        {
-            if(message == null)
-            {
-                return;
-            }
             
-            txtType.Text = message.ObjectType.ToString();
-            txtExecutionTime.Text = message.ExecutionTime.ToString();
-            txtFailRate.Text =  (((double)message.FailedExecutionsCount / (double)message.ExecutionsCount) * 100) + "%";
-
         }
+
+     
+
         private bool canCloseFlyout;
 
         public bool CanCloseFlyout
@@ -71,5 +62,6 @@ namespace WpfClient
         }
 
 
+    
     }
 }

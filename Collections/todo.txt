@@ -25,11 +25,7 @@ USE CASES:
 
 
 
-* exaclty what info is interesting? expand on the info data, collect more stats...
 
-1. type
-2. method
-3. params
 
 
 1. test utility classes
@@ -52,5 +48,43 @@ per update
 
 
 * optimize reflection
+
+
+
+
+
+
+
+--------------------- snow in january ------------------------
+4 major things: 
+1. Optimize reflection
+2. fix GUI, UX, etc
+3. What info to be presented..stats?
+4. add test cases
+
+
+
+
+* window icon
+* min win size?
+* modal flyouts?
 * add quickcommands for close and show info
-* text must show in shape immediately
+* over time add test cases 
+* progress bar
+
+
+
+typename
+methodname
+10 samples, each sample has :
+execution time 
+args value
+return value
+
+total executiontime
+
+
+error table:
+
+methodname	argvalues	returnvalue	success	errormessage	exectime	
+dowork		x,y,2		32			false	exxc.Message	2ms

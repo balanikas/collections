@@ -39,19 +39,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorMessage.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="LoadedType.cs" />
+    <Compile Include="MethodExecution.cs" />
     <Compile Include="ObjectBehavior.cs" />
-    <Compile Include="ObjectFactory.cs" />
-    <Compile Include="CollectionBehavior.cs" />
+    <Compile Include="RunnerFactory.cs" />
     <Compile Include="resources\sampletypes\AbstractClass.cs" />
     <Compile Include="resources\sampletypes\Accessibility.cs" />
     <Compile Include="resources\sampletypes\Boxing.cs" />
+    <Compile Include="resources\sampletypes\Loops.cs" />
     <Compile Include="resources\sampletypes\ManyConstructors.cs" />
     <Compile Include="resources\sampletypes\NonStaticClassWithStaticMembers.cs" />
     <Compile Include="resources\sampletypes\StaticClass.cs" />
     <Compile Include="resources\sampletypes\StringUtils.cs" />
-    <Compile Include="RunnerMessage.cs" />
+    <Compile Include="UIMessage.cs" />
+    <Compile Include="RunSummaryMessage.cs" />
     <Compile Include="Runtime.cs" />
     <Compile Include="IBehavior.cs" />
     <Compile Include="IRunner.cs" />

@@ -16,22 +16,25 @@ namespace CollectionsSOLID
     public class BWBasedRunner : IRunner
     {
         private IBehavior _behavior;
-        private IGui _gui;
         private BackgroundWorker _bw = new BackgroundWorker();
         int _loopCount;
         ILogger _logger;
         Stopwatch _watch;
         Message _lastMessage;
+        List<MethodExecution> _methodExecutions;
+        List<IGui> _uiListeners;
+
         public string Id { get; private set; }
 
         public BWBasedRunner(IBehavior behavior, IGui gui, ILogger logger, int loopCount = 1000000 )
         {
+            _uiListeners = new List<IGui>();
 
-            _gui = gui;
             _behavior = behavior;
             _loopCount = loopCount;
             _logger = logger;
             _watch = new Stopwatch();
+            _methodExecutions = new List<MethodExecution>();
 
             _bw.WorkerReportsProgress = true;
             _bw.WorkerSupportsCancellation = true;
@@ -40,14 +43,24 @@ namespace CollectionsSOLID
             _bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
 
             Id =  Guid.NewGuid().ToString();
-            _gui.Id = Id;
+            gui.Id = Id;
+            _uiListeners.Add(gui);
         }
 
-
+        public void AddUIListener(IGui listener)
+        {
+            if(!_uiListeners.Contains(listener))
+            {
+                _uiListeners.Add(listener);
+            }
+        }
 
         public void Start()
         {
-            _gui.Draw();
+            foreach (var listener in _uiListeners)
+            {
+                listener.Draw();
+            }
 
             if (_bw.IsBusy != true)
             {
@@ -61,7 +74,10 @@ namespace CollectionsSOLID
         public void Destroy()
         {
             _bw.CancelAsync();
-            _gui.Destroy();
+            foreach (var listener in _uiListeners)
+            {
+                listener.Destroy();
+            }
         }
 
         public bool IsAlive()
@@ -81,14 +97,16 @@ namespace CollectionsSOLID
 
             BackgroundWorker worker = sender as BackgroundWorker;
 
-            int errorCount = 0;
-            bool successfulUpdate;
            
             _watch.Start();
-            worker.ReportProgress(0);
+
+            var methodExecution = new MethodExecution();
+            worker.ReportProgress(0, methodExecution);
 
             for (int i = 1; i <= _loopCount; i++)
             {
+                
+
                 if (worker.CancellationPending)
                 {
                     e.Cancel = true;
@@ -97,29 +115,32 @@ namespace CollectionsSOLID
 
                 if (i % (_loopCount / 10) == 0 || i == _loopCount)
                 {
-                    successfulUpdate = _behavior.UpdateAndLog(_logger);
-
+                    methodExecution = _behavior.Update();
+                    
                     var progressCount = (int)(i / (double)_loopCount * 100);
-                    worker.ReportProgress(progressCount);
+                    worker.ReportProgress(progressCount, methodExecution);
                 }
                 else
                 {
-                    successfulUpdate = _behavior.Update(_logger);
+                    methodExecution = _behavior.Update();
+                    methodExecution.ExecutionTime = _watch.Elapsed;
                 }
 
-                if(!successfulUpdate)
-                {
-                    _logger.Flush();
-                    if(++errorCount >= 10)
-                    {
-                        e.Cancel = true;
-                        break;
-                    }
-                }
+                _methodExecutions.Add(methodExecution);
+                //if(!successfulUpdate)
+                //{
+                //    _logger.Flush();
+                //    if(++errorCount >= 10)
+                //    {
+                //        e.Cancel = true;
+                //        break;
+                //    }
+                //}
                 
                 
             }
             _watch.Stop();
+            var c = _methodExecutions.Where(x => x.Success == false);
         }
 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -127,11 +148,17 @@ namespace CollectionsSOLID
             _logger.Flush();
             if ((e.Cancelled == true))
             {
-                _gui.Destroy();
+                foreach (var listener in _uiListeners)
+                {
+                    listener.Destroy();
+                }
             }
             else if (e.Error != null)
             {
-                _gui.Destroy();
+                foreach (var listener in _uiListeners)
+                {
+                    listener.Destroy();
+                }
             }
             else
             {
@@ -145,21 +172,25 @@ namespace CollectionsSOLID
 
             ObjectState state = e.ProgressPercentage == 100 ? ObjectState.Finished : ObjectState.Running;
 
-            _lastMessage = new RunnerMessage(
+            var methodExecution = e.UserState as MethodExecution;
+
+            _lastMessage = new UIMessage(
                        _behavior.GetObjectType(),
-                       _behavior.GetCollectionType(),
+                       methodExecution.Name,
                        _watch.Elapsed,
                        e.ProgressPercentage,
-                       1 * e.ProgressPercentage,
                        state);
-
-            _gui.Update(_lastMessage);
-
+            foreach (var listener in _uiListeners)
+            {
+                listener.Update(_lastMessage);
+            }
+            
         }
 
-        public Message GetState()
+        public RunSummaryMessage GetState()
         {
-            return _lastMessage;
+            var msg = new RunSummaryMessage(_behavior.GetObjectType(), _watch.Elapsed, 100, _methodExecutions);
+            return msg;
         }
     }
 }

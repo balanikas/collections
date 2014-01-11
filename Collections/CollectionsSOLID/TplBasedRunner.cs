@@ -11,28 +11,42 @@ namespace CollectionsSOLID
     class TplBasedRunner : IRunner
     {
         IBehavior _behavior;
-        IGui _gui;
         int _loopCount;
         CancellationTokenSource _cts;
         Task _task;
         ILogger _logger;
+        List<IGui> _uiListeners;
         public string Id { get; private set; }
         public TplBasedRunner(IBehavior behavior, IGui gui,ILogger logger, int loopCount = 1000000)
         {
-
-            _gui = gui;
+            _uiListeners = new List<IGui>();
+            
             _behavior = behavior;
             _loopCount = loopCount;
             _logger = logger;
             _cts = new CancellationTokenSource();
 
             Id = Guid.NewGuid().ToString();
-            _gui.Id = Id;
+            gui.Id = Id;
+
+          
+            _uiListeners.Add(gui);
+        }
+        public void AddUIListener(IGui listener)
+        {
+            if (!_uiListeners.Contains(listener))
+            {
+                _uiListeners.Add(listener);
+            }
         }
 
          public void Start()
         {
-            _gui.Draw();
+            foreach (var listener in _uiListeners)
+            {
+                listener.Draw();
+            }
+            
 
 
             _task = Task.Factory.StartNew(() =>
@@ -76,16 +90,17 @@ namespace CollectionsSOLID
 
              for (int i = 1; (i <= _loopCount); i++)
              {
+
                  CancellationToken ct = _cts.Token;
                  ct.ThrowIfCancellationRequested();
-                 
 
+                 MethodExecution methodExecution;
                
 
                 //check if end of loop, or check every now and then
                 if (i % ( _loopCount / 10) == 0 || i == _loopCount)
                 {
-                    _behavior.UpdateAndLog(_logger);
+                    methodExecution = _behavior.Update();
 
                     ObjectState state = ObjectState.Running;
                     if (i == _loopCount)
@@ -98,19 +113,21 @@ namespace CollectionsSOLID
                     var progressCount = (int)(i / (double)_loopCount * 100);
                     _logger.Info(Id + ": " + progressCount.ToString());
 
-                    var msg = new RunnerMessage(
+                    var msg = new UIMessage(
                         _behavior.GetObjectType(), 
-                        _behavior.GetCollectionType(), 
+                        methodExecution.Name,
                         watch.Elapsed,
                         progressCount, 
-                        sizeOfObject * i,
                         state);
 
-                    _gui.Update(msg);
+                    foreach (var listener in _uiListeners)
+                    {
+                        listener.Update(msg);
+                    }
                 }
                 else
                 {
-                    _behavior.Update(_logger);
+                    _behavior.Update();
                 }
 
                  
@@ -121,7 +138,10 @@ namespace CollectionsSOLID
         public void Destroy()
         {
             _cts.Cancel();
-            _gui.Destroy();
+            foreach (var listener in _uiListeners)
+            {
+                listener.Destroy();
+            }
         }
 
         public bool IsAlive()
@@ -135,7 +155,7 @@ namespace CollectionsSOLID
         }
 
 
-        public Message GetState()
+        public RunSummaryMessage GetState()
         {
             return null;
         }

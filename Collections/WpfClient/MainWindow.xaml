@@ -39,7 +39,7 @@
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
 
-            <local:SettingsFlyout Header="Settings" Position="Right" CanCloseFlyout="True" />
+            <local:SettingsFlyout Header="Settings" Position="Right" Width="500" CanCloseFlyout="True" />
             <local:RunnerInfoFlyout Header="Info" Position="Bottom" Width="500" CanCloseFlyout="True" />
             <local:AboutFlyout Header="About" Position="Right" Width="500"  CanCloseFlyout="True" />
         </Controls:FlyoutsControl>
@@ -57,14 +57,34 @@
 
 
 
+        <Grid Grid.Column="0" DockPanel.Dock="Left" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+            <StackPanel >
+                
+                <Button Content="Clear" Click="btnStop_Click"   VerticalAlignment="Top"/>
+                <local:UCTypes Grid.Column="0" x:Name="ucTypes"   />
+            </StackPanel>
+        </Grid>
+        
+        
+        <GridSplitter Grid.Column="1"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Stretch"
+              Background="Black" 
+              ShowsPreview="True"
+              Width="5"
+              />
 
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Width="658">
-          
-            <Button Content="Clear" Click="btnStop_Click"   VerticalAlignment="Top"/>
-            <local:UCTypes Grid.Column="0" x:Name="ucTypes" HorizontalAlignment="Left"   DockPanel.Dock="Left"/>
-        </StackPanel>
+        <Grid Grid.Column="2" DockPanel.Dock="Right" x:Name="gridGameArea"   >
 
 
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+
+        </Grid>
 
         <WrapPanel HorizontalAlignment="Left" Height="43" Margin="26,902,0,0" VerticalAlignment="Top" Width="119" Visibility="Hidden">
 
@@ -92,29 +112,6 @@
                 </ListView.View>
             </ListView>
         </WrapPanel>
-
-       
-
-        <GridSplitter Grid.Column="1"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Stretch"
-              Background="Black" 
-              ShowsPreview="True"
-              Width="5"
-              />
-
-        <Grid Grid.Column="2" DockPanel.Dock="Right" x:Name="gridGameArea"   >
-
-
-            <Grid.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="0"/>
-                    <GradientStop Color="White" Offset="1"/>
-                </LinearGradientBrush>
-            </Grid.Background>
-
-        </Grid>
-
 
 
 

@@ -140,6 +140,9 @@ namespace WpfClient
             {
                 lstMethods.SelectedIndex = 0;
             }
+
+            btnCompile.IsEnabled = selectedType.IsCompilable;
+            avalonEdit.IsEnabled = selectedType.IsCompilable;
         }
 
         private void btnCompile_Click(object sender, RoutedEventArgs e)
@@ -149,10 +152,18 @@ namespace WpfClient
                 return;
             }
             var type = (LoadedType)lstTypes.SelectedItem;
-           
-            CollectionsSOLID.Utils.CompileAndSaveType(new LoadedType {  FilePath = type.FilePath, Source = avalonEdit.Text, TypeInfo = type.TypeInfo});
 
-            LoadTypes();
+            if (CollectionsSOLID.Utils.TryCompileFromSource(avalonEdit.Text))
+            {
+                CollectionsSOLID.Utils.SaveType(new LoadedType { FilePath = type.FilePath, Source = avalonEdit.Text, TypeInfo = type.TypeInfo });
+
+                LoadTypes();
+            }
+            else
+            {
+                MessageBox.Show("Compilation error");
+            }
+           
         }
 
         private void SetCodeText(string source)

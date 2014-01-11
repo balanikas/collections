@@ -8,11 +8,12 @@
     <Grid>
         <StackPanel>
             <Grid>
-                <CheckBox Grid.Column="0" Grid.Row="0" x:Name="chkBclTypes" Content="Bcl types" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top" Checked="chkBclTypes_Checked" Unchecked="chkBclTypes_Unchecked" Height="18" Width="91"/>
-                <CheckBox Grid.Column="0" Grid.Row="1" x:Name="chkFromFiles" Content="From folder" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top" Checked="chkFromFiles_Checked" Unchecked="chkFromFiles_Unchecked" Height="19" Width="110"/>
-                <CheckBox Grid.Column="0" Grid.Row="2" x:Name="chkFromAssembly" Content="From assembly" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top" Checked="chkFromAssembly_Checked" Unchecked="chkFromAssembly_Unchecked" Height="20" Width="131"/>
-                <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtFolderLocation" HorizontalAlignment="Left" Height="26" Margin="146,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="452" Text="C:\Users\grillo\Documents\GitHub\collections\Collections\CollectionsSOLID\resources\publicsampletypes"/>
-                <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtAssemblyLocation" HorizontalAlignment="Left" Height="26" Margin="146,77,0,0" TextWrapping="Wrap" Text="C:\dev\collections\Collections\CollectionsSOLID\bin\Debug\CollectionsSOLID.dll" VerticalAlignment="Top" Width="452"/>
+               
+                <CheckBox Grid.Column="0" Grid.Row="1" x:Name="chkBclTypes" Content="Bcl types" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top" Checked="chkBclTypes_Checked" Unchecked="chkBclTypes_Unchecked" Height="18" Width="91"/>
+                <CheckBox Grid.Column="0" Grid.Row="2" x:Name="chkFromFiles" Content="From folder" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top" Checked="chkFromFiles_Checked" Unchecked="chkFromFiles_Unchecked" Height="19" Width="110"/>
+                <CheckBox Grid.Column="0" Grid.Row="3" x:Name="chkFromAssembly" Content="From assembly" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top" Checked="chkFromAssembly_Checked" Unchecked="chkFromAssembly_Unchecked" Height="20" Width="131"/>
+                <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtFolderLocation" HorizontalAlignment="Left" Height="26" Margin="146,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="452" Text="C:\Users\grillo\Documents\GitHub\collections\Collections\CollectionsSOLID\resources\publicsampletypes"/>
+                <TextBox Grid.Column="1" Grid.Row="2" x:Name="txtAssemblyLocation" HorizontalAlignment="Left" Height="26" Margin="146,77,0,0" TextWrapping="Wrap" Text="C:\dev\collections\Collections\CollectionsSOLID\bin\Debug\CollectionsSOLID.dll" VerticalAlignment="Top" Width="452"/>
 
 
             </Grid>
