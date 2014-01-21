@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using CollectionsSOLID;
 
 namespace WpfClient
 {
@@ -65,7 +66,7 @@ namespace WpfClient
             _grid.Visibility = Visibility.Visible;
         }
 
-        public virtual void Update(CollectionsSOLID.Message msg)
+        public virtual void Update(UIMessage uiMessage)
         {
 
         }

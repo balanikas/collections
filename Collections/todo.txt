@@ -39,18 +39,6 @@ USE CASES:
 2. boxing/unboxing
 3. other (google it)
 
-* 
-more stats:
-per update
-1. minimum time elapsed
-2. max time elapsed
-3. avg time elapsed
-
-
-* optimize reflection
-
-
-
 
 
 
@@ -59,9 +47,33 @@ per update
 4 major things: 
 1. Optimize reflection
 2. fix GUI, UX, etc
-3. What info to be presented..stats?
 4. add test cases
 
 
 * investigate best practices for async await
 
+modes:
+
+Explore
+* load assemblies, code files
+* see and modify code (when code files are loaded)
+* run methods (when params are present and they are supported random arg values are generated for each run)
+* instantiate classes
+* a param may be supported if that type is provided and can be easily get a random value. for example void Add(MyType x) may work 
+with reflection. Reflection the item can be instantiated, but if it is a complex object then it will be hard to generate a random such...
+* user can see how long it takes to run something, min, max, avg values, successrate, log of what went wrong, log of random runs.
+
+
+Collections
+* load assemblies, code files ( to be used as ammo)
+* 
+* 
+
+Play
+* some game where the goal for the user is to learn programming, algorithms and data structures AND to be fun and challenging. maybe online competition
+
+
+--------------
+
+* pre jit stuff for more correct results
+* can own code output to Console? would be nice

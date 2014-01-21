@@ -44,7 +44,18 @@
     <Compile Include="LoadedType.cs" />
     <Compile Include="MethodExecution.cs" />
     <Compile Include="ObjectBehavior.cs" />
+    <Compile Include="resources\sampletypes\Arrays.cs" />
+    <Compile Include="resources\sampletypes\CheckForEmptyString.cs" />
+    <Compile Include="resources\sampletypes\Conditionals.cs" />
+    <Compile Include="resources\sampletypes\Exceptions.cs" />
+    <Compile Include="resources\sampletypes\GenericClass.cs" />
+    <Compile Include="resources\sampletypes\GenericMethods.cs" />
     <Compile Include="resources\sampletypes\MethodInvocations.cs" />
+    <Compile Include="resources\sampletypes\NewOperator.cs" />
+    <Compile Include="resources\sampletypes\Search.cs" />
+    <Compile Include="resources\sampletypes\Sort.cs" />
+    <Compile Include="resources\sampletypes\StringComparison.cs" />
+    <Compile Include="resources\sampletypes\TypeCasting.cs" />
     <Compile Include="RunnerFactory.cs" />
     <Compile Include="resources\sampletypes\AbstractClass.cs" />
     <Compile Include="resources\sampletypes\Accessibility.cs" />
@@ -54,6 +65,7 @@
     <Compile Include="resources\sampletypes\NonStaticClassWithStaticMembers.cs" />
     <Compile Include="resources\sampletypes\StaticClass.cs" />
     <Compile Include="resources\sampletypes\StringUtils.cs" />
+    <Compile Include="TypesLoader.cs" />
     <Compile Include="UIMessage.cs" />
     <Compile Include="RunSummaryMessage.cs" />
     <Compile Include="Runtime.cs" />

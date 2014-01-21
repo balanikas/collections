@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CollectionsSOLID
 {
@@ -36,6 +34,7 @@ namespace CollectionsSOLID
         {
             if (!_uiListeners.Contains(listener))
             {
+                listener.Id = Id;
                 _uiListeners.Add(listener);
             }
         }
@@ -115,7 +114,7 @@ namespace CollectionsSOLID
 
                     var msg = new UIMessage(
                         _behavior.GetObjectType(), 
-                        methodExecution.Name,
+                        methodExecution,
                         watch.Elapsed,
                         progressCount, 
                         state);

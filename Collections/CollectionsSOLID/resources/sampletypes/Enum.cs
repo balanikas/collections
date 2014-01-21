@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Samples
+﻿namespace Samples
 {
     public enum Enum
     {

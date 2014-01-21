@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
 
 namespace CollectionsSOLID
 {
@@ -17,7 +14,9 @@ namespace CollectionsSOLID
         public int ExecutionsCount { get; private set; }
         public int FailedExecutionsCount { get; private set; }
 
+        public double MaxMethodExecutionTime { get; private set; }
 
+        public double MinMethodExecutionTime { get; private set; }
 
         public RunSummaryMessage(Type objectType, TimeSpan timeElapsed, IEnumerable<MethodExecution> methodExecutions)
         {
@@ -30,11 +29,20 @@ namespace CollectionsSOLID
 
         private void Summarize(IEnumerable<MethodExecution> methodExecutions)
         {
-            AvgMethodExecutionTimeInMs = methodExecutions.Average(x => x.ExecutionTime.TotalMilliseconds);
-            ExecutionsCount = methodExecutions.Count();
-            FailedExecutionsCount = methodExecutions.Where(x => !x.Success).Count();
-            MethodName = methodExecutions.First().Name;
+            var items = methodExecutions.ToList();
+            if (!items.Any())
+            {
+                return;
+            }
+            AvgMethodExecutionTimeInMs = items.Average(x => x.ExecutionTime.TotalMilliseconds);
+            MinMethodExecutionTime = items.Min(x => x.ExecutionTime.TotalMilliseconds);
+            MaxMethodExecutionTime = items.Max(x => x.ExecutionTime.TotalMilliseconds);
+            ExecutionsCount = items.Count();
+            FailedExecutionsCount = items.Count(x => !x.Success);
+            MethodName = items.First().Name;
             
         }
+
+      
     }
 }

@@ -42,6 +42,8 @@ namespace WpfClient
             _runtime = new Runtime();
             
             _runtime.Start();
+
+            new Samples.Sort().BubbleSort();
         }
 
         public static void ShowProgressBar()
@@ -104,7 +106,7 @@ namespace WpfClient
 
             runner = RunnerFactory.Get(Settings.ThreadingType, behavior, gui, _logger, Settings.Loops);
             
-            var ctxMenu = ShapeContextMenu.Get((s, e) => _runtime.Remove(runner.Id), (s,e) => ToggleFlyout(1, _runtime.GetById(runner.Id)));
+            var ctxMenu = ShapeContextMenu.Get((s, e) => _runtime.Remove(runner.Id), (s,e) => ToggleFlyout(1, _runtime.GetById(runner.Id),true));
             ((CustomShape)gui).AddContextMenu(ctxMenu);
 
             _runtime.Add(runner);
@@ -185,7 +187,7 @@ namespace WpfClient
         }
 
 
-        private void ToggleFlyout(int index, IRunner userState = null)
+        private void ToggleFlyout(int index, IRunner userState = null, bool keepOpenIfOpened = false)
         {
             var flyout = this.Flyouts.Items[index] as Flyout;
             if (flyout == null)
@@ -195,10 +197,17 @@ namespace WpfClient
 
             if(flyout is RunnerInfoFlyout && userState != null)
             {
-                ((RunnerInfoFlyout)flyout).AddContent((RunSummaryMessage)userState.GetState());
+                ((RunnerInfoFlyout)flyout).AddContent(userState.GetState());
             }
-
-            flyout.IsOpen = !flyout.IsOpen;
+            if (keepOpenIfOpened)
+            {
+                flyout.IsOpen = true;
+            }
+            else
+            {
+                flyout.IsOpen = !flyout.IsOpen;
+            }
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

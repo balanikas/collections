@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Microsoft.Expression.Media.Effects;
 
 namespace WpfClient
 {
@@ -57,16 +58,22 @@ namespace WpfClient
             _ellipse.Opacity = 0.7;
         }
 
-        public override void Update(CollectionsSOLID.Message msg)
+        public override void Update(CollectionsSOLID.UIMessage msg)
         {
             _ellipse.Dispatcher.BeginInvoke((new Action(delegate()
             {
                 _label.Content = msg.ToString();
                 if (msg.Progress >= 100)
                 {
-
+                   
                     Freeze();
                 }
+
+                if (!msg.MethodExecution.Success)
+                {
+                    _animationsHelper.AddPixelation(_ellipse, 0.01);
+                }
+                
 
             })));
 

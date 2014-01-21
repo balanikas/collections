@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Microsoft.Expression.Media.Effects;
 
 namespace WpfClient
 {
@@ -56,7 +57,7 @@ namespace WpfClient
             //_rect.Fill = new SolidColorBrush(Colors.Gray);
             _rect.Opacity = 0.7;
         }
-        public override void Update(CollectionsSOLID.Message i)
+        public override void Update(CollectionsSOLID.UIMessage i)
         {
             _rect.Dispatcher.BeginInvoke((new Action(delegate()
             {
@@ -64,6 +65,10 @@ namespace WpfClient
                 if(i.Progress >= 100)
                 {
                     Freeze();
+                }
+                if (!i.MethodExecution.Success)
+                {
+                    _animationsHelper.AddPixelation(_rect,0.01);
                 }
               
             })));

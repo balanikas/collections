@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.Threading;
-using System.Text.RegularExpressions;
 
 namespace Samples
 {

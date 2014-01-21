@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CollectionsSOLID;
-using ColorCode;
 
 
 namespace WpfClient
@@ -83,17 +82,17 @@ namespace WpfClient
             var allTypes = new List<LoadedType>();
             if (loadBclTypes)
             {
-                var types = await CollectionsSOLID.Utils.FromBCLAsync();
+                var types = await TypesLoader.FromBCLAsync();
                 allTypes.AddRange(types);
             }
             if (loadAssemblyTypes)
             {
-                var types = await CollectionsSOLID.Utils.FromAssemblyAsync(txtAssemblyLocation.Text);
+                var types = await TypesLoader.FromAssemblyAsync(txtAssemblyLocation.Text);
                 allTypes.AddRange(types);
             }
             if (loadFileTypes)
             {
-                var types = await CollectionsSOLID.Utils.FromDiscAsync(txtFolderLocation.Text);
+                var types = await TypesLoader.FromDiscAsync(txtFolderLocation.Text);
                 allTypes.AddRange(types);
             }
 
@@ -160,9 +159,9 @@ namespace WpfClient
             }
             var type = (LoadedType)lstTypes.SelectedItem;
 
-            if (CollectionsSOLID.Utils.TryCompileFromSource(avalonEdit.Text))
+            if (CollectionsSOLID.TypesLoader.TryCompileFromSource(avalonEdit.Text))
             {
-                CollectionsSOLID.Utils.SaveType(new LoadedType { FilePath = type.FilePath, Source = avalonEdit.Text, TypeInfo = type.TypeInfo });
+                CollectionsSOLID.TypesLoader.SaveType(new LoadedType { FilePath = type.FilePath, Source = avalonEdit.Text, TypeInfo = type.TypeInfo });
 
                 LoadTypes();
             }

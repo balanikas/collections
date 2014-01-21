@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CollectionsSOLID
 {
@@ -16,6 +12,7 @@ namespace CollectionsSOLID
 
         public Runtime()
         {
+           
             _gObjects = new Dictionary<string, IRunner>();
             _cts = new CancellationTokenSource();
 
@@ -41,7 +38,7 @@ namespace CollectionsSOLID
 
             _isRunning = true;
 
-        
+            
         }
 
         public void Clear()

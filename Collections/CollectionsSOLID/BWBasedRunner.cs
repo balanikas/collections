@@ -1,15 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using System.Reflection;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading;
 using System.Globalization;
-using System.Collections.Concurrent;
+using System.Linq;
+using System.Threading;
 
 namespace CollectionsSOLID
 {
@@ -21,7 +17,7 @@ namespace CollectionsSOLID
         int _loopCount;
         ILogger _logger;
         Stopwatch _watch;
-        Message _lastMessage;
+        UIMessage _lastMessage;
         ConcurrentBag<MethodExecution> _methodExecutions;
         List<IGui> _uiListeners;
 
@@ -52,6 +48,7 @@ namespace CollectionsSOLID
         {
             if(!_uiListeners.Contains(listener))
             {
+                listener.Id = Id;
                 _uiListeners.Add(listener);
             }
         }
@@ -118,7 +115,7 @@ namespace CollectionsSOLID
                 methodExecution = _behavior.Update();
                 methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
 
-                if (i % (_loopCount / 10) == 0 || i == _loopCount)
+                if (i % (_loopCount / 10) == 0 || i == _loopCount || !methodExecution.Success)
                 {
                     
                     var progressCount = (int)(i / (double)_loopCount * 100);
@@ -131,7 +128,7 @@ namespace CollectionsSOLID
                 
             }
             _watch.Stop();
-            var c = _methodExecutions.Where(x => x.Success == false);
+            
         }
 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -167,7 +164,7 @@ namespace CollectionsSOLID
 
             _lastMessage = new UIMessage(
                        _behavior.GetObjectType(),
-                       methodExecution.Name,
+                       methodExecution,
                        _watch.Elapsed,
                        e.ProgressPercentage,
                        state);

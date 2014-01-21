@@ -32,6 +32,8 @@ namespace WpfClient
 
             txtFailRate.Text = failpercentage + " (" + message.FailedExecutionsCount + "/" + message.ExecutionsCount + ")";
             txtAvgMethodExecutionTime.Text = message.AvgMethodExecutionTimeInMs + " ms";
+            txtMinMethodExecutionTime.Text = message.MinMethodExecutionTime + " ms";
+            txtMaxMethodExecutionTime.Text = message.MaxMethodExecutionTime + " ms";
         }
         private bool canCloseFlyout;
 

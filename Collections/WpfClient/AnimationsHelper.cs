@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows;
+using Microsoft.Expression.Media.Effects;
 
 namespace WpfClient
 {
@@ -67,19 +68,34 @@ namespace WpfClient
 
         public void AddColorAnimation(FrameworkElement el, TimeSpan duration, Color from, Color to)
         {
-
             var colorAnimation = new ColorAnimation()
             {
                 From = from,
                 To = to,
                 Duration = duration
             };
-           
+
             _storyboard.Children.Add(colorAnimation);
             Storyboard.SetTargetProperty(colorAnimation, new PropertyPath("(" + el.GetType().Name + ".Fill).(SolidColorBrush.Color)"));
             Storyboard.SetTarget(colorAnimation, el);
 
             _storyboard.Begin(el, true);
+        }
+
+        public void AddPixelation(FrameworkElement el, double pixelation)
+        {
+
+            var pixelateEffect = el.Effect as PixelateEffect;
+            if (pixelateEffect == null)
+            {
+                pixelateEffect = new PixelateEffect{Pixelation = 0};
+                el.Effect = pixelateEffect;
+            }
+            if (pixelateEffect.Pixelation <= 0.8)
+            {
+                pixelateEffect.Pixelation += pixelation;
+            }
+           
         }
 
     }
