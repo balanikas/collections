@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="WpfClient.Views.ExploreMode"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:wpfClient="clr-namespace:WpfClient"
+
+      mc:Ignorable="d" 
+      d:DesignHeight="800" d:DesignWidth="1200"
+	>
+
+    <Grid >
+
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+
+      
+        <DockPanel Grid.Column="0" Grid.Row="0"  LastChildFill="True">
+            <Button Content="Clear" Click="btnStop_Click"   DockPanel.Dock="Top">
+            </Button>
+
+            <wpfClient:UCTypes x:Name="ucTypes"    />
+
+        </DockPanel>
+     
+
+        <GridSplitter Grid.Column="1" Grid.Row="0"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Stretch"
+              Background="Black" 
+              ShowsPreview="True"
+              Width="5"
+              />
+        <Canvas Grid.Column="2" Grid.Row="0"  x:Name="Canvas">
+            <Canvas.Background>
+                <ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/canvas_background.jpg" TileMode="Tile"/>
+            </Canvas.Background>
+
+        </Canvas>
+      
+
+        <!--<WrapPanel Grid.Row="1" HorizontalAlignment="Left" Height="43" Margin="26,902,0,0" VerticalAlignment="Top" Width="119" Visibility="Hidden">
+
+            <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstCollectionTypes" HorizontalAlignment="Left" Height="98" VerticalAlignment="Top" Width="193" RenderTransformOrigin="0.5,0.5" SelectedIndex="0" FontSize="16" SelectionChanged="lstCollectionTypes_SelectionChanged" SelectionMode="Single">
+                <ListView.View>
+                    <GridView AllowsColumnReorder="False">
+                        <GridViewColumn  Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
+                    		DisplayMemberBinding="{Binding Key}" Header="COLLECTIONS"  />
+
+                    </GridView>
+                </ListView.View>
+
+
+
+
+            </ListView>
+            <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstActions" HorizontalAlignment="Left" Height="56" VerticalAlignment="Top" Width="230" SelectedIndex="0" RenderTransformOrigin="0.5,0.5" FontSize="16">
+
+
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn  Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
+                    		Header="ACTIONS"  />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </WrapPanel>-->
+
+
+
+        <Expander Grid.Row="0"  Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Left" Opacity="0.9" IsExpanded="True" Height="500" VerticalAlignment="Bottom" >
+            <DockPanel >
+                <Button Content="Clear log" Click="btnClearLog" DockPanel.Dock="Top"/>
+                <RichTextBox  x:Name="txtLog" ScrollViewer.VerticalScrollBarVisibility="Auto"  DockPanel.Dock="Bottom"  >
+                    <FlowDocument>
+                        <Paragraph>
+                            <Run Text="RichTextBox"/>
+                        </Paragraph>
+                    </FlowDocument>
+                </RichTextBox>
+
+
+            </DockPanel>
+
+        </Expander>
+
+    </Grid>
+</UserControl>
