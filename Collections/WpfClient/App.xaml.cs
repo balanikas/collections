@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
+
 namespace WpfClient
 {
     /// <summary>
@@ -18,7 +19,13 @@ namespace WpfClient
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
         }
-        
 
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            MainWindow window = new MainWindow();
+            window.Show();
+        }
     }
 }

@@ -81,6 +81,12 @@
       <DependentUpon>UCTypes.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils.cs" />
+    <Compile Include="Views\ExploreMode.xaml.cs">
+      <DependentUpon>ExploreMode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlayMode.xaml.cs">
+      <DependentUpon>PlayMode.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -114,6 +120,14 @@
     <Page Include="UCTypes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ExploreMode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PlayMode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

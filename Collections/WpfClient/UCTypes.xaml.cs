@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,7 +16,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CollectionsSOLID;
 
-
 namespace WpfClient
 {
     /// <summary>
@@ -26,9 +26,15 @@ namespace WpfClient
         public UCTypes()
         {
             InitializeComponent();
-            
-            
+#if DEBUG
+            txtFolderLocation.Text = @"C:\Users\grillo\Documents\GitHub\collections\Collections\CollectionsSOLID\resources\publicsampletypes";
+            txtAssemblyLocation.Text = @"C:\dev\collections\Collections\CollectionsSOLID\bin\Debug\CollectionsSOLID.dll";
+#endif
+
+
         }
+
+     
 
         public LoadedType SelectedType
         {
@@ -56,17 +62,9 @@ namespace WpfClient
             
         }
 
-        private void chkBclTypes_Checked(object sender, RoutedEventArgs e)
-        {
-            LoadTypes();
-        }
+    
 
-        private void chkFromAssembly_Checked(object sender, RoutedEventArgs e)
-        {
-            LoadTypes();
-        }
-
-        private void chkFromFiles_Checked(object sender, RoutedEventArgs e)
+        private void ContentSelectionUpdated(object sender, RoutedEventArgs e)
         {
             LoadTypes();
         }
@@ -87,13 +85,21 @@ namespace WpfClient
             }
             if (loadAssemblyTypes)
             {
-                var types = await TypesLoader.FromAssemblyAsync(txtAssemblyLocation.Text);
-                allTypes.AddRange(types);
+                if (IsValidAssembly(txtAssemblyLocation.Text))
+                {
+                    var types = await TypesLoader.FromAssemblyAsync(txtAssemblyLocation.Text);
+                    allTypes.AddRange(types);
+                }
+                
             }
             if (loadFileTypes)
             {
-                var types = await TypesLoader.FromDiscAsync(txtFolderLocation.Text);
-                allTypes.AddRange(types);
+                if (IsValidFolder(txtFolderLocation.Text))
+                {
+                    var types = await TypesLoader.FromDiscAsync(txtFolderLocation.Text);
+                    allTypes.AddRange(types);
+                }
+                
             }
 
 
@@ -106,19 +112,28 @@ namespace WpfClient
 
         }
 
-        private void chkFromAssembly_Unchecked(object sender, RoutedEventArgs e)
+        private bool IsValidAssembly(string assemblyPath)
         {
-            LoadTypes();
+            if (!File.Exists(assemblyPath))
+            {
+                return false;
+            }
+            var extension = System.IO.Path.GetExtension(txtAssemblyLocation.Text);
+            if (extension == ".dll" ||
+                extension == ".exe")
+            {
+                return true;
+            }
+            return false;
         }
 
-        private void chkFromFiles_Unchecked(object sender, RoutedEventArgs e)
+        private bool IsValidFolder(string folderPath)
         {
-            LoadTypes();
-        }
-
-        private void chkBclTypes_Unchecked(object sender, RoutedEventArgs e)
-        {
-            LoadTypes();
+            if (Directory.Exists(folderPath))
+            {
+                return true;
+            }
+            return false;
         }
 
         private void lstObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -175,6 +190,71 @@ namespace WpfClient
         private void SetCodeText(string source)
         {
             avalonEdit.Text = source;
+        }
+
+     
+     
+
+        private void txtFolderLocation_Drop(object sender, DragEventArgs e)
+        {
+            var target = sender as TextBox;
+            if (target != null)
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                   
+                    var folderList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+                    var folder = folderList[0];
+
+                    FileAttributes attr = File.GetAttributes(folder);
+                    if ((attr & FileAttributes.Directory) != FileAttributes.Directory)
+                    {
+                        folder = System.IO.Path.GetDirectoryName(folder);
+                    }
+                   
+                    txtFolderLocation.Text = folder;
+                    LoadTypes();
+                    
+                }
+            }
+        }
+
+      
+
+        private void TxtFolderLocation_OnPreviewDragOver(object sender, DragEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+
+        private void txtAssemblyLocation_Drop(object sender, DragEventArgs e)
+        {
+            var target = sender as TextBox;
+            if (target != null)
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+
+                    var itemList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+                    var item = itemList[0];
+
+                    FileAttributes attr = File.GetAttributes(item);
+                    if ((attr & FileAttributes.Directory) != FileAttributes.Directory)
+                    {
+                        if (System.IO.Path.GetExtension(item) == ".dll" || System.IO.Path.GetExtension(item) == ".exe")
+                        {
+                            txtFolderLocation.Text = item;
+                            LoadTypes();
+                        }
+                    }
+
+                }
+            }
+        }
+
+        private void TxtAssemblyLocation_OnPreviewDragOver(object sender, DragEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

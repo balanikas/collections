@@ -4,21 +4,43 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-             mc:Ignorable="d" Height="868" Width="575"  >
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d"  >
     <Grid>
         <StackPanel>
-            <Grid>
+            <Grid Margin="0,10" >
 
-                <CheckBox Grid.Column="0" Grid.Row="1" x:Name="chkBclTypes" Content="Bcl types" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top" Checked="chkBclTypes_Checked" Unchecked="chkBclTypes_Unchecked" Height="18" Width="91"/>
-                <CheckBox Grid.Column="0" Grid.Row="2" x:Name="chkFromFiles" Content="From folder" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top" Checked="chkFromFiles_Checked" Unchecked="chkFromFiles_Unchecked" Height="19" Width="110"/>
-                <CheckBox Grid.Column="0" Grid.Row="3" x:Name="chkFromAssembly" Content="From assembly" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top" Checked="chkFromAssembly_Checked" Unchecked="chkFromAssembly_Unchecked" Height="20" Width="131"/>
-                <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtFolderLocation" HorizontalAlignment="Left" Height="26" Margin="146,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="452" Text="C:\Users\grillo\Documents\GitHub\collections\Collections\CollectionsSOLID\resources\publicsampletypes"/>
-                <TextBox Grid.Column="1" Grid.Row="2" x:Name="txtAssemblyLocation" HorizontalAlignment="Left" Height="26" Margin="146,77,0,0" TextWrapping="Wrap" Text="C:\dev\collections\Collections\CollectionsSOLID\bin\Debug\CollectionsSOLID.dll" VerticalAlignment="Top" Width="452"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Column="0" Grid.Row="0" x:Name="chkBclTypes" Content="Bcl types" HorizontalAlignment="Left"  VerticalAlignment="Top" Checked="ContentSelectionUpdated" Unchecked="ContentSelectionUpdated" />
+                <CheckBox Grid.Column="0" Grid.Row="1" x:Name="chkFromFiles" Content="From folder" HorizontalAlignment="Left"  VerticalAlignment="Top" Checked="ContentSelectionUpdated" Unchecked="ContentSelectionUpdated" Height="19" Width="110"/>
+                <CheckBox Grid.Column="0" Grid.Row="2" x:Name="chkFromAssembly" Content="From assembly" HorizontalAlignment="Left"  VerticalAlignment="Top" Checked="ContentSelectionUpdated" Unchecked="ContentSelectionUpdated" Height="20" Width="131"/>
+
+                <TextBox Visibility="Hidden"
+                         Grid.Column="1" Grid.Row="0"  HorizontalAlignment="Left" Height="26"  TextWrapping="Wrap" VerticalAlignment="Top" 
+                         />
+                <TextBox controls:TextboxHelper.Watermark="Drag a folder here, or enter folder path" 
+                         AllowDrop="True"
+                         Drop="txtFolderLocation_Drop"
+                         PreviewDragOver="TxtFolderLocation_OnPreviewDragOver"
+                         Grid.Column="1" Grid.Row="1" x:Name="txtFolderLocation" HorizontalAlignment="Stretch" Height="26"  TextWrapping="Wrap" VerticalAlignment="Top" />
+                <TextBox AllowDrop="True"
+                         Drop="txtAssemblyLocation_Drop"
+                         PreviewDragOver="TxtAssemblyLocation_OnPreviewDragOver"
+                         controls:TextboxHelper.Watermark="Drag an assembly here, or enter assembly path"
+                         Grid.Column="1" Grid.Row="2" x:Name="txtAssemblyLocation" HorizontalAlignment="Stretch" Height="26"  TextWrapping="Wrap" VerticalAlignment="Top" />
 
 
             </Grid>
-            <StackPanel Orientation="Horizontal">
-                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstTypes" Height="224"  VerticalAlignment="Top" Width="270" RenderTransformOrigin="0.5,0.5" SelectedIndex="0"  SelectionChanged="lstObjects_SelectionChanged" SelectionMode="Single">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstTypes" Height="224"  VerticalAlignment="Top" Width="500" RenderTransformOrigin="0.5,0.5" SelectedIndex="0"  SelectionChanged="lstObjects_SelectionChanged" SelectionMode="Single">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn  Width="{Binding RelativeSource={RelativeSource FindAncestor, 
@@ -30,7 +52,7 @@
 
                 </ListView>
 
-                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstMethods" Height="224"  VerticalAlignment="Top" Width="328" SelectedIndex="0" RenderTransformOrigin="0.5,0.5" >
+                <ListView AllowDrop="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstMethods" Height="224"  VerticalAlignment="Top" Width="500" SelectedIndex="0" RenderTransformOrigin="0.5,0.5" >
 
 
                     <ListView.View>
@@ -44,13 +66,13 @@
                 </ListView>
             </StackPanel>
 
-            <avalonEdit:TextEditor Background="WhiteSmoke"
+            <avalonEdit:TextEditor Background="Silver"
 				x:Name="avalonEdit"
 				FontFamily="Consolas"
 				FontSize="10pt"
                                     
-				SyntaxHighlighting="C#" ShowLineNumbers="True" Height="500" VerticalAlignment="Bottom"/>
-            <Button x:Name="btnCompile" Content="Compile" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="97" RenderTransformOrigin="1.013,-0.545" Click="btnCompile_Click" Height="27" Margin="0,5,0,0"/>
+				SyntaxHighlighting="C#" ShowLineNumbers="True" Height="500" VerticalAlignment="Bottom" Margin="0,0,0,10"/>
+            <Button x:Name="btnCompile" Content="Compile" HorizontalAlignment="Center"  VerticalAlignment="Top"  Click="btnCompile_Click" Width="100" Height="50" />
 
         </StackPanel>
     </Grid>

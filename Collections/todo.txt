@@ -77,3 +77,9 @@ Play
 
 * pre jit stuff for more correct results
 * can own code output to Console? would be nice
+
+
+continue with this : http://msdn.microsoft.com/en-us/magazine/dd419663.aspx
+and this: C:\dev\MvvmDemoApp
+
+
