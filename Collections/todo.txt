@@ -83,3 +83,10 @@ continue with this : http://msdn.microsoft.com/en-us/magazine/dd419663.aspx
 and this: C:\dev\MvvmDemoApp
 
 
+---------
+* profile with new fixes
+* optimize so that multiple sources are compiled into same assembly
+
+
+
+note: from 34 - 60 mb allocated, none releashed

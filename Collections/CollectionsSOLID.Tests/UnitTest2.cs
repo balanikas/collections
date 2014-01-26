@@ -24,7 +24,7 @@ namespace CollectionsSOLID.Tests
             bool expectedSuccess = true;
 
 
-            me.ArgsValues = expectedArgValues;
+           // me.ArgsValues = expectedArgValues;
             me.ErrorMessage = expectedErrorMessage;
             me.ExecutionTime = expectedExecutionTime;
             me.Name = expectedName;
@@ -48,7 +48,7 @@ namespace CollectionsSOLID.Tests
             IBehavior behavior = new ObjectBehavior(typeof(int), methodInfos);
 
             Assert.AreEqual(behavior.GetObjectType(), typeof(int));
-            behavior.Update();
+            //behavior.Update();
         }
 
         [TestMethod]

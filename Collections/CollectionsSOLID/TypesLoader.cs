@@ -143,11 +143,11 @@ namespace CollectionsSOLID
 
         private static CompilerResults CompileFromSource(string source, string language = "CSharp")
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            
 
             var compiler = CodeDomProvider.CreateProvider(language);
 
-            var parms = new System.CodeDom.Compiler.CompilerParameters
+            var parms = new CompilerParameters
             {
                 GenerateExecutable = false,
                 GenerateInMemory = true,
@@ -157,6 +157,35 @@ namespace CollectionsSOLID
             parms.ReferencedAssemblies.Add("System.dll");
             parms.ReferencedAssemblies.Add("System.Core.dll");
             var compilationResults = compiler.CompileAssemblyFromSource(parms, source);
+
+            if (compilationResults.Errors.Count > 0)
+            {
+                string message = String.Empty;
+                foreach (CompilerError error in compilationResults.Errors)
+                {
+                    message += error.ErrorText + Environment.NewLine;
+                }
+                throw new Exception(message);
+            }
+
+            return compilationResults;
+        }
+
+        private static CompilerResults CompileFromSource(string[] sources, string language = "CSharp")
+        {
+            var compiler = CodeDomProvider.CreateProvider(language);
+
+            var parms = new CompilerParameters
+            {
+                GenerateExecutable = false,
+                GenerateInMemory = true,
+
+            };
+
+            parms.ReferencedAssemblies.Add("System.dll");
+            parms.ReferencedAssemblies.Add("System.Core.dll");
+
+            var compilationResults = compiler.CompileAssemblyFromSource(parms, sources);
 
             if (compilationResults.Errors.Count > 0)
             {
@@ -192,6 +221,8 @@ namespace CollectionsSOLID
 
             return CompileFromSource(source, language);
         }
+
+        
 
         public static void SaveType(LoadedType type)
         {

@@ -7,7 +7,7 @@ namespace CollectionsSOLID
     {
       
         public string Name {get;set;}
-        public List<Object> ArgsValues {get;set;}
+        public object[] ArgsValues {get;set;}
 
         public object ReturnValue {get;set;}
 
@@ -17,7 +17,7 @@ namespace CollectionsSOLID
 
         public MethodExecution()
         {
-            ArgsValues = new List<object>();
+           
             Success = true;
         }
     }

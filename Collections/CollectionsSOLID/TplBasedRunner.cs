@@ -99,7 +99,7 @@ namespace CollectionsSOLID
                 //check if end of loop, or check every now and then
                 if (i % ( _loopCount / 10) == 0 || i == _loopCount)
                 {
-                    methodExecution = _behavior.Update();
+                    methodExecution = _behavior.Update(false);
 
                     ObjectState state = ObjectState.Running;
                     if (i == _loopCount)
@@ -126,7 +126,7 @@ namespace CollectionsSOLID
                 }
                 else
                 {
-                    _behavior.Update();
+                    _behavior.Update(false);
                 }
 
                  

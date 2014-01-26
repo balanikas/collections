@@ -88,12 +88,12 @@ namespace CollectionsSOLID
             return false;
         }
 
-
+        
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
-            BackgroundWorker worker = sender as BackgroundWorker;
+            var worker = sender as BackgroundWorker;
 
            
             _watch.Start();
@@ -104,27 +104,31 @@ namespace CollectionsSOLID
             for (int i = 1; i <= _loopCount; i++)
             {
                 
-
                 if (worker.CancellationPending)
                 {
                     e.Cancel = true;
                     break;
                 }
 
-                var beforeExecution = _watch.Elapsed; 
-                methodExecution = _behavior.Update();
-                methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
-
-                if (i % (_loopCount / 10) == 0 || i == _loopCount || !methodExecution.Success)
+                var beforeExecution = _watch.Elapsed;
+                bool log = i % 1000 == 0 || i == _loopCount;
+                methodExecution = _behavior.Update(log);
+                if (methodExecution != null)
                 {
-                    
+                    methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
+                    _methodExecutions.Add(methodExecution);
+
                     var progressCount = (int)(i / (double)_loopCount * 100);
                     worker.ReportProgress(progressCount, methodExecution);
+                    
                 }
-               
 
-                _methodExecutions.Add(methodExecution);
-               
+                if (/*i % (_loopCount / 10) == 0 ||*/ i == _loopCount)
+                {
+                    var progressCount = (int)(i / (double)_loopCount * 100);
+                    worker.ReportProgress(progressCount, methodExecution);
+                    
+                }
                 
             }
             _watch.Stop();

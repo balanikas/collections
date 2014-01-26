@@ -4,7 +4,7 @@ namespace CollectionsSOLID
 {
     public interface IBehavior
     {
-        MethodExecution Update();
+        MethodExecution Update(bool log);
 
         Type GetObjectType();
        

@@ -1,20 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
 namespace CollectionsSOLID
 {
+
+    class ExecutionInfo
+    {
+        public MethodInfo MethodInfo { get; private set; }
+        public ParameterInfo[] ParameterInfos { get; private set; }
+        public Action Cached { get; private set; }
+
+        public ExecutionInfo(MethodInfo methodInfo, object objectInstance)
+        {
+            Debug.Assert(methodInfo != null);
+            
+            MethodInfo = methodInfo;
+            ParameterInfos = methodInfo.GetParameters();
+            if (!methodInfo.GetParameters().Any() && methodInfo.ReturnParameter.ParameterType == typeof(void))
+            {
+                if (methodInfo.IsStatic)
+                {
+                    Cached = (Action)Delegate.CreateDelegate(typeof(Action), null, methodInfo);
+                }
+                else
+                {
+                    Cached = (Action)Delegate.CreateDelegate(typeof(Action), objectInstance, methodInfo);
+                }
+            }
+
+        }
+    }
     public class ObjectBehavior : IBehavior
     {
         Type _objectType;
         
-        List<MethodInfo> _methods;
+        List<ExecutionInfo> _executionInfos;
         object _objectInstance;
        
         ThreadSafeRandom _randomizer;
 
-        public ObjectBehavior(Type type, IEnumerable<MethodInfo> methods)
+        public ObjectBehavior(Type type, List<MethodInfo> methods)
         {
             _objectType = type;
             var areMethodsValid = Utils.MethodsUseSupportedTypes(methods);
@@ -22,21 +50,26 @@ namespace CollectionsSOLID
             {
                 throw new ArgumentException("method(s) contains unsupported types");
             }
-             _methods = methods.ToList();
+
             _objectInstance = CreateInstanceFromType(_objectType);
-            if(_objectInstance == null)
+            if (_objectInstance == null)
             {
-                var staticMethods = _methods.Where(m => !m.IsStatic);
+                var staticMethods = methods.Where(m => !m.IsStatic);
                 if (staticMethods.Any())
                 {
                     throw new ArgumentException("cannot invoke non-static method of static class");
                 }
             }
-           
+
+            _executionInfos = new List<ExecutionInfo>();
+            foreach (var methodInfo in methods)
+            {
+                var executionInfo = new ExecutionInfo(methodInfo, _objectInstance);
+                _executionInfos.Add(executionInfo);
+             
+            }
 
         }
-
-      
 
         private object CreateInstanceFromType(Type type)
         {
@@ -105,41 +138,62 @@ namespace CollectionsSOLID
             }
         }
 
-        public MethodExecution Update()
+        public MethodExecution Update(bool log)
         {
-            var methodExecution = new MethodExecution();
 
-            foreach (MethodInfo method in _methods)
+            MethodExecution methodExecution = null;
+
+            foreach (ExecutionInfo execInfo in _executionInfos)
             {
+                object[] parameters = null;
 
-                var parameters = new List<object>();
-                foreach (var p in method.GetParameters())
+                var reflectedParams = execInfo.ParameterInfos;
+                var paramCount = reflectedParams.Length;
+                if (paramCount > 0)
                 {
-                    var paramValue = Randomizer.RandomizeParamValue(p.ParameterType.Name);
-                    parameters.Add(paramValue);
+                    parameters = new object[paramCount];
+                    for (int index = 0; index < paramCount; index++)
+                    {
+                        var p = reflectedParams[index];
+                        var paramValue = Randomizer.RandomizeParamValue(p.ParameterType.Name);
+                        parameters[index] = paramValue;
+                    }
                     
                 }
-
-                methodExecution.Name = method.Name;
-                methodExecution.ArgsValues.Add(parameters);
                 
 
                 try
                 {
-                    var result = method.Invoke(_objectInstance, parameters.ToArray());
-                    methodExecution.ReturnValue = result;
-                    methodExecution.Success = true;
-                    
+                    object result;
+                    if (paramCount == 0)
+                    {
+                        //special optimization when method has no return value and no params
+                        execInfo.Cached();
+                        result = null;
+                    }
+                    else
+                    {
+                        result = execInfo.MethodInfo.Invoke(_objectInstance, parameters);
+                    }
+                   
+                    if (log)
+                    {
+                        methodExecution = new MethodExecution();
+                        methodExecution.ReturnValue = result;
+                        methodExecution.Success = true;
+                        methodExecution.ArgsValues = parameters;
+                        methodExecution.Name = execInfo.MethodInfo.Name;
+                    }
                     
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
+                    methodExecution = new MethodExecution();
                     methodExecution.Success = false;
-                    
+                    methodExecution.Name = execInfo.MethodInfo.Name;
                     var errorMsg = e.InnerException != null ? e.InnerException.Message : e.Message;
-         
                     methodExecution.ErrorMessage = errorMsg;
-
+                    return methodExecution;
                     
                 }
                 
