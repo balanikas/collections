@@ -24,6 +24,8 @@ namespace WpfClient
 
             _grid.Children.Add(_rect);
             _grid.Children.Add(_label);
+            _label.HorizontalAlignment = HorizontalAlignment.Stretch;
+            _label.VerticalAlignment = VerticalAlignment.Stretch;
         }
 
 

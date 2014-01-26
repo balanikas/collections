@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using CollectionsSOLID;
 
 namespace WpfClient
@@ -30,11 +21,11 @@ namespace WpfClient
         public CustomShape(UIElementCollection parent, Point position, string title = "")
         {
             _label = new Label();
-            _label.FontSize = 4;
+            _label.FontSize = 6;
             _grid = new Grid();
             _grid.Visibility = Visibility.Collapsed;
-            _grid.Width = 70;
-            _grid.Height = 70;
+            _grid.Width = 100;
+            _grid.Height = 100;
             _grid.SetValue(Canvas.LeftProperty, position.X - (_grid.Width / 2));
             _grid.SetValue(Canvas.TopProperty, position.Y - (_grid.Height / 2));
             _grid.MouseDown += _grid_MouseDown;

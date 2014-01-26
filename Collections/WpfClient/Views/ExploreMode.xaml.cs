@@ -148,7 +148,12 @@ namespace WpfClient.Views
 
             runner = RunnerFactory.Get(Settings.ThreadingType, behavior, gui, _logger, Settings.Loops);
 
-            var ctxMenu = ShapeContextMenu.Get((s, e) => _runtime.Remove(runner.Id), (s, e) => MainWindow.ToggleFlyout(1, _runtime.GetById(runner.Id), true));
+            var ctxMenu = ShapeContextMenu.Get(
+                (s, e) => _runtime.Remove(runner.Id), 
+                (s, e) => MainWindow.ToggleFlyout(1, _runtime.GetById(runner.Id), true),
+                (s, e) => MessageBox.Show("shows the code that executes in the code explorer")
+                );
+
             ((CustomShape)gui).AddContextMenu(ctxMenu);
 
             _runtime.Add(runner);

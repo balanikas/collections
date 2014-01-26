@@ -46,14 +46,14 @@
         <ComboBox x:Name="cmbGraphics" HorizontalAlignment="Stretch" VerticalAlignment="Top"  SelectedIndex="0" Height="26" SelectionChanged="cmbGraphics_SelectionChanged"/>
 
 
-        <RadioButton x:Name="radUseTPL" Margin="0, 10, 0, 0"
+        <RadioButton Visibility="Collapsed" x:Name="radUseTPL" Margin="0, 10, 0, 0"
                                          Content="Use Task Parallel Library"
                                          GroupName="1" Checked="radUseTPL_Checked" />
-        <RadioButton x:Name="radUseBW" Margin="0, 10, 0, 0"
+        <RadioButton Visibility="Collapsed" x:Name="radUseBW" Margin="0, 10, 0, 0"
                                          Content="Use Background Workers"
                                          GroupName="1"
                                          IsChecked="True" />
-        <CheckBox x:Name="chkOptimizeRunners" Content="CheckBox" IsChecked="True" Checked="chkOptimizeRunners_Checked"/>
+       
     </StackPanel>
 
 </controls:Flyout>

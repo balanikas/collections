@@ -80,7 +80,7 @@ namespace CollectionsSOLID
         private void DoWork()
          {
              
-             int sizeOfObject = 1;
+
             //todo: not having following line, fucks up loop..sometimes...wtf investigate 
              Debug.WriteLine(_task); 
 

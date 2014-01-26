@@ -90,3 +90,18 @@ and this: C:\dev\MvvmDemoApp
 
 
 note: from 34 - 60 mb allocated, none releashed
+
+
+
+
+* contextmenu -> show in code explorer (will show the code in the explorer)
+* change bgr color of avaloedit
+* when code has changed, highlight that in some way
+* button "Clear", adjust size, maybe move close to canvas
+* feels awkward to have info as a flyout.. maybe make more like the log window.
+* add a "shake" effect on runners, when they have high fail rate.
+* present a log over 10 randomly collected successed executions, and 10 failed ones. Maybe make that as a setting value
+* make splitter to use accent color
+* format the contents of the runners and info flyout (pplacement, etc)
+
+* having that optimization for methods withaout params and return values might be misleading for users.

@@ -84,23 +84,30 @@ namespace WpfClient
 
         public void Flush()
         {
-            return;
-            var paragraphs = new List<Paragraph>(_logBuffer.Count);
-            
+           
+    
+            var paragraph = new Paragraph(); 
             while (_logBuffer.Count > 0)
             {
                 var logMessage = _logBuffer.Dequeue();
-                var paragraph = new Paragraph();
-                paragraph.Inlines.Add(new Run(logMessage.Message + Environment.NewLine));
-                paragraph.Foreground = logMessage.IsError ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.White);
 
-                paragraphs.Add(paragraph);
+                string error = logMessage.IsError ? "ERROR" : "";
+
+                var run = new Run(error + logMessage.Message + Environment.NewLine);
+                run.Foreground = logMessage.IsError
+                    ? new SolidColorBrush(Colors.Red)
+                    : new SolidColorBrush(Colors.White);
+
+
+                paragraph.Inlines.Add(run);
+                
+           
             }
 
             _textOutput.Dispatcher.BeginInvoke((new Action(delegate()
             {
 
-                _textOutput.Document.Blocks.AddRange(paragraphs);
+                _textOutput.Document.Blocks.Add(paragraph);
                 _textOutput.ScrollToEnd();
             })));
 

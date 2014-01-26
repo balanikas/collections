@@ -12,13 +12,18 @@ namespace WpfClient
     {
 
 
-        internal static ContextMenu Get(RoutedEventHandler closeAction = null, RoutedEventHandler infoAction = null)
+        internal static ContextMenu Get(
+            RoutedEventHandler closeAction = null,
+            RoutedEventHandler infoAction = null,
+            RoutedEventHandler showCodeAction = null)
         {
             var ctxMenu = new ContextMenu();
 
             var menus = new List<MenuItem>();
             var menuClose = new MenuItem { Header = "Close" };
             var menuInfo = new MenuItem { Header = "Info" };
+            var menuShowCode = new MenuItem { Header = "Show code" };
+           
             if (closeAction != null)
             {
                 menuClose.Click += closeAction;
@@ -28,8 +33,15 @@ namespace WpfClient
                 menuInfo.Click += infoAction;
             }
 
-            menus.Add(menuClose);
+            if (showCodeAction != null)
+            {
+                menuShowCode.Click += showCodeAction;
+            }
+           
             menus.Add(menuInfo);
+            menus.Add(menuShowCode);
+            menus.Add(menuClose);
+
             ctxMenu.ItemsSource = menus;
 
             return ctxMenu;

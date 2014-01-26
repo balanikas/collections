@@ -67,12 +67,12 @@
             </StackPanel>
             <Button DockPanel.Dock="Top" x:Name="btnCompile" Content="Compile" HorizontalAlignment="Right" Margin="0,0,0,10" VerticalAlignment="Top"  Click="btnCompile_Click" />
 
-            <avalonEdit:TextEditor Background="Silver" DockPanel.Dock="Bottom"
+            <avalonEdit:TextEditor Background="Snow" DockPanel.Dock="Bottom"
 				x:Name="avalonEdit"
 				FontFamily="Consolas"
 				FontSize="10pt"
                  HorizontalScrollBarVisibility="Auto"                   
-				SyntaxHighlighting="C#" ShowLineNumbers="True"  VerticalAlignment="Stretch" Margin="0,0,0,10"/>
+				SyntaxHighlighting="C#" ShowLineNumbers="True"  VerticalAlignment="Stretch" />
          
         </DockPanel>
     </Grid>

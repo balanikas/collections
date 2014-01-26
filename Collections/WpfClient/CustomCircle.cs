@@ -18,13 +18,14 @@ namespace WpfClient
         {
             _ellipse = new Ellipse();
             _ellipse.Fill = new SolidColorBrush(Colors.Pink);
-
+            
             _grid.MouseEnter += _grid_MouseEnter;
             _grid.MouseLeave += _grid_MouseLeave;
 
             _grid.Children.Add(_ellipse);
             _grid.Children.Add(_label);
-            
+            _label.HorizontalAlignment = HorizontalAlignment.Center;
+            _label.VerticalAlignment = VerticalAlignment.Center;
         }
 
 

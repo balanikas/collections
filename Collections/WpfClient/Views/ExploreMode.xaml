@@ -10,7 +10,9 @@
 	>
 
     <Grid >
+       
 
+      
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -27,7 +29,7 @@
             <wpfClient:UCTypes x:Name="ucTypes"    />
 
         </DockPanel>
-     
+
 
         <GridSplitter Grid.Column="1" Grid.Row="0"
               HorizontalAlignment="Center"

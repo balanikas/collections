@@ -111,7 +111,7 @@ namespace CollectionsSOLID
                 }
 
                 var beforeExecution = _watch.Elapsed;
-                bool log = i % 1000 == 0 || i == _loopCount;
+                bool log = i % (_loopCount / 100) == 0 || i == _loopCount;
                 methodExecution = _behavior.Update(log);
                 if (methodExecution != null)
                 {
@@ -123,7 +123,7 @@ namespace CollectionsSOLID
                     
                 }
 
-                if (/*i % (_loopCount / 10) == 0 ||*/ i == _loopCount)
+                if ( i == _loopCount)
                 {
                     var progressCount = (int)(i / (double)_loopCount * 100);
                     worker.ReportProgress(progressCount, methodExecution);
