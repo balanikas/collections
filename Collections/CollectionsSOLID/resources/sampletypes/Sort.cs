@@ -1,22 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Samples
 {
     public class Sort
     {
-        private readonly int[] _unsortedData;
         private readonly int[] _sortedData;
+        private readonly int[] _unsortedData;
         private int _dataSize = 100;
         private Random _rdn;
+
+        public Sort()
+        {
+            _rdn = new Random(_dataSize);
+            _unsortedData = new int[_dataSize];
+            MixDataUp(_unsortedData, _rdn);
+            _sortedData = new int[_dataSize];
+            _unsortedData.CopyTo(_sortedData, 0);
+            Array.Sort(_sortedData);
+        }
+
         private void MixDataUp(int[] array, Random rdn)
         {
             for (int i = 0; i <= array.Length - 1; i++)
             {
-                array[i] = (int)(rdn.NextDouble() * array.Length);
+                array[i] = (int) (rdn.NextDouble()*array.Length);
             }
         }
 
@@ -32,22 +39,10 @@ namespace Samples
             return true;
         }
 
-        public Sort()
-        {
-            _rdn = new Random(_dataSize);
-            _unsortedData = new int[_dataSize];
-            MixDataUp(_unsortedData, _rdn);
-            _sortedData = new int[_dataSize];
-            _unsortedData.CopyTo(_sortedData, 0);
-            Array.Sort(_sortedData);
-
-          
-        }
-
         public void BubbleSort()
         {
             var copy = new int[_dataSize];
-            _unsortedData.CopyTo(copy,0);
+            _unsortedData.CopyTo(copy, 0);
             bool exchanges;
             do
             {
@@ -77,7 +72,7 @@ namespace Samples
             _unsortedData.CopyTo(copy, 0);
 
             int temp;
-            for (int i = 0; i < copy.Length / 2; ++i)
+            for (int i = 0; i < copy.Length/2; ++i)
             {
                 for (int j = 0; j < copy.Length - 1; j += 2)
                 {
@@ -145,14 +140,12 @@ namespace Samples
 
         private void QuickSortInternal(int[] array, int left, int right)
         {
-           
-
             int i, j;
             int pivot, temp;
 
             i = left;
             j = right;
-            pivot = array[(left + right) / 2];
+            pivot = array[(left + right)/2];
 
             do
             {
@@ -164,7 +157,8 @@ namespace Samples
                     temp = array[i];
                     array[i] = array[j];
                     array[j] = temp;
-                    i++; j--;
+                    i++;
+                    j--;
                 }
             } while (i <= j);
 

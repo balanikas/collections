@@ -14,7 +14,8 @@
     <controls:Flyout.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -42,21 +43,21 @@
 
     <StackPanel Orientation="Vertical"
                 Margin="10">
-        <TextBlock TextWrapping="Wrap" Text="TYPE" Height="20"/>
-        <TextBlock x:Name="txtType" TextWrapping="Wrap"  Height="50"/>
-        <TextBlock TextWrapping="Wrap" Text="EXECUTION TIME" Height="20"/>
-        <TextBlock x:Name="txtExecutionTime" TextWrapping="Wrap"  Height="50"/>
-        <TextBlock TextWrapping="Wrap" Text="METHOD" Height="20"/>
-        <TextBlock x:Name="txtMethod" TextWrapping="Wrap"  Height="50"/>   
-        <TextBlock TextWrapping="Wrap" Text="FAIL RATE" Height="20"/>
-        <TextBlock x:Name="txtFailRate" TextWrapping="Wrap"  Height="50"/>
-        <TextBlock TextWrapping="Wrap" Text="AVERAGE METHOD EXECUTION TIME" Height="20"/>
-        <TextBlock x:Name="txtAvgMethodExecutionTime" TextWrapping="Wrap"  Height="50"/>
-        <TextBlock TextWrapping="Wrap" Text="MIN METHOD EXECUTION TIME" Height="20"/>
-        <TextBlock x:Name="txtMinMethodExecutionTime" TextWrapping="Wrap"  Height="50"/>
-        <TextBlock TextWrapping="Wrap" Text="MAX METHOD EXECUTION TIME" Height="20"/>
-        <TextBlock x:Name="txtMaxMethodExecutionTime" TextWrapping="Wrap"  Height="50"/>
-        
+        <TextBlock TextWrapping="Wrap" Text="TYPE" Height="20" />
+        <TextBlock x:Name="txtType" TextWrapping="Wrap" Height="50" />
+        <TextBlock TextWrapping="Wrap" Text="EXECUTION TIME" Height="20" />
+        <TextBlock x:Name="txtExecutionTime" TextWrapping="Wrap" Height="50" />
+        <TextBlock TextWrapping="Wrap" Text="METHOD" Height="20" />
+        <TextBlock x:Name="txtMethod" TextWrapping="Wrap" Height="50" />
+        <TextBlock TextWrapping="Wrap" Text="FAIL RATE" Height="20" />
+        <TextBlock x:Name="txtFailRate" TextWrapping="Wrap" Height="50" />
+        <TextBlock TextWrapping="Wrap" Text="AVERAGE METHOD EXECUTION TIME" Height="20" />
+        <TextBlock x:Name="txtAvgMethodExecutionTime" TextWrapping="Wrap" Height="50" />
+        <TextBlock TextWrapping="Wrap" Text="MIN METHOD EXECUTION TIME" Height="20" />
+        <TextBlock x:Name="txtMinMethodExecutionTime" TextWrapping="Wrap" Height="50" />
+        <TextBlock TextWrapping="Wrap" Text="MAX METHOD EXECUTION TIME" Height="20" />
+        <TextBlock x:Name="txtMaxMethodExecutionTime" TextWrapping="Wrap" Height="50" />
+
     </StackPanel>
 
 </controls:Flyout>

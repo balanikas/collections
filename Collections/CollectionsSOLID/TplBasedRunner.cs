@@ -4,21 +4,21 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CollectionsSOLID
+namespace Collections
 {
-    class TplBasedRunner : IRunner
+    internal class TplBasedRunner : IRunner
     {
-        IBehavior _behavior;
-        int _loopCount;
-        CancellationTokenSource _cts;
-        Task _task;
-        ILogger _logger;
-        List<IGui> _uiListeners;
-        public string Id { get; private set; }
-        public TplBasedRunner(IBehavior behavior, IGui gui,ILogger logger, int loopCount = 1000000)
+        private readonly IBehavior _behavior;
+        private readonly CancellationTokenSource _cts;
+        private readonly ILogger _logger;
+        private readonly int _loopCount;
+        private readonly List<IGui> _uiListeners;
+        private Task _task;
+
+        public TplBasedRunner(IBehavior behavior, IGui gui, ILogger logger, int loopCount = 1000000)
         {
             _uiListeners = new List<IGui>();
-            
+
             _behavior = behavior;
             _loopCount = loopCount;
             _logger = logger;
@@ -27,10 +27,13 @@ namespace CollectionsSOLID
             Id = Guid.NewGuid().ToString();
             gui.Id = Id;
 
-          
+
             _uiListeners.Add(gui);
         }
-        public void AddUIListener(IGui listener)
+
+        public string Id { get; private set; }
+
+        public void AddUiListener(IGui listener)
         {
             if (!_uiListeners.Contains(listener))
             {
@@ -39,26 +42,20 @@ namespace CollectionsSOLID
             }
         }
 
-         public void Start()
+        public void Start()
         {
-            foreach (var listener in _uiListeners)
+            foreach (IGui listener in _uiListeners)
             {
                 listener.Draw();
             }
-            
 
 
-            _task = Task.Factory.StartNew(() =>
-            {
-                
-                DoWork();
-            },_cts.Token);
+            _task = Task.Factory.StartNew(() => { DoWork(); }, _cts.Token);
 
             _task.ContinueWith(t =>
             {
                 switch (t.Status)
                 {
-                               
                     case TaskStatus.Canceled:
                         break;
                     case TaskStatus.RanToCompletion:
@@ -73,71 +70,12 @@ namespace CollectionsSOLID
                         break;
                 }
             }, _cts.Token);
-             
-
         }
-     
-        private void DoWork()
-         {
-             
-
-            //todo: not having following line, fucks up loop..sometimes...wtf investigate 
-             Debug.WriteLine(_task); 
-
-             var watch = new Stopwatch();
-             watch.Start();
-
-             for (int i = 1; (i <= _loopCount); i++)
-             {
-
-                 CancellationToken ct = _cts.Token;
-                 ct.ThrowIfCancellationRequested();
-
-                 MethodExecution methodExecution;
-               
-
-                //check if end of loop, or check every now and then
-                if (i % ( _loopCount / 10) == 0 || i == _loopCount)
-                {
-                    methodExecution = _behavior.Update(false);
-
-                    ObjectState state = ObjectState.Running;
-                    if (i == _loopCount)
-                    {
-                        watch.Stop();
-                        state = ObjectState.Finished;
-                        _logger.Flush();
-                    }
-
-                    var progressCount = (int)(i / (double)_loopCount * 100);
-                    _logger.Info(Id + ": " + progressCount.ToString());
-
-                    var msg = new UIMessage(
-                        _behavior.GetObjectType(), 
-                        methodExecution,
-                        watch.Elapsed,
-                        progressCount, 
-                        state);
-
-                    foreach (var listener in _uiListeners)
-                    {
-                        listener.Update(msg);
-                    }
-                }
-                else
-                {
-                    _behavior.Update(false);
-                }
-
-                 
-             }
-             watch.Stop();
-         }
 
         public void Destroy()
         {
             _cts.Cancel();
-            foreach (var listener in _uiListeners)
+            foreach (IGui listener in _uiListeners)
             {
                 listener.Destroy();
             }
@@ -145,7 +83,7 @@ namespace CollectionsSOLID
 
         public bool IsAlive()
         {
-            if(_task.Status == TaskStatus.Running)
+            if (_task.Status == TaskStatus.Running)
             {
                 return true;
             }
@@ -157,6 +95,58 @@ namespace CollectionsSOLID
         public RunSummaryMessage GetState()
         {
             return null;
+        }
+
+        private void DoWork()
+        {
+            //todo: not having following line, fucks up loop..sometimes...wtf investigate 
+            Debug.WriteLine(_task);
+
+            var watch = new Stopwatch();
+            watch.Start();
+
+            for (int i = 1; (i <= _loopCount); i++)
+            {
+                CancellationToken ct = _cts.Token;
+                ct.ThrowIfCancellationRequested();
+
+                MethodExecution methodExecution;
+
+
+                //check if end of loop, or check every now and then
+                if (i%(_loopCount/10) == 0 || i == _loopCount)
+                {
+                    methodExecution = _behavior.Update(false);
+
+                    var state = ObjectState.Running;
+                    if (i == _loopCount)
+                    {
+                        watch.Stop();
+                        state = ObjectState.Finished;
+                        _logger.Flush();
+                    }
+
+                    var progressCount = (int) (i/(double) _loopCount*100);
+                    _logger.Info(Id + ": " + progressCount);
+
+                    var msg = new UIMessage(
+                        _behavior.GetObjectType(),
+                        methodExecution,
+                        watch.Elapsed,
+                        progressCount,
+                        state);
+
+                    foreach (IGui listener in _uiListeners)
+                    {
+                        listener.Update(msg);
+                    }
+                }
+                else
+                {
+                    _behavior.Update(false);
+                }
+            }
+            watch.Stop();
         }
     }
 }

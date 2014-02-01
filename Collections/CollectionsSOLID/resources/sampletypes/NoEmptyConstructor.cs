@@ -4,10 +4,6 @@
     {
         public NoEmptyConstructor(int p1)
         {
-
         }
     }
-
-
 }
-

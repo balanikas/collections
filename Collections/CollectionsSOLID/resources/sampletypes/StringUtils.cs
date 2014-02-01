@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) Service Stack LLC. All Rights Reserved.
+﻿// Copyright (c) Service Stack LLC. All Rights Reserved.
 // License: https://raw.github.com/ServiceStack/ServiceStack/master/license.txt
 
 using System;
@@ -11,7 +11,8 @@ namespace Samples.ServiceStack
     public static class StringUtils
     {
 #if !SL5
-        static readonly Regex StripHtmlUnicodeRegEx = new Regex(@"&(#)?([xX])?([^ \f\n\r\t\v;]+);", RegexOptions.Compiled);
+        private static readonly Regex StripHtmlUnicodeRegEx = new Regex(@"&(#)?([xX])?([^ \f\n\r\t\v;]+);",
+            RegexOptions.Compiled);
 #else
         static readonly Regex StripHtmlUnicodeRegEx = new Regex(@"&(#)?([xX])?([^ \f\n\r\t\v;]+);");
 #endif
@@ -21,7 +22,7 @@ namespace Samples.ServiceStack
             return StripHtmlUnicodeRegEx.Replace(html, ConvertHtmlCodeToCharacter);
         }
 
-        static string ConvertHtmlCodeToCharacter(Match match)
+        private static string ConvertHtmlCodeToCharacter(Match match)
         {
             // http://www.w3.org/TR/html5/syntax.html#character-references
             // match.Groups[0] is the entire match, the sub groups start at index one
@@ -38,7 +39,8 @@ namespace Samples.ServiceStack
             ushort decimalValue;
             if (match.Groups[2].Success)
             {
-                bool parseWasSuccessful = ushort.TryParse(decimalString, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out decimalValue);
+                bool parseWasSuccessful = ushort.TryParse(decimalString, NumberStyles.HexNumber,
+                    CultureInfo.InvariantCulture, out decimalValue);
                 if (!parseWasSuccessful)
                 {
                     return match.Value; // ambiguous ampersand
@@ -52,7 +54,7 @@ namespace Samples.ServiceStack
                     return match.Value; // ambiguous ampersand
                 }
             }
-            return ((char)decimalValue).ToString(CultureInfo.InvariantCulture);
+            return ((char) decimalValue).ToString(CultureInfo.InvariantCulture);
         }
 
         public static string ToChar(this int codePoint)
@@ -63,10 +65,9 @@ namespace Samples.ServiceStack
         // http://www.w3.org/TR/html5/entities.json
         // TODO: conditional compilation for NET45 that uses ReadOnlyDictionary
         public static readonly IDictionary<string, string> HtmlCharacterCodes = new SortedDictionary<string, string>
-		{
-		    { @"&Aacute;", 193.ToChar() },
-			{ @"&aacute;", 225.ToChar() }
-		
-		};
+        {
+            {@"&Aacute;", 193.ToChar()},
+            {@"&aacute;", 225.ToChar()}
+        };
     }
 }

@@ -1,18 +1,11 @@
 ﻿using System;
 
-namespace CollectionsSOLID
+namespace Collections
 {
     public class UIMessage : Message
     {
-        public ObjectState ObjectState { get; private set; }
-        public Type ObjectType { get; private set; }
-
-        public MethodExecution MethodExecution { get; private set; }
-
-
-        public TimeSpan ExecutionTime { get; private set; }
-
-        public UIMessage(Type objectType, MethodExecution methodExecution, TimeSpan timeElapsed, int progress, ObjectState state)
+        public UIMessage(Type objectType, MethodExecution methodExecution, TimeSpan timeElapsed, int progress,
+            ObjectState state)
         {
             ObjectType = objectType;
             ExecutionTime = timeElapsed;
@@ -21,6 +14,14 @@ namespace CollectionsSOLID
             ObjectState = state;
             MethodExecution = methodExecution;
         }
+
+        public ObjectState ObjectState { get; private set; }
+        public Type ObjectType { get; private set; }
+
+        public MethodExecution MethodExecution { get; private set; }
+
+
+        public TimeSpan ExecutionTime { get; private set; }
 
         public override string ToString()
         {

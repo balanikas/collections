@@ -3,26 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace CollectionsSOLID
+namespace Collections
 {
-    
-
     public static class Utils
     {
-       
-     
-
-      
-
         public static bool MethodsUseSupportedTypes(IEnumerable<MethodInfo> methods)
         {
-            foreach (var method in methods)
+            foreach (MethodInfo method in methods)
             {
-                foreach (var p in method.GetParameters())
+                foreach (ParameterInfo p in method.GetParameters())
                 {
-                  
-
-                    var isValidType = GetValidMethodTypes().
+                    Type isValidType = GetValidMethodTypes().
                         FirstOrDefault(t => t.FullName == p.ParameterType.FullName);
                     if (isValidType == null)
                     {
@@ -30,14 +21,13 @@ namespace CollectionsSOLID
                     }
                 }
 
-               
-                var isValidReturnType = GetValidMethodTypes().
+
+                Type isValidReturnType = GetValidMethodTypes().
                     FirstOrDefault(t => t.FullName == method.ReturnType.FullName);
                 if (isValidReturnType == null)
                 {
                     return false;
                 }
-
             }
 
             return true;
@@ -46,25 +36,25 @@ namespace CollectionsSOLID
         private static IEnumerable<Type> GetValidMethodTypes()
         {
             var validTypes = new List<Type>();
-            validTypes.AddRange(new[] { 
-                typeof(SByte),
-                typeof(Byte),
-                typeof(Int16),
-                typeof(UInt16),
-                typeof(Int32),
-                typeof(UInt32),
-                typeof(Int64),
-                typeof(UInt64),
-                typeof(Single),
-                typeof(Double),
-                typeof(Decimal),
-                typeof(Boolean),
-                typeof(Char),
-                typeof(Object),
-                typeof(Char*),
-                typeof(String),
-                typeof(void)
-            
+            validTypes.AddRange(new[]
+            {
+                typeof (SByte),
+                typeof (Byte),
+                typeof (Int16),
+                typeof (UInt16),
+                typeof (Int32),
+                typeof (UInt32),
+                typeof (Int64),
+                typeof (UInt64),
+                typeof (Single),
+                typeof (Double),
+                typeof (Decimal),
+                typeof (Boolean),
+                typeof (Char),
+                typeof (Object),
+                typeof (Char*),
+                typeof (String),
+                typeof (void)
             });
 
             return validTypes;

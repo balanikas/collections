@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Samples
+﻿namespace Samples
 {
     public abstract class AbstractClass
     {
@@ -12,9 +6,6 @@ namespace Samples
 
         public void NoAbstractCalculate()
         {
-
         }
     }
 }
-  
-

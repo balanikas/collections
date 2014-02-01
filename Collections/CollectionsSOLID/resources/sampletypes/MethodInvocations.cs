@@ -1,18 +1,15 @@
 ﻿namespace Samples
 {
-    
-
     public class MethodInvocations
     {
-        private delegate void CalculateDelegate(); 
         public void InvokeStaticMethod()
         {
-            this.InstanceCalculate();
+            InstanceCalculate();
         }
 
         public void InvokeInstanceMethod()
         {
-            MethodInvocations.StaticCalculate();
+            StaticCalculate();
         }
 
 
@@ -34,6 +31,7 @@
             int i = 0;
             int x = i++;
         }
-       
+
+        private delegate void CalculateDelegate();
     }
 }

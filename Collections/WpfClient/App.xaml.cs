@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-
 
 namespace WpfClient
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    ///     Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
@@ -24,7 +18,7 @@ namespace WpfClient
         {
             base.OnStartup(e);
 
-            MainWindow window = new MainWindow();
+            var window = new MainWindow();
             window.Show();
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace CollectionsSOLID
+﻿namespace Collections
 {
     public interface IRunner
     {
@@ -8,9 +8,6 @@
         bool IsAlive();
         RunSummaryMessage GetState();
 
-        void AddUIListener(IGui listener);
+        void AddUiListener(IGui listener);
     }
-
-
-
 }

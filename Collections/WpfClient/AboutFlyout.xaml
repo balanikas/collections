@@ -9,12 +9,13 @@
                  d:DesignWidth="300"
                  Width="250"
                  x:Name="aboutFlyout"
-                 CloseCommand="{Binding ElementName=customFlyout, Path=CloseCmd}" >
+                 CloseCommand="{Binding ElementName=customFlyout, Path=CloseCmd}">
 
     <controls:Flyout.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -42,14 +43,12 @@
 
     <StackPanel Orientation="Vertical"
                 Margin="10">
-        <TextBlock  TextWrapping="Wrap" Text="ABOUT"/>
-        <TextBlock x:Name="txtAbout" TextWrapping="Wrap" Text="This is free software that can be used to something good, possibly"/>
-        <TextBlock  TextWrapping="Wrap" Text="LICENSES/EXTERNAL SOFTWARE"/>
-         
+        <TextBlock TextWrapping="Wrap" Text="ABOUT" />
+        <TextBlock x:Name="txtAbout" TextWrapping="Wrap"
+                   Text="This is free software that can be used to something good, possibly" />
+        <TextBlock TextWrapping="Wrap" Text="LICENSES/EXTERNAL SOFTWARE" />
+
         <TextBlock x:Name="txtLicenses" TextWrapping="Wrap" />
-           
-       
-        
 
 
     </StackPanel>

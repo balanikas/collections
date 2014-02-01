@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Threading;
 
 namespace Samples
@@ -11,7 +12,7 @@ namespace Samples
             {
                 throw new ArgumentException("ConcatenateStrings threw exception");
             }
-            var qqq = new System.Text.StringBuilder();
+            var qqq = new StringBuilder();
 
             return s1 + s2 + "";
         }
@@ -20,6 +21,7 @@ namespace Samples
         {
             Thread.Sleep(1);
         }
+
         public static void Calculate()
         {
             int x = 0;
@@ -32,13 +34,12 @@ namespace Samples
 
         private static void Secret()
         {
-
         }
 
-        public static string AddDifferentTypes(sbyte sb, byte by, Int16 i16, UInt16 ui16, Int32 i32, UInt32 ui32, Int64 i64, UInt64 ui64,
+        public static string AddDifferentTypes(sbyte sb, byte by, Int16 i16, UInt16 ui16, Int32 i32, UInt32 ui32,
+            Int64 i64, UInt64 ui64,
             float f, double d, bool bo, char c, object o, string s)
         {
-
             return "";
         }
 
@@ -46,9 +47,5 @@ namespace Samples
         {
             return o1.ToString() + o2.ToString();
         }
-
-
     }
 }
-
-

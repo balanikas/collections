@@ -1,4 +1,9 @@
 TODO:
+
+
+* cleanup
+
+
 * get correct sizeof ... IMPOSSSIBLE
 * use Roslyn as a compiler (problematic?, needs vs2012 stuff)..maybe, its not really ready yet...btw, whats the purpose of that?
 * kunna styra exakt vilka actions och hur många ggr

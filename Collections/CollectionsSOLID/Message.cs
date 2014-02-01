@@ -1,6 +1,7 @@
-﻿namespace CollectionsSOLID
+﻿namespace Collections
 {
-    public enum ObjectState {
+    public enum ObjectState
+    {
         Running,
         Finished,
         Unknown
@@ -10,8 +11,4 @@
     {
         public int Progress { get; protected set; }
     }
-
-   
-
-
 }

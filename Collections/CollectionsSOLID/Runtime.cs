@@ -2,32 +2,29 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CollectionsSOLID
+namespace Collections
 {
     public class Runtime
     {
-        CancellationTokenSource _cts;
-        IDictionary<string,IRunner> _gObjects;
-        bool _isRunning = false;
+        private readonly CancellationTokenSource _cts;
+        private readonly IDictionary<string, IRunner> _gObjects;
+        private bool _isRunning;
 
         public Runtime()
         {
-           
             _gObjects = new Dictionary<string, IRunner>();
             _cts = new CancellationTokenSource();
-
         }
-        public void Stop() 
+
+        public void Stop()
         {
             _isRunning = false;
-            
         }
-       
-        public void Start() 
+
+        public void Start()
         {
             Task task = Task.Factory.StartNew(() =>
             {
-
                 while (_isRunning)
                 {
                     Thread.Sleep(10000);
@@ -37,13 +34,11 @@ namespace CollectionsSOLID
             }, _cts.Token);
 
             _isRunning = true;
-
-            
         }
 
         public void Clear()
         {
-            foreach (var go in _gObjects.Values)
+            foreach (IRunner go in _gObjects.Values)
             {
                 go.Destroy();
             }
@@ -51,8 +46,7 @@ namespace CollectionsSOLID
 
         public void Add(IRunner runner)
         {
-            _gObjects.Add(runner.Id,runner);
-
+            _gObjects.Add(runner.Id, runner);
         }
 
         public IRunner GetById(string id)
@@ -68,12 +62,11 @@ namespace CollectionsSOLID
         public void Remove(string runnerId)
         {
             IRunner obj;
-            if(_gObjects.TryGetValue(runnerId, out obj))
+            if (_gObjects.TryGetValue(runnerId, out obj))
             {
                 _gObjects.Remove(runnerId);
                 obj.Destroy();
             }
-                        
         }
 
         public bool IsRunning()

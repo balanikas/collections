@@ -4,49 +4,47 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace CollectionsSOLID
+namespace Collections
 {
-
-    class ExecutionInfo
+    internal class ExecutionInfo
     {
-        public MethodInfo MethodInfo { get; private set; }
-        public ParameterInfo[] ParameterInfos { get; private set; }
-        public Action Cached { get; private set; }
-
         public ExecutionInfo(MethodInfo methodInfo, object objectInstance)
         {
             Debug.Assert(methodInfo != null);
-            
+
             MethodInfo = methodInfo;
             ParameterInfos = methodInfo.GetParameters();
-            if (!methodInfo.GetParameters().Any() && methodInfo.ReturnParameter.ParameterType == typeof(void))
+            if (!methodInfo.GetParameters().Any() && methodInfo.ReturnParameter.ParameterType == typeof (void))
             {
                 if (methodInfo.IsStatic)
                 {
-                    Cached = (Action)Delegate.CreateDelegate(typeof(Action), null, methodInfo);
+                    Cached = (Action) Delegate.CreateDelegate(typeof (Action), null, methodInfo);
                 }
                 else
                 {
-                    Cached = (Action)Delegate.CreateDelegate(typeof(Action), objectInstance, methodInfo);
+                    Cached = (Action) Delegate.CreateDelegate(typeof (Action), objectInstance, methodInfo);
                 }
             }
-
         }
+
+        public MethodInfo MethodInfo { get; private set; }
+        public ParameterInfo[] ParameterInfos { get; private set; }
+        public Action Cached { get; private set; }
     }
+
     public class ObjectBehavior : IBehavior
     {
-        Type _objectType;
-        
-        List<ExecutionInfo> _executionInfos;
-        object _objectInstance;
-       
-        ThreadSafeRandom _randomizer;
+        private readonly List<ExecutionInfo> _executionInfos;
+        private readonly object _objectInstance;
+        private readonly Type _objectType;
+
+        private ThreadSafeRandom _randomizer;
 
         public ObjectBehavior(Type type, List<MethodInfo> methods)
         {
             _objectType = type;
-            var areMethodsValid = Utils.MethodsUseSupportedTypes(methods);
-            if(!areMethodsValid)
+            bool areMethodsValid = Utils.MethodsUseSupportedTypes(methods);
+            if (!areMethodsValid)
             {
                 throw new ArgumentException("method(s) contains unsupported types");
             }
@@ -54,7 +52,7 @@ namespace CollectionsSOLID
             _objectInstance = CreateInstanceFromType(_objectType);
             if (_objectInstance == null)
             {
-                var staticMethods = methods.Where(m => !m.IsStatic);
+                IEnumerable<MethodInfo> staticMethods = methods.Where(m => !m.IsStatic);
                 if (staticMethods.Any())
                 {
                     throw new ArgumentException("cannot invoke non-static method of static class");
@@ -62,18 +60,86 @@ namespace CollectionsSOLID
             }
 
             _executionInfos = new List<ExecutionInfo>();
-            foreach (var methodInfo in methods)
+            foreach (MethodInfo methodInfo in methods)
             {
                 var executionInfo = new ExecutionInfo(methodInfo, _objectInstance);
                 _executionInfos.Add(executionInfo);
-             
+            }
+        }
+
+        private ThreadSafeRandom Randomizer
+        {
+            get { return _randomizer ?? (_randomizer = new ThreadSafeRandom()); }
+        }
+
+        public MethodExecution Update(bool log)
+        {
+            MethodExecution methodExecution = null;
+
+            foreach (ExecutionInfo execInfo in _executionInfos)
+            {
+                object[] parameters = null;
+
+                ParameterInfo[] reflectedParams = execInfo.ParameterInfos;
+                int paramCount = reflectedParams.Length;
+                if (paramCount > 0)
+                {
+                    parameters = new object[paramCount];
+                    for (int index = 0; index < paramCount; index++)
+                    {
+                        ParameterInfo p = reflectedParams[index];
+                        object paramValue = Randomizer.RandomizeParamValue(p.ParameterType.Name);
+                        parameters[index] = paramValue;
+                    }
+                }
+
+
+                try
+                {
+                    object result;
+                    if (paramCount == 0)
+                    {
+                        //special optimization when method has no return value and no params
+                        execInfo.Cached();
+                        result = null;
+                    }
+                    else
+                    {
+                        result = execInfo.MethodInfo.Invoke(_objectInstance, parameters);
+                    }
+
+                    if (log)
+                    {
+                        methodExecution = new MethodExecution();
+                        methodExecution.ReturnValue = result;
+                        methodExecution.Success = true;
+                        methodExecution.ArgsValues = parameters;
+                        methodExecution.Name = execInfo.MethodInfo.Name;
+                    }
+                }
+                catch (Exception e)
+                {
+                    methodExecution = new MethodExecution();
+                    methodExecution.Success = false;
+                    methodExecution.Name = execInfo.MethodInfo.Name;
+                    string errorMsg = e.InnerException != null ? e.InnerException.Message : e.Message;
+                    methodExecution.ErrorMessage = errorMsg;
+                    return methodExecution;
+                }
             }
 
+            return methodExecution;
+        }
+
+
+        public Type GetObjectType()
+        {
+            return _objectType;
         }
 
         private object CreateInstanceFromType(Type type)
         {
-            object obj = null;
+            object obj;
 
             if (type.IsValueType)
             {
@@ -81,8 +147,7 @@ namespace CollectionsSOLID
             }
             else
             {
-                ConstructorInfo ci = null;
-                ci = type.GetConstructor(Type.EmptyTypes);
+                ConstructorInfo ci = type.GetConstructor(Type.EmptyTypes);
                 if (ci == null)
                 {
                     if (!type.IsSealed && type.IsAbstract)
@@ -90,9 +155,9 @@ namespace CollectionsSOLID
                         //abstract class
                         throw new Exception("abstract classes are not allowed");
                     }
-                    if(type.IsSealed && type.IsAbstract)
+                    if (type.IsSealed && type.IsAbstract)
                     {
-                       //static class
+                        //static class
                         return null;
                     }
                     throw new Exception("only types with empty constructors are allowed");
@@ -114,99 +179,11 @@ namespace CollectionsSOLID
                     //    obj = ci.Invoke(parameters.ToArray());
 
                     //}
-
                 }
-                else
-                {
-                    //constructor is paramless
-                    obj = ci.Invoke(new object[] { });
-                }
-
+                //constructor is paramless
+                obj = ci.Invoke(new object[] {});
             }
             return obj;
         }
-
-        private ThreadSafeRandom Randomizer
-        {
-            get
-            {
-                if(_randomizer == null)
-                {
-                    _randomizer = new ThreadSafeRandom();
-                }
-                return _randomizer;
-            }
-        }
-
-        public MethodExecution Update(bool log)
-        {
-
-            MethodExecution methodExecution = null;
-
-            foreach (ExecutionInfo execInfo in _executionInfos)
-            {
-                object[] parameters = null;
-
-                var reflectedParams = execInfo.ParameterInfos;
-                var paramCount = reflectedParams.Length;
-                if (paramCount > 0)
-                {
-                    parameters = new object[paramCount];
-                    for (int index = 0; index < paramCount; index++)
-                    {
-                        var p = reflectedParams[index];
-                        var paramValue = Randomizer.RandomizeParamValue(p.ParameterType.Name);
-                        parameters[index] = paramValue;
-                    }
-                    
-                }
-                
-
-                try
-                {
-                    object result;
-                    if (paramCount == 0)
-                    {
-                        //special optimization when method has no return value and no params
-                        execInfo.Cached();
-                        result = null;
-                    }
-                    else
-                    {
-                        result = execInfo.MethodInfo.Invoke(_objectInstance, parameters);
-                    }
-                   
-                    if (log)
-                    {
-                        methodExecution = new MethodExecution();
-                        methodExecution.ReturnValue = result;
-                        methodExecution.Success = true;
-                        methodExecution.ArgsValues = parameters;
-                        methodExecution.Name = execInfo.MethodInfo.Name;
-                    }
-                    
-                }
-                catch (Exception e)
-                {
-                    methodExecution = new MethodExecution();
-                    methodExecution.Success = false;
-                    methodExecution.Name = execInfo.MethodInfo.Name;
-                    var errorMsg = e.InnerException != null ? e.InnerException.Message : e.Message;
-                    methodExecution.ErrorMessage = errorMsg;
-                    return methodExecution;
-                    
-                }
-                
-            }
-
-            return methodExecution;
-        }
-
-
-        public Type GetObjectType()
-        {
-            return _objectType;
-        }
-
     }
 }

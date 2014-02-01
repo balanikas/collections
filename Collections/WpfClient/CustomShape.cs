@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using CollectionsSOLID;
+using System.Windows.Input;
+using Collections;
 
 namespace WpfClient
 {
-    class CustomShape : CollectionsSOLID.IGui
+    internal class CustomShape : IGui
     {
-        public event RightClickEventHandler OnRightClick;
-        public event MouseOverEventHandler OnMouseOver;
-        public event KeyPressedEventHandler OnKeyPressed;
-
         protected AnimationsHelper _animationsHelper;
         protected Grid _grid;
         protected Label _label;
-        UIElementCollection _parent;
-
-        public string Id { get; set; }
+        private UIElementCollection _parent;
 
         public CustomShape(UIElementCollection parent, Point position, string title = "")
         {
@@ -26,12 +21,12 @@ namespace WpfClient
             _grid.Visibility = Visibility.Collapsed;
             _grid.Width = 100;
             _grid.Height = 100;
-            _grid.SetValue(Canvas.LeftProperty, position.X - (_grid.Width / 2));
-            _grid.SetValue(Canvas.TopProperty, position.Y - (_grid.Height / 2));
+            _grid.SetValue(Canvas.LeftProperty, position.X - (_grid.Width/2));
+            _grid.SetValue(Canvas.TopProperty, position.Y - (_grid.Height/2));
             _grid.MouseDown += _grid_MouseDown;
             _grid.MouseMove += _grid_MouseMove;
             _grid.KeyDown += _grid_KeyDown;
-            
+
 
             _label.Content = title;
             _animationsHelper = new AnimationsHelper();
@@ -40,17 +35,8 @@ namespace WpfClient
             _parent.Add(_grid);
         }
 
+        public string Id { get; set; }
 
-
-        public void AddContextMenu(ContextMenu ctxMenu)
-        {
-            _grid.ContextMenu = ctxMenu;
-        }
-
-        void menuClose_Click(object sender, RoutedEventArgs e)
-        {
-            throw new System.NotImplementedException();
-        }
 
         public virtual void Draw()
         {
@@ -59,30 +45,40 @@ namespace WpfClient
 
         public virtual void Update(UIMessage uiMessage)
         {
-
         }
 
         public void Destroy()
         {
             if (_grid.Parent != null)
             {
-                _grid.Dispatcher.Invoke(new Action(() =>
+                _grid.Dispatcher.Invoke(() =>
                 {
-                    var children = ((Canvas)_grid.Parent).Children;
+                    UIElementCollection children = ((Canvas) _grid.Parent).Children;
                     if (children != null)
                     {
                         children.Remove(_grid);
                     }
-
-                }));
-
+                });
             }
-
         }
 
-        void _grid_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        public event RightClickEventHandler OnRightClick;
+        public event MouseOverEventHandler OnMouseOver;
+        public event KeyPressedEventHandler OnKeyPressed;
+
+        public void AddContextMenu(ContextMenu ctxMenu)
         {
-            if (e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
+            _grid.ContextMenu = ctxMenu;
+        }
+
+        private void menuClose_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void _grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.RightButton == MouseButtonState.Pressed)
             {
                 if (OnRightClick != null)
                 {
@@ -91,11 +87,8 @@ namespace WpfClient
             }
         }
 
-        void _grid_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void _grid_MouseMove(object sender, MouseEventArgs e)
         {
-
-            
-
             if (OnMouseOver != null)
             {
                 OnMouseOver(this, new MouseOverEventArgs(Id));
@@ -103,13 +96,12 @@ namespace WpfClient
         }
 
 
-        void _grid_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void _grid_KeyDown(object sender, KeyEventArgs e)
         {
             if (OnKeyPressed != null)
             {
                 OnKeyPressed(this, new KeyPressedEventArgs(Id, e.Key));
             }
         }
-
     }
 }

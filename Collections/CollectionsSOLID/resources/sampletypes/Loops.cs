@@ -14,9 +14,9 @@ namespace Samples
                 items.Add(i);
             }
 
-            foreach (var item in items)
+            foreach (int item in items)
             {
-                long nthPrime = FindPrimeNumber(100); 
+                long nthPrime = FindPrimeNumber(100);
             }
         }
 
@@ -28,11 +28,7 @@ namespace Samples
             {
                 items.Add(i);
             }
-            Parallel.ForEach(items, (x) =>
-            {
-                long nthPrime = FindPrimeNumber(100);
-            });
-            
+            Parallel.ForEach(items, x => { long nthPrime = FindPrimeNumber(100); });
         }
 
         public void StandardLoop()
@@ -41,10 +37,8 @@ namespace Samples
 
             for (int i = 0; i < loopCount; i++)
             {
-                long nthPrime = FindPrimeNumber(100); 
+                long nthPrime = FindPrimeNumber(100);
             }
-
-
         }
 
         public void ParallelLoop()
@@ -52,13 +46,7 @@ namespace Samples
             int loopCount = 10;
 
 
-
-            Parallel.For(0, loopCount, (x) =>
-            {
-                long nthPrime = FindPrimeNumber(100); 
-            });
-
-
+            Parallel.For(0, loopCount, x => { long nthPrime = FindPrimeNumber(100); });
         }
 
         public long FindPrimeNumber(int n)
@@ -68,10 +56,10 @@ namespace Samples
             while (count < n)
             {
                 long b = 2;
-                int prime = 1;// to check if found a prime
-                while (b * b <= a)
+                int prime = 1; // to check if found a prime
+                while (b*b <= a)
                 {
-                    if (a % b == 0)
+                    if (a%b == 0)
                     {
                         prime = 0;
                         break;

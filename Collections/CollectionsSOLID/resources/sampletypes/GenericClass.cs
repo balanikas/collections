@@ -3,7 +3,7 @@
     public class GenericClass<T>
     {
         private T _item;
-      
+
 
         public void SetItem(T item)
         {
@@ -14,6 +14,5 @@
         {
             return _item;
         }
-
     }
 }

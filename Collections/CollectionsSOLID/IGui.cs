@@ -1,4 +1,4 @@
-﻿namespace CollectionsSOLID
+﻿namespace Collections
 {
     public interface IGui
     {

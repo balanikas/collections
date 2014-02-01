@@ -2,10 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CollectionsSOLID
+namespace Collections
 {
     public class RunSummaryMessage : Message
     {
+        public RunSummaryMessage(Type objectType, TimeSpan timeElapsed, IEnumerable<MethodExecution> methodExecutions)
+        {
+            ObjectType = objectType;
+            ExecutionTime = timeElapsed;
+
+
+            Summarize(methodExecutions);
+        }
+
         public ObjectState ObjectState { get; private set; }
         public Type ObjectType { get; private set; }
         public string MethodName { get; set; }
@@ -18,18 +27,9 @@ namespace CollectionsSOLID
 
         public double MinMethodExecutionTime { get; private set; }
 
-        public RunSummaryMessage(Type objectType, TimeSpan timeElapsed, IEnumerable<MethodExecution> methodExecutions)
-        {
-            ObjectType = objectType;
-            ExecutionTime = timeElapsed;
-
-            
-            Summarize(methodExecutions);
-        }
-
         private void Summarize(IEnumerable<MethodExecution> methodExecutions)
         {
-            var items = methodExecutions.ToList();
+            List<MethodExecution> items = methodExecutions.ToList();
             if (!items.Any())
             {
                 return;
@@ -40,9 +40,6 @@ namespace CollectionsSOLID
             ExecutionsCount = items.Count();
             FailedExecutionsCount = items.Count(x => !x.Success);
             MethodName = items.First().Name;
-            
         }
-
-      
     }
 }

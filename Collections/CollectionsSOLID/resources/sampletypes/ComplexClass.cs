@@ -13,7 +13,6 @@ namespace Samples
             public X()
             {
                 var myList = new List<string>();
-
             }
         }
 
@@ -26,21 +25,14 @@ namespace Samples
                 for (int i = 0; i < 10; i++)
                 {
                     myList.Add(i.ToString());
-                    var contains = myList.Contains(i.ToString());
+                    bool contains = myList.Contains(i.ToString());
                     myList.Clear();
                 }
-
-
             }
 
             public ComplexClass(int number)
             {
-
             }
-
         }
     }
-
-
-
 }

@@ -7,8 +7,8 @@
     <ProjectGuid>{8F1F74A3-6B19-4544-81A1-9BD94035B2C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CollectionsSOLID</RootNamespace>
-    <AssemblyName>CollectionsSOLID</AssemblyName>
+    <RootNamespace>Collections</RootNamespace>
+    <AssemblyName>Collections</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

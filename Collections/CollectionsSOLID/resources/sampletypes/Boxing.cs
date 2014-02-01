@@ -1,11 +1,11 @@
 ﻿namespace Samples
 {
-    class Boxing
+    internal class Boxing
     {
         public void Box()
         {
             int i = 1;
-            object j = (object)i;
+            object j = i;
         }
 
         public void UnBox()
@@ -13,8 +13,5 @@
             int i = 1;
             object j = i;
         }
-
     }
 }
-  
-

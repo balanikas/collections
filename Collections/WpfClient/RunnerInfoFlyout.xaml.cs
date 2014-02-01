@@ -1,45 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System.ComponentModel;
 using System.Windows.Input;
+using Collections;
 using MahApps.Metro.Controls;
-using System.ComponentModel;
-using System.Linq;
-using CollectionsSOLID;
 
 namespace WpfClient
 {
-
     public partial class RunnerInfoFlyout : Flyout, INotifyPropertyChanged
     {
+        private bool canCloseFlyout;
 
+        private ICommand closeCmd;
 
         public RunnerInfoFlyout()
         {
-
             InitializeComponent();
-
         }
-        public void AddContent(RunSummaryMessage message)
-        {
-            if(message == null)
-            {
-                return;
-            }
-            
-            txtType.Text = message.ObjectType.ToString();
-            txtExecutionTime.Text = message.ExecutionTime.ToString();
-            txtMethod.Text = message.MethodName;
-            var failpercentage = (((double)message.FailedExecutionsCount / (double)message.ExecutionsCount) * 100) + "%";
-
-            txtFailRate.Text = failpercentage + " (" + message.FailedExecutionsCount + "/" + message.ExecutionsCount + ")";
-            txtAvgMethodExecutionTime.Text = message.AvgMethodExecutionTimeInMs + " ms";
-            txtMinMethodExecutionTime.Text = message.MinMethodExecutionTime + " ms";
-            txtMaxMethodExecutionTime.Text = message.MaxMethodExecutionTime + " ms";
-        }
-        private bool canCloseFlyout;
 
         public bool CanCloseFlyout
         {
-            get { return this.canCloseFlyout; }
+            get { return canCloseFlyout; }
             set
             {
                 if (Equals(value, canCloseFlyout))
@@ -51,21 +30,38 @@ namespace WpfClient
             }
         }
 
-        private ICommand closeCmd;
-
         public ICommand CloseCmd
         {
             get
             {
-                return this.closeCmd ?? (closeCmd = new SimpleCommand
+                return closeCmd ?? (closeCmd = new SimpleCommand
                 {
-                    CanExecuteDelegate = x => this.CanCloseFlyout,
-                    ExecuteDelegate = x => this.IsOpen = false
+                    CanExecuteDelegate = x => CanCloseFlyout,
+                    ExecuteDelegate = x => IsOpen = false
                 });
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public void AddContent(RunSummaryMessage message)
+        {
+            if (message == null)
+            {
+                return;
+            }
+
+            txtType.Text = message.ObjectType.ToString();
+            txtExecutionTime.Text = message.ExecutionTime.ToString();
+            txtMethod.Text = message.MethodName;
+            string failpercentage = ((message.FailedExecutionsCount/(double) message.ExecutionsCount)*100) + "%";
+
+            txtFailRate.Text = failpercentage + " (" + message.FailedExecutionsCount + "/" + message.ExecutionsCount +
+                               ")";
+            txtAvgMethodExecutionTime.Text = message.AvgMethodExecutionTimeInMs + " ms";
+            txtMinMethodExecutionTime.Text = message.MinMethodExecutionTime + " ms";
+            txtMaxMethodExecutionTime.Text = message.MaxMethodExecutionTime + " ms";
+        }
 
         private void RaisePropertyChanged(string propertyName)
         {
@@ -74,7 +70,5 @@ namespace WpfClient
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
 }

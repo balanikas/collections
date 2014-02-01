@@ -81,7 +81,6 @@
     <Compile Include="UCTypes.xaml.cs">
       <DependentUpon>UCTypes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utils.cs" />
     <Compile Include="Views\ExploreMode.xaml.cs">
       <DependentUpon>ExploreMode.xaml</DependentUpon>
     </Compile>
@@ -163,9 +162,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CollectionsSOLID\CollectionsSOLID.csproj">
+    <ProjectReference Include="..\CollectionsSOLID\Collections.csproj">
       <Project>{8f1f74a3-6b19-4544-81a1-9bd94035b2c1}</Project>
-      <Name>CollectionsSOLID</Name>
+      <Name>Collections</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

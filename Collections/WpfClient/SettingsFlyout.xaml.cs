@@ -1,33 +1,32 @@
-﻿using System.Collections.Generic;
-using System.Windows.Input;
-using MahApps.Metro.Controls;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using CollectionsSOLID;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using Collections;
+using MahApps.Metro.Controls;
 
 namespace WpfClient
 {
-
     public partial class SettingsFlyout : Flyout, INotifyPropertyChanged
     {
-      
+        private bool canCloseFlyout;
+
+        private ICommand closeCmd;
 
         public SettingsFlyout()
         {
-
             InitializeComponent();
-            
-            var drawTypes = System.Enum.GetValues(typeof(DrawTypes)).Cast<DrawTypes>();
+
+            IEnumerable<DrawTypes> drawTypes = Enum.GetValues(typeof (DrawTypes)).Cast<DrawTypes>();
             cmbGraphics.ItemsSource = drawTypes;
         }
 
-     
-
-        private bool canCloseFlyout;
-
         public bool CanCloseFlyout
         {
-            get { return this.canCloseFlyout; }
+            get { return canCloseFlyout; }
             set
             {
                 if (Equals(value, canCloseFlyout))
@@ -39,16 +38,14 @@ namespace WpfClient
             }
         }
 
-        private ICommand closeCmd;
-
         public ICommand CloseCmd
         {
             get
             {
-                return this.closeCmd ?? (closeCmd = new SimpleCommand
+                return closeCmd ?? (closeCmd = new SimpleCommand
                 {
-                    CanExecuteDelegate = x => this.CanCloseFlyout,
-                    ExecuteDelegate = x => this.IsOpen = false
+                    CanExecuteDelegate = x => CanCloseFlyout,
+                    ExecuteDelegate = x => IsOpen = false
                 });
             }
         }
@@ -63,20 +60,19 @@ namespace WpfClient
             }
         }
 
-        private void sldLoopCount_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        private void sldLoopCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Settings.Loops = (int)e.NewValue;
+            Settings.Loops = (int) e.NewValue;
         }
 
-        private void cmbGraphics_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void cmbGraphics_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Settings.DrawAs = (DrawTypes)cmbGraphics.SelectedItem;
-            
+            Settings.DrawAs = (DrawTypes) cmbGraphics.SelectedItem;
         }
 
-        private void radUseTPL_Checked(object sender, System.Windows.RoutedEventArgs e)
+        private void radUseTPL_Checked(object sender, RoutedEventArgs e)
         {
-            if(radUseBW.IsChecked == true)
+            if (radUseBW.IsChecked == true)
             {
                 Settings.ThreadingType = ObjectType.BackgroundWorkerBased;
             }
@@ -85,6 +81,5 @@ namespace WpfClient
                 Settings.ThreadingType = ObjectType.ParallelTaskBased;
             }
         }
-
     }
 }

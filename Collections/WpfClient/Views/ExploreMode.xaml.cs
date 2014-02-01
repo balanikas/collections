@@ -1,36 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using CollectionsSOLID;
+using Collections;
 
 namespace WpfClient.Views
 {
     /// <summary>
-    /// Interaction logic for ExploreMode.xaml
+    ///     Interaction logic for ExploreMode.xaml
     /// </summary>
     public partial class ExploreMode : UserControl
     {
-      
-        Runtime _runtime;
-        ILogger _logger;
+        private readonly ILogger _logger;
+        private readonly Runtime _runtime;
+
         public ExploreMode()
         {
             InitializeComponent();
 
             _logger = new TextboxLogger(txtLog);
 
-          
+
             Canvas.MouseDown += _canvas_MouseDown;
             //_canvas.Background = this.Resources["CanvasGameStarted"] as LinearGradientBrush;
 
@@ -39,18 +31,14 @@ namespace WpfClient.Views
             _runtime = new Runtime();
 
             _runtime.Start();
-
         }
 
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-
-
             _runtime.Clear();
             GC.Collect();
             GC.WaitForPendingFinalizers();
-
         }
 
 
@@ -60,7 +48,6 @@ namespace WpfClient.Views
         }
 
 
-
         private void RightClickHandler(object source, RightClickEventArgs e)
         {
             _runtime.Remove(e.EventInfo);
@@ -68,12 +55,10 @@ namespace WpfClient.Views
 
         private void MouseOverHandler(object source, MouseOverEventArgs e)
         {
-
         }
 
 
-
-        void _canvas_MouseDown(object sender, MouseButtonEventArgs e)
+        private void _canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!_runtime.IsRunning())
             {
@@ -93,7 +78,6 @@ namespace WpfClient.Views
             //        var c = VisualTreeHelper.GetParent(target.VisualHit);
             //    }
             //}
-
         }
 
 
@@ -105,17 +89,17 @@ namespace WpfClient.Views
                 return;
             }
 
-            var methods = ucTypes.SelectedMethods;
+            List<MethodInfo> methods = ucTypes.SelectedMethods;
 
 
             IGui gui = null;
-            var drawType = Settings.DrawAs;
+            DrawTypes drawType = Settings.DrawAs;
             if (drawType == DrawTypes.Circle)
             {
                 var circle = new CustomCircle(Canvas.Children, location);
 
 
-                circle.OnMouseOver += new MouseOverEventHandler(MouseOverHandler);
+                circle.OnMouseOver += MouseOverHandler;
                 circle.OnKeyPressed += circle_OnKeyPressed;
                 gui = circle;
             }
@@ -124,7 +108,7 @@ namespace WpfClient.Views
                 var rectangle = new CustomRectangle(Canvas.Children, location);
 
 
-                rectangle.OnMouseOver += new MouseOverEventHandler(MouseOverHandler);
+                rectangle.OnMouseOver += MouseOverHandler;
                 gui = rectangle;
             }
 
@@ -148,20 +132,19 @@ namespace WpfClient.Views
 
             runner = RunnerFactory.Get(Settings.ThreadingType, behavior, gui, _logger, Settings.Loops);
 
-            var ctxMenu = ShapeContextMenu.Get(
-                (s, e) => _runtime.Remove(runner.Id), 
+            ContextMenu ctxMenu = ShapeContextMenu.Get(
+                (s, e) => _runtime.Remove(runner.Id),
                 (s, e) => MainWindow.ToggleFlyout(1, _runtime.GetById(runner.Id), true),
                 (s, e) => MessageBox.Show("shows the code that executes in the code explorer")
                 );
 
-            ((CustomShape)gui).AddContextMenu(ctxMenu);
+            ((CustomShape) gui).AddContextMenu(ctxMenu);
 
             _runtime.Add(runner);
             runner.Start();
-
         }
 
-        void circle_OnKeyPressed(object source, KeyPressedEventArgs e)
+        private void circle_OnKeyPressed(object source, KeyPressedEventArgs e)
         {
             if (e.Key == Key.D1)
             {

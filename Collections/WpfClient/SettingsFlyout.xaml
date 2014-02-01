@@ -14,7 +14,8 @@
     <controls:Flyout.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -42,18 +43,21 @@
 
     <StackPanel Orientation="Vertical"
                 Margin="10">
-        <Slider x:Name="sldLoopCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="10000000" LargeChange="10000" SmallChange="10" Value="10000" AutoToolTipPlacement="TopLeft" Height="26" ValueChanged="sldLoopCount_ValueChanged"/>
-        <ComboBox x:Name="cmbGraphics" HorizontalAlignment="Stretch" VerticalAlignment="Top"  SelectedIndex="0" Height="26" SelectionChanged="cmbGraphics_SelectionChanged"/>
+        <Slider x:Name="sldLoopCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="10000000"
+                LargeChange="10000" SmallChange="10" Value="10000" AutoToolTipPlacement="TopLeft" Height="26"
+                ValueChanged="sldLoopCount_ValueChanged" />
+        <ComboBox x:Name="cmbGraphics" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectedIndex="0"
+                  Height="26" SelectionChanged="cmbGraphics_SelectionChanged" />
 
 
         <RadioButton Visibility="Collapsed" x:Name="radUseTPL" Margin="0, 10, 0, 0"
-                                         Content="Use Task Parallel Library"
-                                         GroupName="1" Checked="radUseTPL_Checked" />
+                     Content="Use Task Parallel Library"
+                     GroupName="1" Checked="radUseTPL_Checked" />
         <RadioButton Visibility="Collapsed" x:Name="radUseBW" Margin="0, 10, 0, 0"
-                                         Content="Use Background Workers"
-                                         GroupName="1"
-                                         IsChecked="True" />
-       
+                     Content="Use Background Workers"
+                     GroupName="1"
+                     IsChecked="True" />
+
     </StackPanel>
 
 </controls:Flyout>
