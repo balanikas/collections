@@ -37,6 +37,9 @@
     <ApplicationIcon>appicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.3.3.0\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit">
       <HintPath>..\packages\AvalonEdit.4.3.1.9430\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
@@ -63,6 +66,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AnimationsHelper.cs" />
+    <Compile Include="Bootstrap.cs" />
     <Compile Include="RunnerInfoFlyout.xaml.cs">
       <DependentUpon>RunnerInfoFlyout.xaml</DependentUpon>
     </Compile>

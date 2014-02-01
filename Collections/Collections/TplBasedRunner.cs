@@ -12,16 +12,16 @@ namespace Collections
         private readonly IBehavior _behavior;
         private readonly CancellationTokenSource _cts;
         private readonly ILogger _logger;
-        private readonly int _loopCount;
         private readonly List<IGui> _uiListeners;
+        private readonly RunnerSettings _settings;
         private Task _task;
 
-        public TplBasedRunner(IBehavior behavior, IGui gui, ILogger logger, int loopCount = 1000000)
+        public TplBasedRunner(IBehavior behavior, IGui gui, ILogger logger,RunnerSettings settings)
         {
             _uiListeners = new List<IGui>();
 
             _behavior = behavior;
-            _loopCount = loopCount;
+            _settings = settings;
             _logger = logger;
             _cts = new CancellationTokenSource();
 
@@ -106,7 +106,7 @@ namespace Collections
             var watch = new Stopwatch();
             watch.Start();
 
-            for (int i = 1; (i <= _loopCount); i++)
+            for (int i = 1; (i <= _settings.Iterations); i++)
             {
                 CancellationToken ct = _cts.Token;
                 ct.ThrowIfCancellationRequested();
@@ -115,19 +115,19 @@ namespace Collections
 
 
                 //check if end of loop, or check every now and then
-                if (i%(_loopCount/10) == 0 || i == _loopCount)
+                if (i % (_settings.Iterations / 10) == 0 || i == _settings.Iterations)
                 {
                     methodExecution = _behavior.Update(false);
 
                     var state = ObjectState.Running;
-                    if (i == _loopCount)
+                    if (i == _settings.Iterations)
                     {
                         watch.Stop();
                         state = ObjectState.Finished;
                         _logger.Flush();
                     }
 
-                    var progressCount = (int) (i/(double) _loopCount*100);
+                    var progressCount = (int)(i / (double)_settings.Iterations * 100);
                     _logger.Info(Id + ": " + progressCount);
 
                     var msg = new UIMessage(

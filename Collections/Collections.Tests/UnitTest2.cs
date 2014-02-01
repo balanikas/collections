@@ -66,9 +66,12 @@ namespace Collections.Tests
 
             IRunner runner;
 
+            var settings = new RunnerSettings();
+            settings.Iterations = 100;
+            settings.RunnerType = RunnerType.BackgroundWorkerBased;
 
-            runner = Collections.RunnerFactory.Get(ObjectType.BackgroundWorkerBased, behavior, guiMock.Object,
-                loggerMock.Object);
+            runner = Collections.RunnerFactory.Get( behavior, guiMock.Object,
+                loggerMock.Object,settings );
             Assert.IsTrue(!String.IsNullOrEmpty(runner.Id));
             Assert.IsTrue(!String.IsNullOrEmpty(guiMock.Object.Id));
             Assert.AreEqual(runner.Id, guiMock.Object.Id);

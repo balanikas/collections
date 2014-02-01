@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8F1F74A3-6B19-4544-81A1-9BD94035B2C1}</ProjectGuid>
+    <ProjectGuid>{4FA42EDA-D986-4B38-B166-57434B5BA181}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Collections</RootNamespace>
-    <AssemblyName>Collections</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>Samples</RootNamespace>
+    <AssemblyName>Samples</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,35 +40,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleWriter.cs" />
-    <Compile Include="Messages\ErrorMessage.cs" />
-    <Compile Include="ILogger.cs" />
-    <Compile Include="LoadedType.cs" />
-    <Compile Include="MethodExecution.cs" />
-    <Compile Include="ObjectBehavior.cs" />
-    <Compile Include="RunnerFactory.cs" />
-    <Compile Include="RunnerSettings.cs" />
-    <Compile Include="RunnerType.cs" />
-    <Compile Include="TypesLoader.cs" />
-    <Compile Include="Messages\UIMessage.cs" />
-    <Compile Include="Messages\RunSummaryMessage.cs" />
-    <Compile Include="Runtime.cs" />
-    <Compile Include="IBehavior.cs" />
-    <Compile Include="IRunner.cs" />
-    <Compile Include="IGui.cs" />
-    <Compile Include="Messages\Message.cs" />
+    <Compile Include="AbstractClass.cs" />
+    <Compile Include="Accessibility.cs" />
+    <Compile Include="Arrays.cs" />
+    <Compile Include="Boxing.cs" />
+    <Compile Include="CheckForEmptyString.cs" />
+    <Compile Include="ComplexClass.cs" />
+    <Compile Include="Conditionals.cs" />
+    <Compile Include="Enum.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="GenericClass.cs" />
+    <Compile Include="GenericMethods.cs" />
+    <Compile Include="ManyConstructors.cs" />
+    <Compile Include="MethodInvocations.cs" />
+    <Compile Include="NewOperator.cs" />
+    <Compile Include="NoEmptyConstructor.cs" />
+    <Compile Include="NonStaticClassWithStaticMembers.cs" />
+    <Compile Include="OneEmptyConstructor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BWBasedRunner.cs" />
-    <Compile Include="SupportedTypes.cs" />
-    <Compile Include="ThreadSafeRandom.cs" />
-    <Compile Include="TplBasedRunner.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="SampleUtils.cs" />
+    <Compile Include="Search.cs" />
+    <Compile Include="SimpleClass.cs" />
+    <Compile Include="SimpleStruct.cs" />
+    <Compile Include="Sort.cs" />
+    <Compile Include="StaticClass.cs" />
+    <Compile Include="StringComparison.cs" />
+    <Compile Include="StringUtils.cs" />
+    <Compile Include="TypeCasting.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="visualbasic.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="sourcefiles\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy /Y $(ProjectDir)\*.* $(ProjectDir)\sourcefiles\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

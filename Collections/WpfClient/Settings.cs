@@ -14,8 +14,7 @@ namespace WpfClient
         public static int Loops { get; set; }
         public static DrawTypes DrawAs { get; set; }
 
-        public static ObjectType ThreadingType { get; set; }
+        public static RunnerType ThreadingType { get; set; }
 
-        public static bool OptimizeRunners { get; set; }
     }
 }

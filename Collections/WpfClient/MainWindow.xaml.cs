@@ -16,7 +16,7 @@ namespace WpfClient
         public MainWindow()
         {
             InitializeComponent();
-
+           
             _self = this;
         }
 

@@ -21,8 +21,9 @@ namespace WpfClient.Views
             InitializeComponent();
 
             _logger = new TextboxLogger(txtLog);
+            Console.SetOut(new ConsoleWriter(_logger));
 
-
+            this.UcTypes.Logger = _logger;
             Canvas.MouseDown += _canvas_MouseDown;
             //_canvas.Background = this.Resources["CanvasGameStarted"] as LinearGradientBrush;
 
@@ -69,27 +70,19 @@ namespace WpfClient.Views
             {
                 CreateRunner(p);
             }
-            //if (e.RightButton == MouseButtonState.Pressed)
-            //{
-            //    HitTestResult target = VisualTreeHelper.HitTest(_canvas, e.GetPosition(_canvas));
-
-            //    while (!(target.VisualHit is Control) && (target != null))
-            //    {
-            //        var c = VisualTreeHelper.GetParent(target.VisualHit);
-            //    }
-            //}
+          
         }
 
 
         private void CreateRunner(Point location)
         {
-            LoadedType objectType = ucTypes.SelectedType;
+            LoadedType objectType = UcTypes.SelectedType;
             if (objectType == null)
             {
                 return;
             }
 
-            List<MethodInfo> methods = ucTypes.SelectedMethods;
+            List<MethodInfo> methods = UcTypes.SelectedMethods;
 
 
             IGui gui = null;
@@ -106,7 +99,6 @@ namespace WpfClient.Views
             else if (drawType == DrawTypes.Rectangle)
             {
                 var rectangle = new CustomRectangle(Canvas.Children, location);
-
 
                 rectangle.OnMouseOver += MouseOverHandler;
                 gui = rectangle;
@@ -130,7 +122,11 @@ namespace WpfClient.Views
                 return;
             }
 
-            runner = RunnerFactory.Get(Settings.ThreadingType, behavior, gui, _logger, Settings.Loops);
+            var settings = new RunnerSettings();
+            settings.Iterations = Settings.Loops;
+            settings.RunnerType = Settings.ThreadingType;
+
+            runner = RunnerFactory.Get( behavior, gui, _logger, settings);
 
             ContextMenu ctxMenu = ShapeContextMenu.Get(
                 (s, e) => _runtime.Remove(runner.Id),

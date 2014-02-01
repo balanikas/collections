@@ -8,24 +8,29 @@ using System.Threading.Tasks;
 
 namespace Collections
 {
-    public static class TypesLoader
+    public class TypesLoader
     {
-        public static async Task<List<LoadedType>> FromDiscAsync(string filePath)
+        readonly ILogger _logger;
+        public TypesLoader(ILogger logger)
+        {
+            _logger = logger;
+        }
+        public async Task<List<LoadedType>> FromDiscAsync(string filePath)
         {
             return await Task.Factory.StartNew(() => { return FromDisc(filePath); });
         }
 
-        public static async Task<List<LoadedType>> FromBCLAsync()
+        public async Task<List<LoadedType>> FromBCLAsync()
         {
             return await Task.Factory.StartNew(() => { return FromBCL(); });
         }
 
-        public static async Task<List<LoadedType>> FromAssemblyAsync(string filePath)
+        public async Task<List<LoadedType>> FromAssemblyAsync(string filePath)
         {
             return await Task.Factory.StartNew(() => { return FromAssembly(filePath); });
         }
 
-        public static List<LoadedType> FromDisc(string filePath)
+        public List<LoadedType> FromDisc(string filePath)
         {
             bool isEmpty = String.IsNullOrEmpty(filePath);
             bool isValid = filePath.IndexOfAny(Path.GetInvalidPathChars()) == -1;
@@ -69,6 +74,8 @@ namespace Collections
 
                 foreach (TypeInfo definedType in results.CompiledAssembly.DefinedTypes)
                 {
+
+
                     //if (definedType.Name == fileName) //for vb files My.MyApplication is generated...wtf
                     {
                         types.Add(new LoadedType
@@ -84,7 +91,7 @@ namespace Collections
             return types;
         }
 
-        public static List<LoadedType> FromBCL()
+        public List<LoadedType> FromBCL()
         {
             var data = new List<LoadedType>();
 
@@ -107,7 +114,7 @@ namespace Collections
             return data;
         }
 
-        public static List<LoadedType> FromAssembly(string filePath)
+        public List<LoadedType> FromAssembly(string filePath)
         {
             var data = new List<LoadedType>();
 
@@ -157,7 +164,7 @@ namespace Collections
             return data;
         }
 
-        private static CompilerResults CompileFromSource(string source, string language = "CSharp")
+        private CompilerResults CompileFromSource(string source, string language = "CSharp")
         {
             CodeDomProvider compiler = CodeDomProvider.CreateProvider(language);
 
@@ -184,7 +191,7 @@ namespace Collections
             return compilationResults;
         }
 
-        private static CompilerResults CompileFromSource(string[] sources, string language = "CSharp")
+        private CompilerResults CompileFromSource(string[] sources, string language = "CSharp")
         {
             CodeDomProvider compiler = CodeDomProvider.CreateProvider(language);
 
@@ -212,7 +219,7 @@ namespace Collections
             return compilationResults;
         }
 
-        private static CompilerResults CompileFromFile(string filePath)
+        private  CompilerResults CompileFromFile(string filePath)
         {
             string language;
 
@@ -235,7 +242,7 @@ namespace Collections
         }
 
 
-        public static void SaveType(LoadedType type)
+        public void SaveType(LoadedType type)
         {
             if (File.Exists(type.FilePath))
             {
@@ -247,7 +254,7 @@ namespace Collections
             }
         }
 
-        public static bool TryCompileFromSource(string source)
+        public bool TryCompileFromSource(string source)
         {
             try
             {

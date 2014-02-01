@@ -74,11 +74,11 @@ namespace WpfClient
         {
             if (radUseBW.IsChecked == true)
             {
-                Settings.ThreadingType = ObjectType.BackgroundWorkerBased;
+                Settings.ThreadingType = RunnerType.BackgroundWorkerBased;
             }
             else
             {
-                Settings.ThreadingType = ObjectType.ParallelTaskBased;
+                Settings.ThreadingType = RunnerType.ParallelTaskBased;
             }
         }
     }

@@ -2,22 +2,18 @@
 
 namespace Collections
 {
-    public enum ObjectType
-    {
-        BackgroundWorkerBased,
-        ParallelTaskBased
-    }
+   
 
     public static class RunnerFactory
     {
-        public static IRunner Get(ObjectType type, IBehavior behavior, IGui gui, ILogger logger, int loopCount = 1000000)
+        public static IRunner Get(IBehavior behavior, IGui gui, ILogger logger,RunnerSettings settings)
         {
-            switch (type)
+            switch (settings.RunnerType)
             {
-                case ObjectType.BackgroundWorkerBased:
-                    return new BWBasedRunner(behavior, gui, logger, loopCount);
-                case ObjectType.ParallelTaskBased:
-                    return new TplBasedRunner(behavior, gui, logger, loopCount);
+                case RunnerType.BackgroundWorkerBased:
+                    return new BWBasedRunner(behavior, gui, logger, settings);
+                case RunnerType.ParallelTaskBased:
+                    return new TplBasedRunner(behavior, gui, logger, settings);
                 default:
                     throw new NotImplementedException();
             }

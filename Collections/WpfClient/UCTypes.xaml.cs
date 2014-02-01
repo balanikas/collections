@@ -13,16 +13,21 @@ namespace WpfClient
     /// </summary>
     public partial class UCTypes : UserControl
     {
+        private readonly TypesLoader _typesLoader;
+
         public UCTypes()
         {
             InitializeComponent();
+            _typesLoader = new TypesLoader(Logger);
+
 #if DEBUG
             txtFolderLocation.Text =
-                @"C:\Users\grillo\Documents\GitHub\collections\Collections\CollectionsSOLID\resources\publicsampletypes";
-            txtAssemblyLocation.Text = @"C:\dev\collections\Collections\CollectionsSOLID\bin\Debug\CollectionsSOLID.dll";
+                @"C:\Users\grillo\Documents\GitHub\collections\Collections\Samples\sourcefiles";
+            txtAssemblyLocation.Text = @"C:\dev\collections\Collections\Collections\bin\Debug\Collections.dll";
 #endif
         }
 
+        public ILogger Logger { get;set; }
 
         public LoadedType SelectedType
         {
@@ -63,14 +68,14 @@ namespace WpfClient
             var allTypes = new List<LoadedType>();
             if (loadBclTypes)
             {
-                List<LoadedType> types = await TypesLoader.FromBCLAsync();
+                List<LoadedType> types = await _typesLoader.FromBCLAsync();
                 allTypes.AddRange(types);
             }
             if (loadAssemblyTypes)
             {
                 if (IsValidAssembly(txtAssemblyLocation.Text))
                 {
-                    List<LoadedType> types = await TypesLoader.FromAssemblyAsync(txtAssemblyLocation.Text);
+                    List<LoadedType> types = await _typesLoader.FromAssemblyAsync(txtAssemblyLocation.Text);
                     allTypes.AddRange(types);
                 }
             }
@@ -78,7 +83,7 @@ namespace WpfClient
             {
                 if (IsValidFolder(txtFolderLocation.Text))
                 {
-                    List<LoadedType> types = await TypesLoader.FromDiscAsync(txtFolderLocation.Text);
+                    List<LoadedType> types = await _typesLoader.FromDiscAsync(txtFolderLocation.Text);
                     allTypes.AddRange(types);
                 }
             }
@@ -135,7 +140,7 @@ namespace WpfClient
                 actions.Add(method.ToString(), method);
             }
 
-            lstMethods.ItemsSource = actions; // selectedType.Key.GetMethods().Select(x => x.Name);
+            lstMethods.ItemsSource = actions; 
             if (actions.Count > 0)
             {
                 lstMethods.SelectedIndex = 0;
@@ -153,9 +158,9 @@ namespace WpfClient
             }
             var type = (LoadedType) lstTypes.SelectedItem;
 
-            if (TypesLoader.TryCompileFromSource(avalonEdit.Text))
+            if (_typesLoader.TryCompileFromSource(avalonEdit.Text))
             {
-                TypesLoader.SaveType(new LoadedType
+                _typesLoader.SaveType(new LoadedType
                 {
                     FilePath = type.FilePath,
                     Source = avalonEdit.Text,

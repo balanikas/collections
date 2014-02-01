@@ -1,9 +1,6 @@
 TODO:
 
-
-* cleanup
-
-
+* autofac
 * get correct sizeof ... IMPOSSSIBLE
 * use Roslyn as a compiler (problematic?, needs vs2012 stuff)..maybe, its not really ready yet...btw, whats the purpose of that?
 * kunna styra exakt vilka actions och hur många ggr
@@ -39,20 +36,6 @@ USE CASES:
 
 
 
-* add samples:
-1. different ways to call methods, slowest to fastest
-2. boxing/unboxing
-3. other (google it)
-
-
-
-
-
---------------------- snow in january ------------------------
-4 major things: 
-1. Optimize reflection
-2. fix GUI, UX, etc
-4. add test cases
 
 
 * investigate best practices for async await
@@ -69,13 +52,6 @@ with reflection. Reflection the item can be instantiated, but if it is a complex
 * user can see how long it takes to run something, min, max, avg values, successrate, log of what went wrong, log of random runs.
 
 
-Collections
-* load assemblies, code files ( to be used as ammo)
-* 
-* 
-
-Play
-* some game where the goal for the user is to learn programming, algorithms and data structures AND to be fun and challenging. maybe online competition
 
 
 --------------
@@ -100,7 +76,6 @@ note: from 34 - 60 mb allocated, none releashed
 
 
 * contextmenu -> show in code explorer (will show the code in the explorer)
-* change bgr color of avaloedit
 * when code has changed, highlight that in some way
 * button "Clear", adjust size, maybe move close to canvas
 * feels awkward to have info as a flyout.. maybe make more like the log window.

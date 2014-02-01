@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using Collections.Messages;
 
@@ -12,27 +13,26 @@ namespace Collections
     public class BWBasedRunner : IRunner
     {
         private readonly IBehavior _behavior;
-        private readonly BackgroundWorker _bw = new BackgroundWorker();
+        private readonly BackgroundWorker _bw;
         private readonly ILogger _logger;
-        private readonly int _loopCount;
         private readonly ConcurrentBag<MethodExecution> _methodExecutions;
-
+        private readonly RunnerSettings _settings;
         private readonly List<IGui> _uiListeners;
         private readonly Stopwatch _watch;
         private UIMessage _lastMessage;
 
-        public BWBasedRunner(IBehavior behavior, IGui gui, ILogger logger, int loopCount = 1000000)
+        public BWBasedRunner(IBehavior behavior, IGui gui, ILogger logger, RunnerSettings settings)
         {
             _uiListeners = new List<IGui>();
 
             _behavior = behavior;
-            _loopCount = loopCount;
+            _settings = settings;
             _logger = logger;
             _watch = new Stopwatch();
             _methodExecutions = new ConcurrentBag<MethodExecution>();
+            Console.SetOut(new StringWriter());
 
-            _bw.WorkerReportsProgress = true;
-            _bw.WorkerSupportsCancellation = true;
+            _bw = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
             _bw.DoWork += bw_DoWork;
             _bw.ProgressChanged += bw_ProgressChanged;
             _bw.RunWorkerCompleted += bw_RunWorkerCompleted;
@@ -106,7 +106,7 @@ namespace Collections
             var methodExecution = new MethodExecution();
             worker.ReportProgress(0, methodExecution);
 
-            for (int i = 1; i <= _loopCount; i++)
+            for (int i = 1; i <= _settings.Iterations; i++)
             {
                 if (worker.CancellationPending)
                 {
@@ -115,20 +115,20 @@ namespace Collections
                 }
 
                 TimeSpan beforeExecution = _watch.Elapsed;
-                bool log = i%(_loopCount/100) == 0 || i == _loopCount;
+                bool log = i % (_settings.Iterations / 100) == 0 || i == _settings.Iterations;
                 methodExecution = _behavior.Update(log);
                 if (methodExecution != null)
                 {
                     methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
                     _methodExecutions.Add(methodExecution);
 
-                    var progressCount = (int) (i/(double) _loopCount*100);
+                    var progressCount = (int)(i / (double)_settings.Iterations * 100);
                     worker.ReportProgress(progressCount, methodExecution);
                 }
 
-                if (i == _loopCount)
+                if (i == _settings.Iterations)
                 {
-                    var progressCount = (int) (i/(double) _loopCount*100);
+                    var progressCount = (int)(i / (double)_settings.Iterations * 100);
                     worker.ReportProgress(progressCount, methodExecution);
                 }
             }
