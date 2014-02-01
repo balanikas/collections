@@ -1,4 +1,6 @@
-﻿namespace Collections
+﻿using Collections.Messages;
+
+namespace Collections
 {
     public interface IRunner
     {

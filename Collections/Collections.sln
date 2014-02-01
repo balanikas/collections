@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Collections.Tests", "Collec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfClient", "WpfClient\WpfClient.csproj", "{BAD54BF3-4AC3-417B-92C7-9B1832116AB0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "Samples\Samples.csproj", "{73874D80-2F96-4511-B720-CCB69CD3BA80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{BAD54BF3-4AC3-417B-92C7-9B1832116AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAD54BF3-4AC3-417B-92C7-9B1832116AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAD54BF3-4AC3-417B-92C7-9B1832116AB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73874D80-2F96-4511-B720-CCB69CD3BA80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73874D80-2F96-4511-B720-CCB69CD3BA80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73874D80-2F96-4511-B720-CCB69CD3BA80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73874D80-2F96-4511-B720-CCB69CD3BA80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

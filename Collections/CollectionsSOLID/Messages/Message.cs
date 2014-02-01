@@ -1,4 +1,4 @@
-﻿namespace Collections
+﻿namespace Collections.Messages
 {
     public enum ObjectState
     {

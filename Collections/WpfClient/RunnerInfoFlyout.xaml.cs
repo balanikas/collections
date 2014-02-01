@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
 using Collections;
+using Collections.Messages;
 using MahApps.Metro.Controls;
 
 namespace WpfClient

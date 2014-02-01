@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Collections
+namespace Collections.Messages
 {
     public class UIMessage : Message
     {

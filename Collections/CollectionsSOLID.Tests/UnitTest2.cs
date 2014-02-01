@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using Collections.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 

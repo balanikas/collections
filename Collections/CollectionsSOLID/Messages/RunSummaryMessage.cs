@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Collections
+namespace Collections.Messages
 {
     public class RunSummaryMessage : Message
     {

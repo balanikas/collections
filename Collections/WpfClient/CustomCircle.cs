@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Collections;
+using Collections.Messages;
 
 namespace WpfClient
 {
