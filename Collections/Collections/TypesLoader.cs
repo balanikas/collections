@@ -71,7 +71,8 @@ namespace Collections
                 string fileContent = File.ReadAllText(file);
 
                 CompilerResults results = CompileFromFile(file);
-
+               
+         
                 foreach (TypeInfo definedType in results.CompiledAssembly.DefinedTypes)
                 {
 
@@ -172,8 +173,9 @@ namespace Collections
             {
                 GenerateExecutable = false,
                 GenerateInMemory = true,
+                CompilerOptions = "/t:library /d:TRACE"
             };
-
+            
             parms.ReferencedAssemblies.Add("System.dll");
             parms.ReferencedAssemblies.Add("System.Core.dll");
             CompilerResults compilationResults = compiler.CompileAssemblyFromSource(parms, source);

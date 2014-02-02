@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Autofac;
 using Collections;
 
 namespace WpfClient.Views
@@ -14,7 +16,7 @@ namespace WpfClient.Views
     public partial class ExploreMode : UserControl
     {
         private readonly ILogger _logger;
-        private readonly Runtime _runtime;
+        private readonly IRuntime _runtime;
 
         public ExploreMode()
         {
@@ -28,8 +30,7 @@ namespace WpfClient.Views
             //_canvas.Background = this.Resources["CanvasGameStarted"] as LinearGradientBrush;
 
             //gridGameArea.Children.Add(_canvas);
-
-            _runtime = new Runtime();
+            _runtime = Bootstrap.Configure().Resolve<IRuntime>();
 
             _runtime.Start();
         }

@@ -39,7 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SynchronizedTraceListener.cs" />
     <Compile Include="ConsoleWriter.cs" />
+    <Compile Include="IRuntime.cs" />
     <Compile Include="Messages\ErrorMessage.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="LoadedType.cs" />

@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Collections
 {
-    public class Runtime
+   
+
+    public class Runtime : IRuntime
     {
         private readonly CancellationTokenSource _cts;
         private readonly IDictionary<string, IRunner> _gObjects;
@@ -14,6 +17,8 @@ namespace Collections
         {
             _gObjects = new Dictionary<string, IRunner>();
             _cts = new CancellationTokenSource();
+
+           
         }
 
         public void Stop()

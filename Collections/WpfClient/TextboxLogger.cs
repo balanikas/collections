@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -19,8 +20,15 @@ namespace WpfClient
             var doc = new FlowDocument();
             _textOutput.Document = doc;
             _logBuffer = new Queue<LogMessage>();
+
+            var traceListener = new SynchronizedTraceListener(Info);
+            Trace.Listeners.Add(traceListener);
         }
 
+        public void AddTraceListener(TraceWriterHandler handler)
+        {
+            
+        }
         public int Count
         {
             get { return _logBuffer.Count; }

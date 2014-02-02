@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Autofac;
 using Collections;
 using MahApps.Metro;
 using MahApps.Metro.Controls;
@@ -18,6 +19,8 @@ namespace WpfClient
             InitializeComponent();
            
             _self = this;
+
+            
         }
 
         public static void ShowProgressBar()
