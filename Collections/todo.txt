@@ -1,46 +1,14 @@
 TODO:
 
-* autofac
-* get correct sizeof ... IMPOSSSIBLE
-* use Roslyn as a compiler (problematic?, needs vs2012 stuff)..maybe, its not really ready yet...btw, whats the purpose of that?
-* kunna styra exakt vilka actions och hur många ggr
+* Use autofac to setup the Collections library
+* use Roslyn as a compiler 
 * add links to msdn doc. user must be able to easily go to official doc when mouse over stuff.... or similar
 * micromanage the threading/task handling to get more smooth and instant feedback. dont burden the ui thread.
 * IMPORTANT: most often code will not be simple, i.e. it will be complex, contain references to other assemblies, etc.
 user should be able to select an assembly to work with, when selected, all types are listed in listObjects. dont show code.
-
 * must not be able to compile other than "from folder", or own code
-* handle many more cases (static classes, parameter types, etc)
-
-* consider using DLR instead of reflection, for increased performance. At least it  will be fun to implement!
-
-* add support for non generic collections OK
-
-
-CONCEPT:
-* koncept, if game it must be fun.
-
-USE CASES:
-* Chris want to find out what are the performance characteristics of each collection, experiment with different methods, objects, etc..is fun for a few minutes at most
-* Elaine wants to know how much mem her objects consumes, and perhaps how much 1000 of her objects consume.
-* Mike wants to run code and see how the system is affected (cpu,mem)
-
-
-
-
-
-
-1. test utility classes
-2. test collections performance
-3. 
-
-
-
-
-
 * investigate best practices for async await
 
-modes:
 
 Explore
 * load assemblies, code files
@@ -50,38 +18,17 @@ Explore
 * a param may be supported if that type is provided and can be easily get a random value. for example void Add(MyType x) may work 
 with reflection. Reflection the item can be instantiated, but if it is a complex object then it will be hard to generate a random such...
 * user can see how long it takes to run something, min, max, avg values, successrate, log of what went wrong, log of random runs.
-
-
-
-
---------------
-
 * pre jit stuff for more correct results
 * can own code output to Console? would be nice
-
-
 continue with this : http://msdn.microsoft.com/en-us/magazine/dd419663.aspx
-and this: C:\dev\MvvmDemoApp
-
-
----------
-* profile with new fixes
-* optimize so that multiple sources are compiled into same assembly
-
-
-
-note: from 34 - 60 mb allocated, none releashed
-
 
 
 
 * contextmenu -> show in code explorer (will show the code in the explorer)
 * when code has changed, highlight that in some way
-* button "Clear", adjust size, maybe move close to canvas
 * feels awkward to have info as a flyout.. maybe make more like the log window.
 * add a "shake" effect on runners, when they have high fail rate.
 * present a log over 10 randomly collected successed executions, and 10 failed ones. Maybe make that as a setting value
 * make splitter to use accent color
 * format the contents of the runners and info flyout (pplacement, etc)
-
 * having that optimization for methods withaout params and return values might be misleading for users.
