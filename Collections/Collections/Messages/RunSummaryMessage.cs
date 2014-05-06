@@ -6,7 +6,7 @@ namespace Collections.Messages
 {
     public class RunSummaryMessage : Message
     {
-        public RunSummaryMessage(Type objectType, TimeSpan timeElapsed, IEnumerable<MethodExecution> methodExecutions)
+        public RunSummaryMessage(Type objectType, TimeSpan timeElapsed, IEnumerable<MethodExecutionResult> methodExecutions)
         {
             ObjectType = objectType;
             ExecutionTime = timeElapsed;
@@ -15,7 +15,6 @@ namespace Collections.Messages
             Summarize(methodExecutions);
         }
 
-        public ObjectState ObjectState { get; private set; }
         public Type ObjectType { get; private set; }
         public string MethodName { get; set; }
         public TimeSpan ExecutionTime { get; private set; }
@@ -27,9 +26,9 @@ namespace Collections.Messages
 
         public double MinMethodExecutionTime { get; private set; }
 
-        private void Summarize(IEnumerable<MethodExecution> methodExecutions)
+        private void Summarize(IEnumerable<MethodExecutionResult> methodExecutions)
         {
-            List<MethodExecution> items = methodExecutions.ToList();
+            List<MethodExecutionResult> items = methodExecutions.ToList();
             if (!items.Any())
             {
                 return;

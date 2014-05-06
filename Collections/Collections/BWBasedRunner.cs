@@ -12,24 +12,23 @@ namespace Collections
 {
     public class BWBasedRunner : IRunner
     {
-        private readonly IBehavior _behavior;
+        private readonly IRunnable _runnableObject;
         private readonly BackgroundWorker _bw;
         private readonly ILogger _logger;
-        private readonly ConcurrentBag<MethodExecution> _methodExecutions;
+        private readonly ConcurrentBag<MethodExecutionResult> _methodExecutions;
         private readonly RunnerSettings _settings;
         private readonly List<IGui> _uiListeners;
         private readonly Stopwatch _watch;
-        private UIMessage _lastMessage;
 
-        public BWBasedRunner(IBehavior behavior, IGui gui, ILogger logger, RunnerSettings settings)
+        public BWBasedRunner(IRunnable runnableObject, ILogger logger, RunnerSettings settings)
         {
             _uiListeners = new List<IGui>();
 
-            _behavior = behavior;
+            _runnableObject = runnableObject;
             _settings = settings;
             _logger = logger;
             _watch = new Stopwatch();
-            _methodExecutions = new ConcurrentBag<MethodExecution>();
+            _methodExecutions = new ConcurrentBag<MethodExecutionResult>();
             Console.SetOut(new StringWriter());
 
             _bw = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
@@ -38,8 +37,7 @@ namespace Collections
             _bw.RunWorkerCompleted += bw_RunWorkerCompleted;
 
             Id = Guid.NewGuid().ToString();
-            gui.Id = Id;
-            _uiListeners.Add(gui);
+           
         }
 
         public void AddUiListener(IGui listener)
@@ -56,14 +54,16 @@ namespace Collections
 
         public void Start()
         {
-            foreach (IGui listener in _uiListeners)
-            {
-                listener.Draw();
-            }
+           
 
             if (_bw.IsBusy != true)
             {
                 _bw.RunWorkerAsync();
+            }
+
+            foreach (IGui listener in _uiListeners)
+            {
+                listener.Draw();
             }
         }
 
@@ -87,23 +87,20 @@ namespace Collections
             return false;
         }
 
-        public RunSummaryMessage GetState()
+        public RunSummaryMessage GetCurrentState()
         {
-            var msg = new RunSummaryMessage(_behavior.GetObjectType(), _watch.Elapsed, _methodExecutions);
-            return msg;
+            return new RunSummaryMessage(_runnableObject.GetObjectType(), _watch.Elapsed, _methodExecutions);
         }
 
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
-
+           
             var worker = sender as BackgroundWorker;
-
 
             _watch.Start();
 
-            var methodExecution = new MethodExecution();
+            var methodExecution = new MethodExecutionResult();
             worker.ReportProgress(0, methodExecution);
 
             for (int i = 1; i <= _settings.Iterations; i++)
@@ -116,7 +113,7 @@ namespace Collections
 
                 TimeSpan beforeExecution = _watch.Elapsed;
                 bool log = i % (_settings.Iterations / 100) == 0 || i == _settings.Iterations;
-                methodExecution = _behavior.Update(log);
+                methodExecution = _runnableObject.Update(log);
                 if (methodExecution != null)
                 {
                     methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
@@ -154,23 +151,22 @@ namespace Collections
             }
         }
 
+
+
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             _logger.Info("RUNNERID " + Id + ": " + e.ProgressPercentage + "%");
 
-            ObjectState state = e.ProgressPercentage == 100 ? ObjectState.Finished : ObjectState.Running;
+            var methodExecution = e.UserState as MethodExecutionResult;
 
-            var methodExecution = e.UserState as MethodExecution;
-
-            _lastMessage = new UIMessage(
-                _behavior.GetObjectType(),
+            var msg = new MethodExecutionMessage(
+                _runnableObject.GetObjectType(),
                 methodExecution,
                 _watch.Elapsed,
-                e.ProgressPercentage,
-                state);
+                e.ProgressPercentage);
             foreach (IGui listener in _uiListeners)
             {
-                listener.Update(_lastMessage);
+                listener.Update(msg);
             }
         }
     }

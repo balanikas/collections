@@ -7,29 +7,26 @@ using Collections.Messages;
 
 namespace Collections
 {
-    internal class TplBasedRunner : IRunner
+    public class TplBasedRunner : IRunner
     {
-        private readonly IBehavior _behavior;
+        private readonly IRunnable _runnable;
         private readonly CancellationTokenSource _cts;
         private readonly ILogger _logger;
         private readonly List<IGui> _uiListeners;
         private readonly RunnerSettings _settings;
         private Task _task;
 
-        public TplBasedRunner(IBehavior behavior, IGui gui, ILogger logger,RunnerSettings settings)
+        public TplBasedRunner(IRunnable runnable, ILogger logger,RunnerSettings settings)
         {
             _uiListeners = new List<IGui>();
 
-            _behavior = behavior;
+            _runnable = runnable;
             _settings = settings;
             _logger = logger;
             _cts = new CancellationTokenSource();
 
             Id = Guid.NewGuid().ToString();
-            gui.Id = Id;
-
-
-            _uiListeners.Add(gui);
+          
         }
 
         public string Id { get; private set; }
@@ -93,7 +90,7 @@ namespace Collections
         }
 
 
-        public RunSummaryMessage GetState()
+        public RunSummaryMessage GetCurrentState()
         {
             return null;
         }
@@ -111,31 +108,28 @@ namespace Collections
                 CancellationToken ct = _cts.Token;
                 ct.ThrowIfCancellationRequested();
 
-                MethodExecution methodExecution;
+                MethodExecutionResult methodExecutionResult;
 
 
                 //check if end of loop, or check every now and then
                 if (i % (_settings.Iterations / 10) == 0 || i == _settings.Iterations)
                 {
-                    methodExecution = _behavior.Update(false);
+                    methodExecutionResult = _runnable.Update(false);
 
-                    var state = ObjectState.Running;
                     if (i == _settings.Iterations)
                     {
                         watch.Stop();
-                        state = ObjectState.Finished;
                         _logger.Flush();
                     }
 
                     var progressCount = (int)(i / (double)_settings.Iterations * 100);
                     _logger.Info(Id + ": " + progressCount);
 
-                    var msg = new UIMessage(
-                        _behavior.GetObjectType(),
-                        methodExecution,
+                    var msg = new MethodExecutionMessage(
+                        _runnable.GetObjectType(),
+                        methodExecutionResult,
                         watch.Elapsed,
-                        progressCount,
-                        state);
+                        progressCount);
 
                     foreach (IGui listener in _uiListeners)
                     {
@@ -144,7 +138,7 @@ namespace Collections
                 }
                 else
                 {
-                    _behavior.Update(false);
+                    _runnable.Update(false);
                 }
             }
             watch.Stop();

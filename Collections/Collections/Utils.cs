@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -58,6 +59,21 @@ namespace Collections
             });
 
             return validTypes;
+        }
+
+        public static  bool IsValidAssembly(string assemblyPath)
+        {
+            if (!File.Exists(assemblyPath))
+            {
+                return false;
+            }
+            string extension = Path.GetExtension(assemblyPath);
+            if (extension == ".dll" ||
+                extension == ".exe")
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

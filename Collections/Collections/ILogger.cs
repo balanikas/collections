@@ -11,5 +11,7 @@
 
         void ErrorNow(string message);
         void Flush();
+
+        void Subscribe(ILogSubscriber subscriber);
     }
 }

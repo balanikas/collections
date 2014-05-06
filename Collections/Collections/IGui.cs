@@ -6,7 +6,7 @@ namespace Collections
     {
         string Id { get; set; }
         void Draw();
-        void Update(UIMessage message);
+        void Update(MethodExecutionMessage message);
         void Destroy();
     }
 }

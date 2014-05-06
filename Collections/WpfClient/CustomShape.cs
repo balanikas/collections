@@ -44,7 +44,7 @@ namespace WpfClient
             _grid.Visibility = Visibility.Visible;
         }
 
-        public virtual void Update(UIMessage uiMessage)
+        public virtual void Update(MethodExecutionMessage methodExecutionMessage)
         {
         }
 

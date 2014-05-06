@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Collections
 {
@@ -10,15 +11,15 @@ namespace Collections
     public class Runtime : IRuntime
     {
         private readonly CancellationTokenSource _cts;
-        private readonly IDictionary<string, IRunner> _gObjects;
+        private readonly IDictionary<string, IRunner> _runners;
         private bool _isRunning;
 
         public Runtime()
         {
-            _gObjects = new Dictionary<string, IRunner>();
+            _runners = new Dictionary<string, IRunner>();
             _cts = new CancellationTokenSource();
 
-           
+          
         }
 
         public void Stop()
@@ -43,7 +44,7 @@ namespace Collections
 
         public void Clear()
         {
-            foreach (IRunner go in _gObjects.Values)
+            foreach (IRunner go in _runners.Values)
             {
                 go.Destroy();
             }
@@ -51,13 +52,13 @@ namespace Collections
 
         public void Add(IRunner runner)
         {
-            _gObjects.Add(runner.Id, runner);
+            _runners.Add(runner.Id, runner);
         }
 
         public IRunner GetById(string id)
         {
             IRunner obj;
-            if (_gObjects.TryGetValue(id, out obj))
+            if (_runners.TryGetValue(id, out obj))
             {
                 return obj;
             }
@@ -67,9 +68,9 @@ namespace Collections
         public void Remove(string runnerId)
         {
             IRunner obj;
-            if (_gObjects.TryGetValue(runnerId, out obj))
+            if (_runners.TryGetValue(runnerId, out obj))
             {
-                _gObjects.Remove(runnerId);
+                _runners.Remove(runnerId);
                 obj.Destroy();
             }
         }

@@ -1,11 +1,5 @@
 ﻿namespace Collections.Messages
 {
-    public enum ObjectState
-    {
-        Running,
-        Finished,
-        Unknown
-    }
 
     public class Message
     {

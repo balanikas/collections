@@ -11,7 +11,7 @@ namespace WpfClient
     {
         public App()
         {
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
         }
 
         protected override void OnStartup(StartupEventArgs e)

@@ -20,7 +20,7 @@ namespace WpfClient
             //builder.RegisterType<TextboxLogger>().As<ILogger>();
           
             builder.RegisterType<Runtime>().As<IRuntime>();
-            builder.RegisterType<TypesLoader>();
+            builder.RegisterType<TypesProvider>();
 
             Container = builder.Build();
             return Container;

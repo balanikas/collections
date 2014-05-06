@@ -58,7 +58,7 @@ namespace WpfClient
             _ellipse.Opacity = 0.7;
         }
 
-        public override void Update(UIMessage msg)
+        public override void Update(MethodExecutionMessage msg)
         {
             _ellipse.Dispatcher.BeginInvoke((new Action(delegate
             {
@@ -68,7 +68,7 @@ namespace WpfClient
                     Freeze();
                 }
 
-                if (!msg.MethodExecution.Success)
+                if (!msg.MethodExecutionResult.Success)
                 {
                     _animationsHelper.AddPixelation(_ellipse, 0.01);
                 }

@@ -32,3 +32,48 @@ continue with this : http://msdn.microsoft.com/en-us/magazine/dd419663.aspx
 * make splitter to use accent color
 * format the contents of the runners and info flyout (pplacement, etc)
 * having that optimization for methods withaout params and return values might be misleading for users.
+
+
+
+---------------- TODO ---------------------
+* continue with the new stuff.
+* now its quick and dirty.
+* the dataflow is out of sync
+
+
+
+
+---- architecture ----
+
+* divide into modules. what modules are there?
+- gui
+	- canvas, shapes, animations
+	- explore mode
+	- play mode
+	- other (roslyn ) mode
+	- 
+- runners, method execution, updates, dataflow stuff, (the engine)
+- type loader, reflection, all that (content/resources)
+- logging
+- runtime that binds all modules (the main)
+- messaging, own module or part of engine?
+- bootstrapper
+
+
+--- the engine ---
+* deps:
+	- compiler (native or roslyn), as an ICompilerService maybe
+	- objectbehavior/objectcontainer (how to run stuff)
+	- irunner (tpl or bw)
+	- typeloader
+	- runner settings
+
+	-- 
+
+
+
+--- REFACTOOOORRRR ---
+* split types loader into 2: what it does and the compiler
+
+
+* typesviewmodel and exploremodeviewmodel, make them awesome databinded piece of works!!!

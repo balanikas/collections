@@ -14,7 +14,7 @@ namespace Collections.Tests
         [TestMethod]
         public void MethodExecution()
         {
-            var me = new MethodExecution();
+            var me = new MethodExecutionResult();
 
             var expectedArgValues = new List<object> {1, 2, 3};
             string expectedErrorMessage = "errormessage";
@@ -44,48 +44,48 @@ namespace Collections.Tests
         {
             var methodInfos = new List<MethodInfo>();
             methodInfos.Add(new DynamicMethod("", typeof (void), null));
-            IBehavior behavior = new ObjectBehavior(typeof (int), methodInfos);
+            IRunnable runnable = new RunnableObject(typeof (int), methodInfos);
 
-            Assert.AreEqual(behavior.GetObjectType(), typeof (int));
-            //behavior.Update();
+            Assert.AreEqual(runnable.GetObjectType(), typeof (int));
+            //runnable.Update();
         }
 
         [TestMethod]
         public void RunnerFactory()
         {
-            var guiMock = new Mock<IGui>();
-            guiMock.Setup(z => z.Update(It.IsAny<UIMessage>()));
+            //var guiMock = new Mock<IGui>();
+            //guiMock.Setup(z => z.Update(It.IsAny<MethodExecutionMessage>()));
 
-            var loggerMock = new Mock<ILogger>();
-
-
-            var methodInfos = new List<MethodInfo>();
-            methodInfos.Add(new DynamicMethod("", typeof (void), null));
-            IBehavior behavior = new ObjectBehavior(typeof (int), methodInfos);
+            //var loggerMock = new Mock<ILogger>();
 
 
-            IRunner runner;
+            //var methodInfos = new List<MethodInfo>();
+            //methodInfos.Add(new DynamicMethod("", typeof (void), null));
+            //IRunnable runnable = new RunnableObject(typeof (int), methodInfos);
 
-            var settings = new RunnerSettings();
-            settings.Iterations = 100;
-            settings.RunnerType = RunnerType.BackgroundWorkerBased;
 
-            runner = Collections.RunnerFactory.Get( behavior, guiMock.Object,
-                loggerMock.Object,settings );
-            Assert.IsTrue(!String.IsNullOrEmpty(runner.Id));
-            Assert.IsTrue(!String.IsNullOrEmpty(guiMock.Object.Id));
-            Assert.AreEqual(runner.Id, guiMock.Object.Id);
+            //IRunner runner;
 
-            runner.AddUiListener(guiMock.Object);
-            runner.AddUiListener(null);
+            //var settings = new RunnerSettings();
+            //settings.Iterations = 100;
+            //settings.RunnerType = RunnerType.BackgroundWorkerBased;
+            
+            //runner = Collections.RunnerFactory.Get( runnable, guiMock.Object,
+            //    loggerMock.Object,settings );
+            //Assert.IsTrue(!String.IsNullOrEmpty(runner.Id));
+            //Assert.IsTrue(!String.IsNullOrEmpty(guiMock.Object.Id));
+            //Assert.AreEqual(runner.Id, guiMock.Object.Id);
 
-            Assert.IsFalse(runner.IsAlive());
+            //runner.AddUiListener(guiMock.Object);
+            //runner.AddUiListener(null);
 
-            runner.Start();
-            Assert.IsTrue(runner.IsAlive());
+            //Assert.IsFalse(runner.IsAlive());
 
-            runner.GetState();
-            runner.Destroy();
+            //runner.Start();
+            //Assert.IsTrue(runner.IsAlive());
+
+            //runner.GetCurrentState();
+            //runner.Destroy();
         }
     }
 }

@@ -26,6 +26,7 @@ namespace Collections
         public override void WriteLine(string message)
         {
             _messageHandler(message + System.Environment.NewLine);
+            
         }
     }
 }

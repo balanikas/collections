@@ -60,7 +60,7 @@ namespace WpfClient
             _rect.Opacity = 0.7;
         }
 
-        public override void Update(UIMessage i)
+        public override void Update(MethodExecutionMessage i)
         {
             _rect.Dispatcher.BeginInvoke((new Action(delegate
             {
@@ -69,7 +69,7 @@ namespace WpfClient
                 {
                     Freeze();
                 }
-                if (!i.MethodExecution.Success)
+                if (!i.MethodExecutionResult.Success)
                 {
                     _animationsHelper.AddPixelation(_rect, 0.01);
                 }

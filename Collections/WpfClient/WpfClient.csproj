@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -40,6 +41,12 @@
     <Reference Include="Autofac">
       <HintPath>..\packages\Autofac.3.3.0\lib\net40\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras.WPF45">
+      <HintPath>..\packages\MvvmLightLibs.4.3.31.1\lib\net45\GalaSoft.MvvmLight.Extras.WPF45.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.WPF45">
+      <HintPath>..\packages\MvvmLightLibs.4.3.31.1\lib\net45\GalaSoft.MvvmLight.WPF45.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit">
       <HintPath>..\packages\AvalonEdit.4.3.1.9430\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
@@ -47,9 +54,19 @@
       <HintPath>..\packages\MahApps.Metro.0.11.0.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Effects, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\packages\CommonServiceLocator.1.2\lib\portable-windows8+net40+sl5+windowsphone8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Threading.Tasks.Dataflow, Version=4.5.14.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Tpl.Dataflow.4.5.14\lib\portable-net45+win8\System.Threading.Tasks.Dataflow.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.4.3.31.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml">
@@ -66,7 +83,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AnimationsHelper.cs" />
+    <Compile Include="BackgroundCompilerService.cs" />
     <Compile Include="Bootstrap.cs" />
+    <Compile Include="Controls\CollapsibleLogEntry.cs" />
+    <Compile Include="Controls\PropertyChangedBase.cs" />
     <Compile Include="RunnerInfoFlyout.xaml.cs">
       <DependentUpon>RunnerInfoFlyout.xaml</DependentUpon>
     </Compile>
@@ -81,17 +101,30 @@
       <DependentUpon>SettingsFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="SimpleCommand.cs" />
-    <Compile Include="TextboxLogger.cs" />
-    <Compile Include="UCTypes.xaml.cs">
-      <DependentUpon>UCTypes.xaml</DependentUpon>
+    <Compile Include="ViewModels\LogViewerViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Controls\LogViewer.xaml.cs">
+      <DependentUpon>LogViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\LogEntry.cs" />
+    <Compile Include="Views\TypesView.xaml.cs">
+      <DependentUpon>TypesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UILogger.cs" />
+    <Compile Include="ViewModelLocator.cs" />
+    <Compile Include="ViewModels\ExploreModeViewModel.cs" />
+    <Compile Include="ViewModels\TypesViewModel.cs" />
     <Compile Include="Views\ExploreMode.xaml.cs">
       <DependentUpon>ExploreMode.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PlayMode.xaml.cs">
       <DependentUpon>PlayMode.xaml</DependentUpon>
     </Compile>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Controls\LogViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -101,7 +134,7 @@
     </Compile>
     <Compile Include="CustomShape.cs" />
     <Compile Include="Events.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -121,7 +154,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UCTypes.xaml">
+    <Page Include="Views\TypesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -182,7 +215,12 @@
       <Name>Collections</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

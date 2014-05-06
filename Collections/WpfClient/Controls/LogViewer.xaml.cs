@@ -1,0 +1,21 @@
+﻿using System.Collections.ObjectModel;
+using System.Windows.Controls;
+
+namespace WpfClient.Controls
+{
+    public partial class LogViewer : UserControl
+    {
+     
+
+        public ObservableCollection<LogEntry> LogEntries { get; set; }
+
+        public LogViewer()
+        {
+            InitializeComponent();
+
+            DataContext = ViewModelLocator.LogViewer.LogEntries;
+
+        }
+
+    }
+}

@@ -10,6 +10,6 @@ namespace Collections
     {
         public int Iterations { get; set; }
         public RunnerType RunnerType { get; set; }
-    
+        
     }
 }

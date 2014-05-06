@@ -8,7 +8,7 @@ namespace Collections
         void Start();
         void Destroy();
         bool IsAlive();
-        RunSummaryMessage GetState();
+        RunSummaryMessage GetCurrentState();
 
         void AddUiListener(IGui listener);
     }

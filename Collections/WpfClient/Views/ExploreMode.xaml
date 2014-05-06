@@ -4,7 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:wpfClient="clr-namespace:WpfClient"
-
+             xmlns:vm="clr-namespace:WpfClient.ViewModels"
+             xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF45"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:views="clr-namespace:WpfClient.Views"
+             xmlns:controls="clr-namespace:WpfClient.Controls"
              mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="1200">
 
@@ -18,12 +22,15 @@
         </Grid.ColumnDefinitions>
 
 
-        <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="True">
-            <Button Content="Clear" Click="btnStop_Click" DockPanel.Dock="Top" />
+        <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="True" Grid.ColumnSpan="2" Margin="0,0,4.5,494">
+            <Button Content="{Binding Title}" Command="{Binding CmdClearCanvas}"   DockPanel.Dock="Top" />
+          
+            <views:TypesView  x:Name="TypesView" Margin="0,0,0,-268" >
 
-            <wpfClient:UCTypes  x:Name="UcTypes" />
+            </views:TypesView>
 
         </DockPanel>
+
 
 
         <GridSplitter Grid.Column="1" Grid.Row="0"
@@ -36,50 +43,21 @@
             <Canvas.Background>
                 <ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/canvas_background.jpg" TileMode="Tile" />
             </Canvas.Background>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDown">
+                    <cmd:EventToCommand PassEventArgsToCommand="True"
+                                            Command="{Binding CmdMouseDown}"></cmd:EventToCommand>
+                </i:EventTrigger>
 
+            </i:Interaction.Triggers>
         </Canvas>
 
-
-        <!--<WrapPanel Grid.Row="1" HorizontalAlignment="Left" Height="43" Margin="26,902,0,0" VerticalAlignment="Top" Width="119" Visibility="Hidden">
-
-            <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstCollectionTypes" HorizontalAlignment="Left" Height="98" VerticalAlignment="Top" Width="193" RenderTransformOrigin="0.5,0.5" SelectedIndex="0" FontSize="16" SelectionChanged="lstCollectionTypes_SelectionChanged" SelectionMode="Single">
-                <ListView.View>
-                    <GridView AllowsColumnReorder="False">
-                        <GridViewColumn  Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                    		DisplayMemberBinding="{Binding Key}" Header="COLLECTIONS"  />
-
-                    </GridView>
-                </ListView.View>
-
-
-
-
-            </ListView>
-            <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled"  x:Name="lstActions" HorizontalAlignment="Left" Height="56" VerticalAlignment="Top" Width="230" SelectedIndex="0" RenderTransformOrigin="0.5,0.5" FontSize="16">
-
-
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn  Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                    		Header="ACTIONS"  />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </WrapPanel>-->
-
-
-        <Expander Grid.Row="0" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Left"
+        <Expander Grid.Row="0" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Stretch"
                   Opacity="0.9" IsExpanded="True" Height="500" VerticalAlignment="Bottom">
-            <DockPanel>
-                <Button Content="Clear log" Click="btnClearLog" DockPanel.Dock="Top" />
-                <RichTextBox x:Name="txtLog" ScrollViewer.VerticalScrollBarVisibility="Auto" DockPanel.Dock="Bottom">
-                    <FlowDocument>
-                        <Paragraph>
-                            <Run Text="RichTextBox" />
-                        </Paragraph>
-                    </FlowDocument>
-                </RichTextBox>
+            <DockPanel >
+                <Button Content="Clear log"  Command="{Binding CmdClearLog}"  DockPanel.Dock="Top" />
 
+                <controls:LogViewer  ></controls:LogViewer>
 
             </DockPanel>
 
