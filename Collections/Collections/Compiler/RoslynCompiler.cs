@@ -1,16 +1,19 @@
-﻿using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Collections
+namespace Collections.Compiler
 {
-    class RoslynCompilerService : ICompilerService
+    public class RoslynCompiler : ICompiler
     {
+
+        public RoslynCompiler()
+        {
+            Type = CompilerType.Roslyn;
+        }
         public Assembly Compile(string sourceCode)
         {
             var tree = SyntaxFactory.ParseSyntaxTree(sourceCode);
@@ -30,7 +33,7 @@ namespace Collections
             return compiledAssembly;
         }
 
-        public bool TryCompile(string sourceCode, out List<string> errors)
+        public Assembly TryCompile(string sourceCode, out List<string> errors)
         {
             errors = new List<string>();
 
@@ -54,15 +57,17 @@ namespace Collections
                     }
 
                 }
-                return false;
+                return null;
             }
             else
             {
-                return true;
+                return null;
             }
           
 
 
         }
+
+        public CompilerType Type { get; private set; }
     }
 }

@@ -23,7 +23,7 @@ namespace Collections.Messages
         public override string ToString()
         {
             return
-                "Type: " + ObjectType + "\n" +
+                "Types: " + ObjectType + "\n" +
                 "Method: " + MethodExecutionResult.Name + "\n" +
                 "ExecutionTime: " + ExecutionTime.Seconds + ":" + ExecutionTime.Milliseconds + "\n" +
                 "Progress: " + Progress + "\n";

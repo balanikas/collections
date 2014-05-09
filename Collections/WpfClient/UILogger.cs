@@ -1,23 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using Collections;
+using Collections.Logging;
 
 namespace WpfClient
 {
-    class UILogger :ILogSubscriber
+    internal class UILogger : ILogSubscriber
     {
-        private FlowDocument _doc;
+        private readonly FlowDocument _doc;
 
         public UILogger(FlowDocument doc)
         {
             _doc = doc;
-           
         }
 
         public void Notify(LogMessage message)

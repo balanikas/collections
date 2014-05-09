@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using Collections.Messages;
+using Collections.Runtime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -44,9 +45,9 @@ namespace Collections.Tests
         {
             var methodInfos = new List<MethodInfo>();
             methodInfos.Add(new DynamicMethod("", typeof (void), null));
-            IRunnable runnable = new RunnableObject(typeof (int), methodInfos);
+            IRunnable runnable = new RunnableItem(typeof (int), methodInfos);
 
-            Assert.AreEqual(runnable.GetObjectType(), typeof (int));
+            Assert.AreEqual(runnable.ObjectType, typeof(int));
             //runnable.Update();
         }
 
@@ -61,7 +62,7 @@ namespace Collections.Tests
 
             //var methodInfos = new List<MethodInfo>();
             //methodInfos.Add(new DynamicMethod("", typeof (void), null));
-            //IRunnable runnable = new RunnableObject(typeof (int), methodInfos);
+            //IRunnable runnable = new RunnableItem(typeof (int), methodInfos);
 
 
             //IRunner runner;

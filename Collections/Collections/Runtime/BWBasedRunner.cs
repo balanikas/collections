@@ -3,12 +3,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Threading;
+using Collections.Logging;
 using Collections.Messages;
 
-namespace Collections
+namespace Collections.Runtime
 {
     public class BWBasedRunner : IRunner
     {
@@ -89,7 +88,7 @@ namespace Collections
 
         public RunSummaryMessage GetCurrentState()
         {
-            return new RunSummaryMessage(_runnableObject.GetObjectType(), _watch.Elapsed, _methodExecutions);
+            return new RunSummaryMessage(_runnableObject.ObjectType, _watch.Elapsed, _methodExecutions);
         }
 
 
@@ -151,16 +150,16 @@ namespace Collections
             }
         }
 
-
+        
 
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            _logger.Info("RUNNERID " + Id + ": " + e.ProgressPercentage + "%");
-
+            _logger.Info(string.Format("id:{0} {1}%",Id,e.ProgressPercentage));
+          
             var methodExecution = e.UserState as MethodExecutionResult;
-
+         
             var msg = new MethodExecutionMessage(
-                _runnableObject.GetObjectType(),
+                _runnableObject.ObjectType,
                 methodExecution,
                 _watch.Elapsed,
                 e.ProgressPercentage);

@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
 namespace WpfClient
 {
-    class BackgroundCompilerService
+    internal class NeverEndingDataFlowTplService
     {
-        private CancellationTokenSource _wtoken;
         private ITargetBlock<DateTimeOffset> _task;
-        public BackgroundCompilerService()
-        {
-            
-        }
+        private CancellationTokenSource _wtoken;
 
         public void Start(Action<DateTimeOffset> action)
         {
@@ -45,7 +38,7 @@ namespace WpfClient
             _task = null;
         }
 
-        ITargetBlock<DateTimeOffset> CreateNeverEndingTask(
+        private ITargetBlock<DateTimeOffset> CreateNeverEndingTask(
             Action<DateTimeOffset> action, CancellationToken cancellationToken)
         {
             // Validate parameters.

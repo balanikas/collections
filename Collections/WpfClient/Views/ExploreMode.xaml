@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:wpfClient="clr-namespace:WpfClient"
-             xmlns:vm="clr-namespace:WpfClient.ViewModels"
              xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF45"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:views="clr-namespace:WpfClient.Views"
@@ -22,42 +20,41 @@
         </Grid.ColumnDefinitions>
 
 
-        <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="True" Grid.ColumnSpan="2" Margin="0,0,4.5,494">
-            <Button Content="{Binding Title}" Command="{Binding CmdClearCanvas}"   DockPanel.Dock="Top" />
-          
-            <views:TypesView  x:Name="TypesView" Margin="0,0,0,-268" >
-
-            </views:TypesView>
-
+        <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="True" Grid.ColumnSpan="2" Margin="10,10,10,10">
+            <views:TypesView x:Name="TypesView" />
         </DockPanel>
-
 
 
         <GridSplitter Grid.Column="1" Grid.Row="0"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Stretch"
-                      Background="Black"
+                      Background="#FF2F2F2F"
                       ShowsPreview="True"
                       Width="5" />
-        <Canvas Grid.Column="2" Grid.Row="0" x:Name="Canvas">
-            <Canvas.Background>
-                <ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/canvas_background.jpg" TileMode="Tile" />
-            </Canvas.Background>
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDown">
-                    <cmd:EventToCommand PassEventArgsToCommand="True"
-                                            Command="{Binding CmdMouseDown}"></cmd:EventToCommand>
-                </i:EventTrigger>
+        <DockPanel Grid.Column="2" Grid.Row="0" Margin="10,10,10,10">
+            <Button Content="Clear" Command="{Binding CmdClearCanvas}" DockPanel.Dock="Top" />
 
-            </i:Interaction.Triggers>
-        </Canvas>
+            <Canvas x:Name="Canvas">
+                <Canvas.Background>
+                    <ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/canvas_background.jpg" TileMode="Tile" />
+                </Canvas.Background>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDown">
+                        <cmd:EventToCommand PassEventArgsToCommand="True"
+                                            Command="{Binding CmdMouseDown}" />
+                    </i:EventTrigger>
+
+                </i:Interaction.Triggers>
+            </Canvas>
+        </DockPanel>
+
 
         <Expander Grid.Row="0" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Stretch"
                   Opacity="0.9" IsExpanded="True" Height="500" VerticalAlignment="Bottom">
-            <DockPanel >
-                <Button Content="Clear log"  Command="{Binding CmdClearLog}"  DockPanel.Dock="Top" />
+            <DockPanel>
+                <Button Content="Clear log" Command="{Binding CmdClearLog}" DockPanel.Dock="Top" />
 
-                <controls:LogViewer  ></controls:LogViewer>
+                <controls:LogViewer />
 
             </DockPanel>
 

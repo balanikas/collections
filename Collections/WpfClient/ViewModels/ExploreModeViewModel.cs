@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using Autofac;
 using Collections;
+using Collections.Runtime;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -23,7 +17,6 @@ namespace WpfClient.ViewModels
 
         public ExploreModeViewModel(IRuntime runtime)
         {
-
             _runtime = runtime;
             CmdMouseDown = new RelayCommand<MouseEventArgs>(OnMouseDown);
             CmdClearCanvas = new RelayCommand(OnClearCanvas);
@@ -31,8 +24,14 @@ namespace WpfClient.ViewModels
             Types = ViewModelLocator.Types;
 
             //Console.SetOut(new ConsoleWriter(_logger));
-            _runtime.Start();
+            _runtime.Reset();
         }
+
+        public TypesViewModel Types { get; set; }
+
+        public RelayCommand<MouseEventArgs> CmdMouseDown { get; private set; }
+        public RelayCommand CmdClearLog { get; private set; }
+        public RelayCommand CmdClearCanvas { get; private set; }
 
         private void OnMouseDown(MouseEventArgs e)
         {
@@ -47,125 +46,100 @@ namespace WpfClient.ViewModels
             {
                 if (element is Canvas)
                 {
-                    CreateRunner(element);
+                    CreateRunner(element as Canvas);
                 }
             }
-            else
-            {
-                // _runtime.Remove(e.EventInfo);
-            }
         }
-
-        public TypesViewModel Types
-        {
-            get; set;
-        }
-
-
-        public RelayCommand<MouseEventArgs> CmdMouseDown { get; private set; }
-        public RelayCommand CmdClearLog { get; private set; }
-        public RelayCommand CmdClearCanvas { get; private set; }
 
         private void OnClearCanvas()
         {
-            _runtime.Clear();
+            _runtime.Runners.RemoveAll();
             GC.Collect();
             GC.WaitForPendingFinalizers();
             OnClearLog();
-            
         }
 
         private void OnClearLog()
         {
-           ViewModelLocator.LogViewer.LogEntries.Clear();
-           
+            ViewModelLocator.LogViewer.LogEntries.Clear();
+            
         }
 
-        private void MouseOverHandler(object source, MouseOverEventArgs e)
-        {
-        }
 
-        private void circle_OnKeyPressed(object source, KeyPressedEventArgs e)
+        private CustomShape CreateDrawingShape(Canvas canvas, IRuntime runtime)
         {
-
-            if (e.Key == Key.D1)
+            var location = Mouse.GetPosition(canvas);
+            CustomShape shape = null;
+            if (Settings.DrawAs == DrawTypes.Circle)
             {
-                _runtime.Remove(e.EventInfo);
+                shape = new CustomCircle(canvas.Children, location);
             }
-            else if (e.Key == Key.D2)
+            else if (Settings.DrawAs == DrawTypes.Rectangle)
             {
-                MainWindow.ToggleFlyout(1, _runtime.GetById(e.EventInfo));
+                shape = new CustomRectangle(canvas.Children, location);
             }
-        }
-        private void CreateRunner(UIElement element)
-        {
-            Point location = Mouse.GetPosition(element);
 
-            LoadedType objectType = Types.SelectedType;
-            if (objectType == null)
+            shape.OnMouseOver += (source, args) =>
+            {
+
+            };
+            shape.OnKeyPressed += (source, args) =>
+            {
+                if (args.Key == Key.D1)
+                {
+                    runtime.Runners.RemoveById(args.EventInfo);
+                }
+                else if (args.Key == Key.D2)
+                {
+                    MainWindow.ToggleFlyout(1, runtime.Runners.GetById(args.EventInfo));
+                }
+            };
+
+            return shape;
+        }
+
+        private void CreateRunner(Canvas element)
+        {
+            LoadedType type = Types.SelectedType;
+            if (type == null)
             {
                 return;
             }
 
-            var methods = new List<MethodInfo>();
-            methods.Add(Types.SelectedMethod);
-
-
-            IGui gui = null;
-            DrawTypes drawType = Settings.DrawAs;
-            if (drawType == DrawTypes.Circle)
-            {
-                var circle = new CustomCircle(((Canvas)element).Children, location);
-
-
-                circle.OnMouseOver += MouseOverHandler;
-                circle.OnKeyPressed += circle_OnKeyPressed;
-                gui = circle;
-            }
-            else if (drawType == DrawTypes.Rectangle)
-            {
-                var rectangle = new CustomRectangle(((Canvas)element).Children, location);
-
-                rectangle.OnMouseOver += MouseOverHandler;
-                gui = rectangle;
-            }
+            var shape = CreateDrawingShape(element, _runtime);
 
             IRunnable runnable;
-            IRunner runner;
             try
             {
-                runnable = new RunnableObject(objectType.TypeInfo, methods);
+                var methods = new List<MethodInfo> { Types.SelectedMethod };
+                runnable = new RunnableItem(type.TypeInfo, methods);
             }
             catch (Exception e)
             {
-                //_logger.ErrorNow(e.Message);
-                //var guiMessage = new ErrorMessage(e.Message, 100);
-
-                //runner = ObjectFactory.CreateRunner(Settings.ThreadingType, null, gui, _logger, Settings.Loops);
-                //gui.Draw();
-                //_runtime.Add(runner);
-                //gui.Update(guiMessage);
+                _runtime.Logger.ErrorNow(e.Message);
                 return;
             }
 
-            var settings = new RunnerSettings();
-            settings.Iterations = Settings.Loops;
-            settings.RunnerType = Settings.ThreadingType;
+            var settings = new RunnerSettings
+            {
+                Iterations = Settings.Loops, 
+                RunnerType = Settings.ThreadingType
+            };
 
-            runner = ViewModelLocator.CreateRunner(runnable, settings);
-            runner.AddUiListener(gui);
-            ContextMenu ctxMenu = ShapeContextMenu.Get(
-                (s, e) => _runtime.Remove(runner.Id),
-                (s, e) => MainWindow.ToggleFlyout(1, _runtime.GetById(runner.Id), true),
-                (s, e) => MessageBox.Show("shows the code that executes in the code explorer")
+
+            var runner = _runtime.CreateAndAddRunner(runnable, settings);
+            
+            ContextMenu ctxMenu = ShapeContextMenu.Create(
+                (s, e) => _runtime.Runners.Remove(runner),
+                (s, e) => MainWindow.ToggleFlyout(1, _runtime.Runners.GetById(runner.Id), true),
+                (s, e) => { }
                 );
 
-            ((CustomShape)gui).AddContextMenu(ctxMenu);
-
-            _runtime.Add(runner);
+            shape.AddContextMenu(ctxMenu);
+           
+            runner.AddUiListener(shape);
+ 
             runner.Start();
         }
-
-      
     }
 }

@@ -77,3 +77,24 @@ continue with this : http://msdn.microsoft.com/en-us/magazine/dd419663.aspx
 
 
 * typesviewmodel and exploremodeviewmodel, make them awesome databinded piece of works!!!
+* find usages for the collapsible log entry
+* if invalid path then tell user
+* useless log out put right now
+* right click and show code does nothing
+* ui thread must be 100% fluid !!!!!
+* use avalon dock???
+* compile error not in a msgbox!
+* labels for items in settings OK
+* non linear slider: found sample, but cannot set it to use metro style
+
+
+
+
+
+* code changes are permanently stored
+* type selected but no method is selected, annoying
+* strange the alog is reused...when switching tabs stuff needs to be closed and resetted!
+* in playmode, no animations no nothing...
+* nothing happens when playmode is started
+* app icon for wpfclient
+

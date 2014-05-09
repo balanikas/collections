@@ -34,22 +34,21 @@
     <Grid>
 
         <DockPanel>
-            <ProgressBar DockPanel.Dock="Top" x:Name="PrgBar" Visibility="{Binding ProgressBarVisibility}" IsIndeterminate="True" Value="100" />
             <Grid DockPanel.Dock="Bottom">
                 <Grid.Resources>
                     <ResourceDictionary
                         Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
                 </Grid.Resources>
-                <TabControl x:Name="TabControl" SelectionChanged="TabControl_SelectionChanged" >
-                   
+                <TabControl x:Name="TabControl" SelectionChanged="TabControl_SelectionChanged">
+
                     <Controls:MetroTabItem Header="Explore" x:Name="Tab0">
                         <views:ExploreMode />
 
                     </Controls:MetroTabItem>
-                    <Controls:MetroTabItem Header="Play"  x:Name="Tab1">
+                    <Controls:MetroTabItem Header="Play" x:Name="Tab1">
                         <views:PlayMode />
                     </Controls:MetroTabItem>
-                    <Controls:MetroTabItem Header="Other"  x:Name="Tab2">
+                    <Controls:MetroTabItem Header="Other" x:Name="Tab2">
                         <TextBlock FontSize="30" Text="????????? ooooowwoww" />
                     </Controls:MetroTabItem>
                 </TabControl>

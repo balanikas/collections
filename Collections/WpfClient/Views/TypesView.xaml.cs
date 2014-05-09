@@ -1,11 +1,6 @@
-﻿using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using Collections;
 
 namespace WpfClient.Views
 {
@@ -14,15 +9,12 @@ namespace WpfClient.Views
     /// </summary>
     public partial class TypesView : UserControl
     {
-      
+        public static readonly DependencyProperty EditorEnabledDependencyProperty =
+            DependencyProperty.Register("EditorEnabled", typeof (bool), typeof (TypesView), new PropertyMetadata(false));
 
         public TypesView()
         {
             InitializeComponent();
-
-    
-
-           
         }
 
 
@@ -42,7 +34,7 @@ namespace WpfClient.Views
                         folder = Path.GetDirectoryName(folder);
                     }
 
-                  
+
                     //LoadTypes();
                 }
             }
@@ -70,8 +62,7 @@ namespace WpfClient.Views
                     {
                         if (Path.GetExtension(item) == ".dll" || Path.GetExtension(item) == ".exe")
                         {
-                           
-                          //  LoadTypes();
+                            //  LoadTypes();
                         }
                     }
                 }

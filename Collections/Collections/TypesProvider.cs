@@ -6,22 +6,31 @@ using System.Linq;
 using System.Net.Mail;
 using System.Reflection;
 using System.Threading.Tasks;
+using Collections.Compiler;
 
 namespace Collections
 {
     public class TypesProvider
     {
-        private readonly ICompilerService _compilerService;
-        public TypesProvider(ICompilerService compilerService)
+        private ICompiler _activeCompilerService;
+        private IEnumerable<ICompiler> _services;
+
+        public TypesProvider(IEnumerable<ICompiler> services )
         {
-            _compilerService = compilerService;
+            _services = services.ToList();
+        }
+
+      
+        public void SetActiveCompilerService(CompilerType type)
+        {
+            _activeCompilerService = _services.First(x => x.Type == type);
         }
         public async Task<List<LoadedType>> FromDiscAsync(string filePath)
         {
             return await Task.Factory.StartNew(() => { return FromDisc(filePath); });
         }
 
-        public async Task<List<LoadedType>> FromBCLAsync()
+        public async Task<List<LoadedType>> FromBaseClassLibraryAsync()
         {
             return await Task.Factory.StartNew(() => { return FromBaseClassLibrary(); });
         }
@@ -30,6 +39,9 @@ namespace Collections
         {
             return await Task.Factory.StartNew(() => { return FromAssembly(filePath); });
         }
+
+
+    
 
         public List<LoadedType> FromDisc(string filePath)
         {
@@ -190,9 +202,8 @@ namespace Collections
 
             string source = File.ReadAllText(filePath);
 
-            return _compilerService.Compile(source);
+            return _activeCompilerService.Compile(source);
         }
-
 
         public void SaveType(LoadedType type)
         {
@@ -206,9 +217,29 @@ namespace Collections
             }
         }
 
-        public bool TryCompileFromSource(string source, out List<string> errors)
+        public List<LoadedType> TryCompileFromText(string source, out List<string> errors)
         {
-            return _compilerService.TryCompile(source, out errors);
+            var types = new List<LoadedType>();
+            var compiledAssembly = _activeCompilerService.TryCompile(source, out errors);
+            if (compiledAssembly != null)
+            {
+                foreach (TypeInfo definedType in compiledAssembly.DefinedTypes)
+                {
+
+                    types.Add(new LoadedType
+                    {
+                        MethodsInfos = new List<MethodInfo>(definedType.GetMethods()),
+                        FilePath = "",
+                        Source = source,
+                        TypeInfo = definedType,
+                        IsCompilable = true
+                    });
+
+                }
+            }
+           
+            return types;
+
         }
     }
 }

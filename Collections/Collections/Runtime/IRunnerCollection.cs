@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Collections
+namespace Collections.Runtime
 {
-    public interface IRuntime
+    public interface  IRunnerCollection
     {
-        void Stop();
-        void Start();
-        void Clear();
         void Add(IRunner runner);
         IRunner GetById(string id);
-        void Remove(string runnerId);
-        bool IsRunning();
+        void RemoveById(string runnerId);
+        void Remove(IRunner runner);
+
+        void RemoveAll();
     }
 }

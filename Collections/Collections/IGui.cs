@@ -8,5 +8,7 @@ namespace Collections
         void Draw();
         void Update(MethodExecutionMessage message);
         void Destroy();
+
+
     }
 }

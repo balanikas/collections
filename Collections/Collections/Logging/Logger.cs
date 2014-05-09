@@ -1,22 +1,19 @@
-﻿using System;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Collections
+namespace Collections.Logging
 {
     public class Logger : ILogger
     {
-        private readonly Queue<LogMessage> _logBuffer;
-        private List<ILogSubscriber> _subscribers; 
+        private readonly ConcurrentQueue<LogMessage> _logBuffer;
+        private readonly List<ILogSubscriber> _subscribers; 
         private int _errorCount;
 
         public Logger()
         {
             _subscribers = new List<ILogSubscriber>();
-            _logBuffer = new Queue<LogMessage>();
+            _logBuffer = new ConcurrentQueue<LogMessage>();
 
             var traceListener = new SynchronizedTraceListener(Info);
             Trace.Listeners.Add(traceListener);
@@ -85,8 +82,12 @@ namespace Collections
            
             while (_logBuffer.Count > 0)
             {
-                LogMessage logMessage = _logBuffer.Dequeue();
-                NotifySubscribers(logMessage);
+                LogMessage logMessage;
+                if (_logBuffer.TryDequeue(out logMessage))
+                {
+                    NotifySubscribers(logMessage);
+                }
+                
             }
         }
     }

@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Collections;
+using Collections.Compiler;
+using Collections.Runtime;
 using MahApps.Metro.Controls;
 
 namespace WpfClient
@@ -22,6 +24,10 @@ namespace WpfClient
 
             IEnumerable<DrawTypes> drawTypes = Enum.GetValues(typeof (DrawTypes)).Cast<DrawTypes>();
             cmbGraphics.ItemsSource = drawTypes;
+
+            IEnumerable<CompilerType> compilerServiceTypes =
+                Enum.GetValues(typeof (CompilerType)).Cast<CompilerType>();
+            cmbCompilerService.ItemsSource = compilerServiceTypes;
         }
 
         public bool CanCloseFlyout
@@ -45,7 +51,7 @@ namespace WpfClient
                 return closeCmd ?? (closeCmd = new SimpleCommand
                 {
                     CanExecuteDelegate = x => CanCloseFlyout,
-                    ExecuteDelegate = x => IsOpen = false
+                    ExecuteDelegate = x => { IsOpen = false; }
                 });
             }
         }
@@ -80,6 +86,11 @@ namespace WpfClient
             {
                 Settings.ThreadingType = RunnerType.ParallelTaskBased;
             }
+        }
+
+        private void CmbCompilerService_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Settings.CompilerServiceType = (CompilerType) cmbCompilerService.SelectedItem;
         }
     }
 }

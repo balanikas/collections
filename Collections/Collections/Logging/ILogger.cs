@@ -1,4 +1,4 @@
-﻿namespace Collections
+﻿namespace Collections.Logging
 {
     public interface ILogger
     {

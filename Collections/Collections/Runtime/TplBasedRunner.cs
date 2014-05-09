@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Collections.Logging;
 using Collections.Messages;
 
-namespace Collections
+namespace Collections.Runtime
 {
     public class TplBasedRunner : IRunner
     {
@@ -126,7 +127,7 @@ namespace Collections
                     _logger.Info(Id + ": " + progressCount);
 
                     var msg = new MethodExecutionMessage(
-                        _runnable.GetObjectType(),
+                        _runnable.ObjectType,
                         methodExecutionResult,
                         watch.Elapsed,
                         progressCount);

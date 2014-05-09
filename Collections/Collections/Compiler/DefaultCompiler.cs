@@ -4,16 +4,18 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Collections
+namespace Collections.Compiler
 {
-    public class DefaultCompilerService : ICompilerService
+    public class DefaultCompiler : ICompiler
     {
         private readonly CompilerParameters _compilerParams;
         private CodeDomProvider _compiler;
         private string _language;
 
-        public DefaultCompilerService(string language = "CSharp")
+
+        public DefaultCompiler(string language = "CSharp")
         {
+            Type = CompilerType.Default;
             Language = language;
 
             _compilerParams = new CompilerParameters
@@ -55,14 +57,14 @@ namespace Collections
             return compilationResults.CompiledAssembly;
         }
 
-        public bool TryCompile(string sourceCode, out List<string> errors)
+        public Assembly TryCompile(string sourceCode, out List<string> errors)
         {
             Assert.IsNotNull(sourceCode);
 
             errors = new List<string>();
 
             CompilerResults compilationResults = _compiler.CompileAssemblyFromSource(_compilerParams, sourceCode);
-
+            
             if (compilationResults.Errors.Count > 0)
             {
                 foreach (var error in compilationResults.Errors)
@@ -70,11 +72,15 @@ namespace Collections
                     errors.Add(error.ToString());
                 }
                 
-                return false;
+                return null;
             }
 
-            return true;
+            return compilationResults.CompiledAssembly;
         }
 
+        public CompilerType Type
+        {
+            get; private set;
+        }
     }
 }

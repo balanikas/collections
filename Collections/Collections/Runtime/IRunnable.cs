@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Collections
+namespace Collections.Runtime
 {
     public interface IRunnable
     {
         MethodExecutionResult Update(bool log);
 
-        Type GetObjectType();
+        Type ObjectType { get; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Collections.Messages;
 
-namespace Collections
+namespace Collections.Runtime
 {
     public interface IRunner
     {

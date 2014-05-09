@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Collections.Compiler;
 
-namespace Collections
+namespace Collections.Runtime
 {
     public class RunnerSettings
     {
         public int Iterations { get; set; }
         public RunnerType RunnerType { get; set; }
+
+        public CompilerType CompilerServiceType { get; set; } 
         
     }
 }

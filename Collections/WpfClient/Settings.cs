@@ -1,4 +1,6 @@
 ﻿using Collections;
+using Collections.Compiler;
+using Collections.Runtime;
 
 namespace WpfClient
 {
@@ -16,5 +18,8 @@ namespace WpfClient
 
         public static RunnerType ThreadingType { get; set; }
 
+        public static CompilerType CompilerServiceType { get; set; }
     }
+
+   
 }

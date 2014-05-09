@@ -4,6 +4,7 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 xmlns:c="clr-namespace:WpfClient.Controls"
                  mc:Ignorable="d"
                  d:DesignHeight="300"
                  d:DesignWidth="300"
@@ -43,17 +44,33 @@
 
     <StackPanel Orientation="Vertical"
                 Margin="10">
-        <Slider x:Name="sldLoopCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="10000000"
-                LargeChange="10000" SmallChange="10" Value="10000" AutoToolTipPlacement="TopLeft" Height="26"
-                ValueChanged="sldLoopCount_ValueChanged" />
+        <Label Content="Iterations" />
+        <!--<c:QuadraticSlider x:Name="quadraticSlider" 
+                            CenterQuadraticValue="100"
+                            QuadraticValue="200"
+                            Value="200"
+                            Minimum="0"
+                            Maximum="500">
+         
+        </c:QuadraticSlider>
+        <Label  Content="{Binding ElementName=quadraticSlider, Path=QuadraticValue}"/>-->
+        <Slider x:Name="sldLoopCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="1000000"
+                SmallChange="1000" Value="100000" AutoToolTipPlacement="TopLeft" Height="26"
+                ValueChanged="sldLoopCount_ValueChanged" TickFrequency="100" LargeChange="100000" />
+
+      
+
+        <Label Content="Drawing shape" />
         <ComboBox x:Name="cmbGraphics" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectedIndex="0"
                   Height="26" SelectionChanged="cmbGraphics_SelectionChanged" />
-
-
-        <RadioButton Visibility="Collapsed" x:Name="radUseTPL" Margin="0, 10, 0, 0"
+        <Label Content="Compiler" />
+        <ComboBox x:Name="cmbCompilerService" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectedIndex="0"
+                  Height="26" SelectionChanged="CmbCompilerService_OnSelectionChanged" />
+        <Label Content="Threading technique" />
+        <RadioButton Visibility="Visible" x:Name="radUseTPL" Margin="0, 10, 0, 0"
                      Content="Use Task Parallel Library"
                      GroupName="1" Checked="radUseTPL_Checked" />
-        <RadioButton Visibility="Collapsed" x:Name="radUseBW" Margin="0, 10, 0, 0"
+        <RadioButton Visibility="Visible" x:Name="radUseBW" Margin="0, 10, 0, 0"
                      Content="Use Background Workers"
                      GroupName="1"
                      IsChecked="True" />

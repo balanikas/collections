@@ -36,14 +36,8 @@
     <Reference Include="Microsoft.CodeAnalysis.CSharp">
       <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.0.6.4033103-beta\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.Workspaces.0.6.4033103-beta\lib\net45\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CodeAnalysis.VisualBasic">
       <HintPath>..\packages\Microsoft.CodeAnalysis.VisualBasic.0.6.4033103-beta\lib\net45\Microsoft.CodeAnalysis.VisualBasic.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.VisualBasic.Workspaces.0.6.4033103-beta\lib\net45\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.Workspaces">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Workspaces.Common.0.6.4033103-beta\lib\net45\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
@@ -54,59 +48,55 @@
       <HintPath>..\packages\Microsoft.Bcl.Immutable.1.1.20-beta\lib\portable-net45+win8\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Reflection.Metadata">
-      <HintPath>..\packages\Microsoft.Bcl.Metadata.1.0.9-alpha\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Dataflow, Version=4.5.14.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="System.Threading.Tasks.Dataflow, Version=4.5.20.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Tpl.Dataflow.4.5.14\lib\portable-net45+win8\System.Threading.Tasks.Dataflow.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Tpl.Dataflow.4.5.20\lib\portable-net45+win8+wpa81\System.Threading.Tasks.Dataflow.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackgroundCompiler.cs" />
-    <Compile Include="BackgroundRunner.cs" />
-    <Compile Include="CompiledResultsMessage.cs" />
-    <Compile Include="DefaultCompilerService.cs" />
+    <Compile Include="Compiler\CompilerService.cs" />
+    <Compile Include="Runtime\IRunnerCollection.cs" />
+    <Compile Include="Runtime\RunnerCollection.cs" />
+    <Compile Include="Runtime\RunnerService.cs" />
+    <Compile Include="Compiler\CompilerServiceMessage.cs" />
+    <Compile Include="Compiler\CompilerType.cs" />
+    <Compile Include="Compiler\DefaultCompiler.cs" />
     <Compile Include="ExecutionInfo.cs" />
-    <Compile Include="ICompilerService.cs" />
-    <Compile Include="ILogSubscriber.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Compiler\ICompiler.cs" />
+    <Compile Include="Logging\ILogSubscriber.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="LogMessage.cs" />
-    <Compile Include="RoslynCompilerService.cs" />
-    <Compile Include="RunnerOutput.cs" />
+    <Compile Include="Compiler\RoslynCompiler.cs" />
+    <Compile Include="Runtime\RunnerServiceMessage.cs" />
     <Compile Include="SynchronizedTraceListener.cs" />
     <Compile Include="ConsoleWriter.cs" />
-    <Compile Include="IRuntime.cs" />
+    <Compile Include="Runtime\IRuntime.cs" />
     <Compile Include="Messages\ErrorMessage.cs" />
-    <Compile Include="ILogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="LoadedType.cs" />
     <Compile Include="MethodExecutionResult.cs" />
-    <Compile Include="RunnableObject.cs" />
-    <Compile Include="RunnerSettings.cs" />
-    <Compile Include="RunnerType.cs" />
+    <Compile Include="Runtime\RunnableItem.cs" />
+    <Compile Include="Runtime\RunnerSettings.cs" />
+    <Compile Include="Runtime\RunnerType.cs" />
     <Compile Include="TypesProvider.cs" />
     <Compile Include="Messages\MethodExecutionMessage.cs" />
     <Compile Include="Messages\RunSummaryMessage.cs" />
-    <Compile Include="Runtime.cs" />
-    <Compile Include="IRunnable.cs" />
-    <Compile Include="IRunner.cs" />
+    <Compile Include="Runtime\Runtime.cs" />
+    <Compile Include="Runtime\IRunnable.cs" />
+    <Compile Include="Runtime\IRunner.cs" />
     <Compile Include="IGui.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BWBasedRunner.cs" />
+    <Compile Include="Runtime\BWBasedRunner.cs" />
     <Compile Include="SupportedTypes.cs" />
     <Compile Include="ThreadSafeRandom.cs" />
-    <Compile Include="TplBasedRunner.cs" />
+    <Compile Include="Runtime\TplBasedRunner.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

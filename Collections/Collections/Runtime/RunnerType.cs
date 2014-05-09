@@ -1,5 +1,5 @@
 ﻿
-namespace Collections
+namespace Collections.Runtime
 {
     public enum RunnerType
     {

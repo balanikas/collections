@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Collections
+namespace Collections.Runtime
 {
-    public class RunnerOutput
+    public class RunnerServiceMessage
     {
         public TimeSpan AvgExecutionTime;
         public bool Success;

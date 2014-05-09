@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Threading;
 using System.Windows;
 
 namespace WpfClient
@@ -11,7 +10,7 @@ namespace WpfClient
     {
         public App()
         {
-            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
         }
 
         protected override void OnStartup(StartupEventArgs e)

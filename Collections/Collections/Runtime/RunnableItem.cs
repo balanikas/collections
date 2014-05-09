@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Collections
+namespace Collections.Runtime
 {
-    public class RunnableObject : IRunnable
+    public class RunnableItem : IRunnable
     {
         private readonly List<ExecutionInfo> _executionInfos;
         private readonly object _objectInstance;
-        private readonly Type _objectType;
+
 
         private ThreadSafeRandom _randomizer;
+        public Type ObjectType { get; private set; }
 
-        public RunnableObject(Type type, List<MethodInfo> methods)
+        public RunnableItem(Type type, List<MethodInfo> methods)
         {
-            _objectType = type;
+            ObjectType = type;
             bool areMethodsValid = Utils.MethodsUseSupportedTypes(methods);
             if (!areMethodsValid)
             {
                 throw new ArgumentException("method(s) contains unsupported types");
             }
 
-            _objectInstance = CreateInstanceFromType(_objectType);
+            _objectInstance = CreateInstanceFromType(ObjectType);
             if (_objectInstance == null)
             {
                 IEnumerable<MethodInfo> staticMethods = methods.Where(m => !m.IsStatic);
@@ -104,11 +105,7 @@ namespace Collections
             return methodExecutionResult;
         }
 
-
-        public Type GetObjectType()
-        {
-            return _objectType;
-        }
+        
 
         private object CreateInstanceFromType(Type type)
         {

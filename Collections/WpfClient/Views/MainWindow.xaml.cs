@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Collections;
+using Collections.Runtime;
 using MahApps.Metro;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace WpfClient
 {
     public partial class MainWindow : MetroWindow
     {
         private static MainWindow _self;
-
 
         public MainWindow()
         {
@@ -20,7 +22,11 @@ namespace WpfClient
             DataContext = ViewModelLocator.MainWindow;
             _self = this;
         }
-        
+
+        public static Task<ProgressDialogController> ShowProgress(string title, string message)
+        {
+            return _self.ShowProgressAsync(title, message);
+        }
 
         public static void ToggleFlyout(int index, IRunner userState = null, bool keepOpenIfOpened = false)
         {

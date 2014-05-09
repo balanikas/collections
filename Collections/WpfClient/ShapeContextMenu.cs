@@ -6,7 +6,7 @@ namespace WpfClient
 {
     internal static class ShapeContextMenu
     {
-        internal static ContextMenu Get(
+        internal static ContextMenu Create(
             RoutedEventHandler closeAction = null,
             RoutedEventHandler infoAction = null,
             RoutedEventHandler showCodeAction = null)
