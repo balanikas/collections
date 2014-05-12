@@ -1,10 +1,13 @@
 ﻿using System;
+using Collections.Compiler;
 
 namespace Collections.Runtime
 {
+
+
     public class RunnerServiceMessage
     {
-        public TimeSpan AvgExecutionTime;
-        public bool Success;
+        public ServiceMessageState State;
+         
     }
 }

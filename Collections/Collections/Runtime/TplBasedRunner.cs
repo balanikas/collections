@@ -45,7 +45,7 @@ namespace Collections.Runtime
         {
             foreach (IGui listener in _uiListeners)
             {
-                listener.Draw();
+                listener.Initialize();
             }
 
 

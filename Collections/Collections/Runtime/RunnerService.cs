@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
@@ -11,31 +12,26 @@ namespace Collections.Runtime
         private readonly BroadcastBlock<RunnerServiceMessage> _broadcastToOutput;
         private readonly BroadcastBlock<CompilerServiceMessage> _broadcastToConsume;
         private TimeSpan? _executionFrequency;
-        private Action<CompilerServiceMessage> _action;
         private CancellationTokenSource _cancellationTokenSource;
-        private readonly IRuntime _runtime;
-        public RunnerService(IRuntime runtime, BroadcastBlock<RunnerServiceMessage> broadcastToOutput,
+        public RunnerService(BroadcastBlock<RunnerServiceMessage> broadcastToOutput,
             BroadcastBlock<CompilerServiceMessage> broadcastToConsume)
         {
-            _runtime = runtime;
             _broadcastToConsume = broadcastToConsume;
             _broadcastToOutput = broadcastToOutput;
+            _executionFrequency = TimeSpan.FromMilliseconds(2000);
         }
 
         public void Start(
             Action<CompilerServiceMessage> action = null,
             TimeSpan? executionFrequency = null)
         {
-            
-            _runtime.Start();
-
-            _executionFrequency = executionFrequency ?? TimeSpan.FromMilliseconds(1000);
-            _action = action ?? new Action<CompilerServiceMessage>(Execute);
+            _executionFrequency = executionFrequency ?? _executionFrequency;
+            action = action ?? RunnerAction;
 
             _cancellationTokenSource = new CancellationTokenSource();
 
-            var targetBlock = StartService(_action, _broadcastToConsume, _broadcastToOutput, _cancellationTokenSource.Token);
-            targetBlock.Post("");
+            var targetBlock = StartService(action, _broadcastToConsume, _broadcastToOutput, _cancellationTokenSource.Token);
+            targetBlock.Post(String.Empty);
         }
 
 
@@ -51,31 +47,29 @@ namespace Collections.Runtime
         }
 
         ITargetBlock<string> StartService(
-          Action<CompilerServiceMessage> action,
-          BroadcastBlock<CompilerServiceMessage> broadcastBlock,
-          BroadcastBlock<RunnerServiceMessage> runnerBlock,
-          CancellationToken cancellationToken)
+              Action<CompilerServiceMessage> action,
+              BroadcastBlock<CompilerServiceMessage> broadcastBlock,
+              BroadcastBlock<RunnerServiceMessage> runnerBlock,
+              CancellationToken cancellationToken)
         {
-            if (action == null)
-                throw new ArgumentNullException("action");
 
             ActionBlock<string> block = null;
-
             block = new ActionBlock<string>(async now =>
             {
-                
+
                 while (await broadcastBlock.OutputAvailableAsync(cancellationToken))
                 {
                     Thread.Sleep(_executionFrequency.Value);
-                    CompilerServiceMessage data = broadcastBlock.Receive();
-
-                    var execTime = Utils.MeasureExecutionTime(action, data);
+                    CompilerServiceMessage message = broadcastBlock.Receive();
+                    message = new CompilerServiceMessage(message, message.State);
                   
-                    runnerBlock.Post(new RunnerServiceMessage()
+                    action(message);
+
+                    runnerBlock.Post(new RunnerServiceMessage
                     {
-                        AvgExecutionTime = execTime,
-                       // Success = !data.CompilerErrors.HasErrors
+                        State = message.State
                     });
+
                 }
 
             }, new ExecutionDataflowBlockOptions
@@ -85,25 +79,9 @@ namespace Collections.Runtime
 
             return block;
         }
-        private void Execute(CompilerServiceMessage msg)
+   
+        private void RunnerAction(CompilerServiceMessage msg)
         {
-           
-            if (msg.CompilerErrors.Count == 0 && msg.Types.Any())
-            {
-                var methods = msg.Types[0].MethodsInfos.Where(x => x.DeclaringType == msg.Types[0].TypeInfo.AsType()).ToList();
-
-                _runtime.Logger.InfoNow(string.Format("executing method {0}.{1}",msg.Types[0].TypeInfo.Name, methods[0].Name));
-                var runnable = new RunnableItem(msg.Types[0].TypeInfo, methods);
-                var settings = new RunnerSettings()
-                {
-                    CompilerServiceType = CompilerType.Default,
-                    Iterations = 100,
-                    RunnerType = RunnerType.BackgroundWorkerBased
-                };
-                var runner = _runtime.CreateAndAddRunner(runnable, settings);
-                runner.Start();
-
-            }
 
         }
     }

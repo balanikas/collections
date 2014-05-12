@@ -58,7 +58,7 @@ namespace WpfClient
                 action(now);
 
                 // Wait.
-                await Task.Delay(TimeSpan.FromMilliseconds(5000), cancellationToken).
+                await Task.Delay(TimeSpan.FromMilliseconds(1000), cancellationToken).
                     // Doing this here because synchronization context more than
                     // likely *doesn't* need to be captured for the continuation
                     // here.  As a matter of fact, that would be downright

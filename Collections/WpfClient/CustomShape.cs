@@ -39,7 +39,7 @@ namespace WpfClient
         public string Id { get; set; }
 
 
-        public virtual void Draw()
+        public virtual void Initialize()
         {
             _grid.Visibility = Visibility.Visible;
         }

@@ -5,7 +5,7 @@ namespace Collections
     public interface IGui
     {
         string Id { get; set; }
-        void Draw();
+        void Initialize();
         void Update(MethodExecutionMessage message);
         void Destroy();
 

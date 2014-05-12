@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -13,20 +14,7 @@ namespace Collections
         {
             foreach (MethodInfo method in methods)
             {
-                foreach (ParameterInfo p in method.GetParameters())
-                {
-                    Type isValidType = GetValidMethodTypes().
-                        FirstOrDefault(t => t.FullName == p.ParameterType.FullName);
-                    if (isValidType == null)
-                    {
-                        return false;
-                    }
-                }
-
-
-                Type isValidReturnType = GetValidMethodTypes().
-                    FirstOrDefault(t => t.FullName == method.ReturnType.FullName);
-                if (isValidReturnType == null)
+                if (!IsMethodSupported(method))
                 {
                     return false;
                 }
@@ -34,6 +22,45 @@ namespace Collections
 
             return true;
         }
+
+        public static bool IsMethodSupported(MethodInfo method)
+        {
+ 
+            foreach (ParameterInfo p in method.GetParameters())
+            {
+                Type isValidType = GetValidMethodTypes().
+                    FirstOrDefault(t => t.FullName == p.ParameterType.FullName);
+                if (isValidType == null)
+                {
+                    return false;
+                }
+            }
+
+
+            Type isValidReturnType = GetValidMethodTypes().
+                FirstOrDefault(t => t.FullName == method.ReturnType.FullName);
+            if (isValidReturnType == null)
+            {
+                return false;
+            }
+            
+
+            return true;
+        }
+
+        public static List<MethodInfo> GetSupportedMethods(IEnumerable<MethodInfo> methods)
+        {
+            var supportedMethods = new List<MethodInfo>();
+            foreach (MethodInfo method in methods)
+            {
+                if (IsMethodSupported(method))
+                {
+                    supportedMethods.Add(method);
+                }
+            }
+            return supportedMethods;
+        }
+
 
         private static IEnumerable<Type> GetValidMethodTypes()
         {

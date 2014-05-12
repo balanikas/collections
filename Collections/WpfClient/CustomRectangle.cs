@@ -43,9 +43,9 @@ namespace WpfClient
         }
 
 
-        public override void Draw()
+        public override void Initialize()
         {
-            base.Draw();
+            base.Initialize();
 
             _animationsHelper.AddGrowthAnimation(_grid, TimeSpan.FromSeconds(10), 1, 3);
             _animationsHelper.AddColorAnimation(_rect, TimeSpan.FromSeconds(10), Colors.Green, Colors.Red);

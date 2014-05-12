@@ -45,7 +45,7 @@
                 </i:Interaction.Triggers>
             </avalonedit:TextEditor>
         <DockPanel Grid.Row="1" Grid.Column="1" LastChildFill="True">
-           
+
             <Canvas x:Name="Canvas" DockPanel.Dock="Top" >
 
                 <Canvas.Background>
@@ -56,14 +56,24 @@
                     </RadialGradientBrush>
                 </Canvas.Background>
 
-                <Ellipse Fill="{Binding CanvasColor}"  Width="204" Height="183" Canvas.Left="144" Canvas.Top="227"></Ellipse>
-                <Label FontSize="40" Content="{Binding ExecutionTime}" ></Label>
+              
+                <StackPanel>
+                    <Label FontSize="40" Content="ExecutionTime" ></Label>
+                    <Label FontSize="40" Content="{Binding CanvasCtx.ExecutionTime}" ></Label>
+                    <Label FontSize="40" Content="Progress" ></Label>
+                    <Label FontSize="40" Content="{Binding CanvasCtx.Progress}" ></Label>
+                    <!--<Label FontSize="40" Content="MethodExecitionTime" ></Label>
+                    <Label FontSize="40" Content="{Binding MethodExecitionTime}" ></Label>-->
+                   
+                </StackPanel>
+               
             </Canvas>
         </DockPanel>
 
         <Expander Grid.Row="1" Grid.Column="1" Header="Log" ExpandDirection="Up" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom"
                   Opacity="0.9" IsExpanded="True" Height="500" VerticalAlignment="Bottom" >
             <DockPanel>
+             
                 <Button Content="Clear log" Command="{Binding CmdClearLog}" DockPanel.Dock="Top" />
                 <controls:LogViewer DockPanel.Dock="Bottom" />
             </DockPanel>

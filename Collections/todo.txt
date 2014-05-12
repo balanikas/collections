@@ -95,6 +95,9 @@ continue with this : http://msdn.microsoft.com/en-us/magazine/dd419663.aspx
 * type selected but no method is selected, annoying
 * strange the alog is reused...when switching tabs stuff needs to be closed and resetted!
 * in playmode, no animations no nothing...
-* nothing happens when playmode is started
+
 * app icon for wpfclient
 
+
+
+data bind the shit in playviewmodel to canvas....btw why is all so slow??

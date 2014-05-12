@@ -41,9 +41,9 @@ namespace WpfClient
             _ellipse.Opacity = 1.0;
         }
 
-        public override void Draw()
+        public override void Initialize()
         {
-            base.Draw();
+            base.Initialize();
 
 
             _animationsHelper.AddGrowthAnimation(_grid, TimeSpan.FromSeconds(10), 1, 3);
