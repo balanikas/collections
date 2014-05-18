@@ -28,6 +28,9 @@ namespace WpfClient
             IEnumerable<CompilerType> compilerServiceTypes =
                 Enum.GetValues(typeof (CompilerType)).Cast<CompilerType>();
             cmbCompilerService.ItemsSource = compilerServiceTypes;
+
+
+            
         }
 
         public bool CanCloseFlyout
@@ -66,31 +69,48 @@ namespace WpfClient
             }
         }
 
-        private void sldLoopCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            Settings.Loops = (int) e.NewValue;
-        }
 
         private void cmbGraphics_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Settings.DrawAs = (DrawTypes) cmbGraphics.SelectedItem;
+            Settings.Instance.Set(Settings.Keys.DrawAs, (DrawTypes)cmbGraphics.SelectedItem);
         }
 
         private void radUseTPL_Checked(object sender, RoutedEventArgs e)
         {
             if (radUseBW.IsChecked == true)
             {
-                Settings.ThreadingType = RunnerType.BackgroundWorkerBased;
+                Settings.Instance.Set(Settings.Keys.ThreadingType, RunnerType.BackgroundWorkerBased);
             }
             else
             {
-                Settings.ThreadingType = RunnerType.ParallelTaskBased;
+                Settings.Instance.Set(Settings.Keys.ThreadingType, RunnerType.ParallelTaskBased);
             }
         }
 
         private void CmbCompilerService_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Settings.CompilerServiceType = (CompilerType) cmbCompilerService.SelectedItem;
+            Settings.Instance.Set(Settings.Keys.CompilerServiceType, (CompilerType)cmbCompilerService.SelectedItem);
+        }
+
+        private void SldCompilerInterval_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            
+            Settings.Instance.Set(Settings.Keys.CompilerInterval,(int)e.NewValue);
+        }
+
+        private void SldRunnerInterval_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Settings.Instance.Set(Settings.Keys.RunnerInterval, (int)e.NewValue);
+        }
+
+        private void SldPlayModeIterationCount_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Settings.Instance.Set(Settings.Keys.PlayModeIterationCount,(int) e.NewValue);
+        }
+
+        private void SldExploreModeIterationCount_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Settings.Instance.Set(Settings.Keys.ExploreModeIterationCount, (int)e.NewValue);
         }
     }
 }

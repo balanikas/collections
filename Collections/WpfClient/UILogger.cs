@@ -22,7 +22,7 @@ namespace WpfClient
                 _doc.Dispatcher.BeginInvoke((new Action(delegate
                 {
                     var paragraph = new Paragraph(new Run(message.Message));
-                    paragraph.Foreground = new SolidColorBrush(Colors.Red);
+                    paragraph.Foreground = new SolidColorBrush(Colors.Yellow);
                     _doc.Blocks.Add(paragraph);
                     //_rtb.ScrollToEnd();
                 })));

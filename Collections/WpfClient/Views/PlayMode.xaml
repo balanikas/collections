@@ -7,11 +7,16 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:command="http://www.galasoft.ch/mvvmlight"
     xmlns:controls="clr-namespace:WpfClient.Controls"
+    xmlns:vm="clr-namespace:WpfClient.ViewModels"
     x:Class="WpfClient.Views.PlayMode"
     mc:Ignorable="d"
-    d:DesignHeight="1000" d:DesignWidth="1000">
-
+    d:DesignHeight="1000" d:DesignWidth="1000"
+    d:DataContext="{d:DesignInstance Type=vm:PlayModeViewModel, IsDesignTimeCreatable=True}">
+ 
     <Grid>
+        <!--<Grid.DataContext >
+            <vm:PlayModeViewModel></vm:PlayModeViewModel>
+        </Grid.DataContext>-->
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition ></RowDefinition>
@@ -20,13 +25,31 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0"  Orientation="Horizontal">
-            <Button x:Name="BtnStart" Content="start" 
-                Command="{Binding CmdStart}"   />
-            <Button x:Name="BtnStop" Content="stop" 
-                Command="{Binding CmdStop}" />
-        </StackPanel>
+      
 
+        <Grid Grid.Row="0" Grid.Column="0"  Margin="0,5,0,5">
+
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="5*" />
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="BtnStart" Content="start" Grid.Column="0" Margin="5,0,5,0"
+                Command="{Binding CmdStart}"   >
+
+
+            </Button>
+            <Button x:Name="BtnStop" Content="stop" Grid.Column="1" Margin="5,0,5,0"
+                Command="{Binding CmdStop}" />
+            <ComboBox Grid.Column="2" Margin="5,0,5,0" x:Name="CmbCompiledMethods" ItemsSource="{Binding Path=CompiledMethods}" 
+                      SelectedValue="{Binding Path=SelectedCompiledMethod}" 
+                      IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=HasItems}" >
+
+            </ComboBox>
+        </Grid>
+      
 
 
         <avalonedit:TextEditor Grid.Row="1" Grid.Column="0" Background="White"
@@ -47,7 +70,12 @@
         <DockPanel Grid.Row="1" Grid.Column="1" LastChildFill="True">
 
             <Canvas x:Name="Canvas" DockPanel.Dock="Top" >
-
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <command:EventToCommand PassEventArgsToCommand="True"
+                                                    Command="{Binding CmdCanvasLoaded}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <Canvas.Background>
                     <RadialGradientBrush>
                         <GradientStop Color="#FF1B3C13" Offset="0.008" />

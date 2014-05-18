@@ -14,5 +14,6 @@ namespace Collections.Runtime
         void Remove(IRunner runner);
 
         void RemoveAll();
+        IEnumerable<IRunner> GetActiveRunners();
     }
 }

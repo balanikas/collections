@@ -44,19 +44,10 @@
 
     <StackPanel Orientation="Vertical"
                 Margin="10">
-        <Label Content="Iterations" />
-        <!--<c:QuadraticSlider x:Name="quadraticSlider" 
-                            CenterQuadraticValue="100"
-                            QuadraticValue="200"
-                            Value="200"
-                            Minimum="0"
-                            Maximum="500">
-         
-        </c:QuadraticSlider>
-        <Label  Content="{Binding ElementName=quadraticSlider, Path=QuadraticValue}"/>-->
-        <Slider x:Name="sldLoopCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="1000000"
-                SmallChange="1000" Value="100000" AutoToolTipPlacement="TopLeft" Height="26"
-                ValueChanged="sldLoopCount_ValueChanged" TickFrequency="100" LargeChange="100000" />
+        <!-- general-->
+
+        <Label Content="General" FontSize="20" HorizontalContentAlignment="Center"  Height="50"></Label>
+      
 
       
 
@@ -75,6 +66,31 @@
                      GroupName="1"
                      IsChecked="True" />
 
+        <!-- explore mode-->
+        <Label Content="Explore Mode" FontSize="20" HorizontalContentAlignment="Center"  Height="50"></Label>
+        <Label Content="Iterations" />
+
+        <Slider x:Name="SldExploreModeIterationCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="1000000" Minimum="1"
+                SmallChange="1000" Value="100000" AutoToolTipPlacement="TopLeft" 
+                ValueChanged="SldExploreModeIterationCount_OnValueChanged"  TickFrequency="100" LargeChange="100000" />
+
+        <!-- play mode-->
+        <Label Content="Play Mode" FontSize="20" HorizontalContentAlignment="Center" Height="50"></Label>
+        
+        <Label Content="Iterations" />
+        <Slider x:Name="SldPlayModeIterationCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="1000000" Minimum="1"
+                SmallChange="1000" Value="100000" AutoToolTipPlacement="TopLeft" 
+                ValueChanged="SldPlayModeIterationCount_OnValueChanged"  TickFrequency="100" LargeChange="100000" />
+
+        <Label Content="Compiler Interval" />
+        <Slider x:Name="SldCompilerInterval" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="10000" Minimum="1"
+                SmallChange="100" Value="1000" AutoToolTipPlacement="TopLeft" 
+                ValueChanged="SldCompilerInterval_OnValueChanged"  LargeChange="1000" />
+
+        <Label Content="Runner Interval" />
+        <Slider x:Name="SldRunnerInterval" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="10000" Minimum="1"
+                SmallChange="100" Value="1000" AutoToolTipPlacement="TopLeft" 
+                ValueChanged="SldRunnerInterval_OnValueChanged"  LargeChange="1000" />
     </StackPanel>
 
 </controls:Flyout>

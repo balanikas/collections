@@ -13,7 +13,7 @@ namespace WpfClient.Views
             DataContext = vm;
 
 #if DEBUG
-            vm.Types.FilesPath = @"C:\dev\collections\Collections\Samples\sourcefiles";
+            vm.Types.FilesPath = @"C:\dev\GitHub\collections\Collections\Samples\sourcefiles";
 #endif
             TypesView.DataContext = vm.Types;
         }

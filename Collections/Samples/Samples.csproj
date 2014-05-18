@@ -29,6 +29,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -74,9 +77,17 @@
   <ItemGroup>
     <Folder Include="sourcefiles\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="postbuild.cmd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(ProjectDir)\*.* $(ProjectDir)\sourcefiles\</PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(ProjectDir)\*.*" "$(ProjectDir)\sourcefiles\"
+
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>copy /Y "$(ProjectDir)\*.*" "$(ProjectDir)\sourcefiles\"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

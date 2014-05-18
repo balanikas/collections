@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Collections.Runtime
 {
@@ -51,6 +52,12 @@ namespace Collections.Runtime
                 r.Destroy();
             }
             _runners.Clear();
+        }
+
+        public IEnumerable<IRunner> GetActiveRunners()
+        {
+            return _runners.Where(x => x.Value.IsAlive() == true).Select(x=> x.Value);
+
         }
     }
 }

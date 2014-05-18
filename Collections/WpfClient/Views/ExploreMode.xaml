@@ -7,7 +7,9 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:views="clr-namespace:WpfClient.Views"
              xmlns:controls="clr-namespace:WpfClient.Controls"
+             xmlns:viewModels="clr-namespace:WpfClient.ViewModels"
              mc:Ignorable="d"
+              d:DataContext="{d:DesignInstance Type=viewModels:ExploreModeViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="800" d:DesignWidth="1200">
 
     <Grid>
@@ -21,6 +23,7 @@
 
 
         <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="True" Grid.ColumnSpan="2" Margin="10,10,10,10">
+            <Button Content="Clear Canvas" Command="{Binding CmdClearCanvas}" DockPanel.Dock="Top" />
             <views:TypesView x:Name="TypesView" />
         </DockPanel>
 
@@ -32,7 +35,7 @@
                       ShowsPreview="True"
                       Width="5" />
         <DockPanel Grid.Column="2" Grid.Row="0" Margin="10,10,10,10">
-            <Button Content="Clear" Command="{Binding CmdClearCanvas}" DockPanel.Dock="Top" />
+           
 
             <Canvas x:Name="Canvas">
                 <Canvas.Background>
@@ -48,15 +51,53 @@
             </Canvas>
         </DockPanel>
 
-
+        
         <Expander Grid.Row="0" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Stretch"
-                  Opacity="0.9" IsExpanded="True" Height="500" VerticalAlignment="Bottom">
+                  Opacity="0.9" IsExpanded="True" Height="300" VerticalAlignment="Bottom">
             <DockPanel>
                 <Button Content="Clear log" Command="{Binding CmdClearLog}" DockPanel.Dock="Top" />
 
                 <controls:LogViewer />
 
             </DockPanel>
+
+        </Expander>
+        <Expander DataContext="{Binding InfoView}" Grid.Row="0" Grid.Column="2" Header="Info" ExpandDirection="Down" HorizontalAlignment="Stretch"
+                  Opacity="0.9" IsExpanded="False" Height="150" VerticalAlignment="Top">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Content="Type" Grid.Column="0" Grid.Row="0"></Label>
+                <Label Content="{Binding Path= Summary.ObjectType}" Grid.Column="1" Grid.Row="0"></Label>
+                <Label Content="Method" Grid.Column="0" Grid.Row="1"></Label>
+                <Label Content="{Binding Path= Summary.MethodName}" Grid.Column="1" Grid.Row="1"></Label>
+                <Label Content="Progress" Grid.Column="0" Grid.Row="2"></Label>
+                <Label Content="{Binding Path= Summary.Progress}" Grid.Column="1" Grid.Row="2"></Label>
+
+                <Label Content="ExecutionTime" Grid.Column="0" Grid.Row="3"></Label>
+                <Label Content="{Binding Path= Summary.ExecutionTime}" Grid.Column="1" Grid.Row="3"></Label>
+
+
+                <Label Content="AvgMethodExecTime" Grid.Column="2" Grid.Row="0"></Label>
+                <Label Content="{Binding Path= Summary.AvgMethodExecutionTimeInMs}" Grid.Column="3" Grid.Row="0"></Label>
+                <Label Content="Executions" Grid.Column="2" Grid.Row="1"></Label>
+                <Label Content="{Binding Path= Summary.ExecutionsCount}" Grid.Column="3" Grid.Row="1"></Label>
+
+                <Label Content="MaxMethodExecTime" Grid.Column="2" Grid.Row="2"></Label>
+                <Label Content="{Binding Path= Summary.MaxMethodExecutionTime}" Grid.Column="3" Grid.Row="2"></Label>
+                <Label Content="MinMethodExecTime" Grid.Column="2" Grid.Row="3"></Label>
+                <Label Content="{Binding Path= Summary.MinMethodExecutionTime}" Grid.Column="3" Grid.Row="3"></Label>
+            </Grid>
 
         </Expander>
 

@@ -44,7 +44,7 @@ namespace WpfClient
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void AddContent(RunSummaryMessage message)
+        public void AddContent(MethodExecutionSummaryMessage message)
         {
             if (message == null)
             {

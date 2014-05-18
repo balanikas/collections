@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Reflection;
+using Microsoft.CSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Collections.Compiler
@@ -62,7 +63,7 @@ namespace Collections.Compiler
             Assert.IsNotNull(sourceCode);
 
             errors = new List<string>();
-
+            
             CompilerResults compilationResults = _compiler.CompileAssemblyFromSource(_compilerParams, sourceCode);
             
             if (compilationResults.Errors.Count > 0)

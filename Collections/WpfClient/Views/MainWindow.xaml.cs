@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,7 +19,7 @@ namespace WpfClient
         public MainWindow()
         {
             InitializeComponent();
-
+            
             DataContext = ViewModelLocator.MainWindow;
             _self = this;
         }

@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Collections.Messages
 {
-    public class RunSummaryMessage : Message
+    public class MethodExecutionSummaryMessage : Message
     {
-        public RunSummaryMessage(Type objectType, TimeSpan timeElapsed, IEnumerable<MethodExecutionResult> methodExecutions)
+        public MethodExecutionSummaryMessage(Type objectType, TimeSpan timeElapsed, IEnumerable<MethodExecutionResult> methodExecutions)
         {
             ObjectType = objectType;
             ExecutionTime = timeElapsed;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Collections.Messages
 {
@@ -17,16 +18,22 @@ namespace Collections.Messages
 
         public MethodExecutionResult MethodExecutionResult { get; private set; }
 
+        public MethodExecutionSummaryMessage Summary { get; set; }
 
         public TimeSpan ExecutionTime { get; private set; }
 
         public override string ToString()
         {
-            return
-                "Types: " + ObjectType + "\n" +
-                "Method: " + MethodExecutionResult.Name + "\n" +
-                "ExecutionTime: " + ExecutionTime.Seconds + ":" + ExecutionTime.Milliseconds + "\n" +
-                "Progress: " + Progress + "\n";
+
+            var sb = new StringBuilder(50);
+            sb.AppendFormat("Type: {0}\nMethod: {1}\nExecutionTime: {2}\nProgress: {3}\nReturnValue: {4}\n",
+                ObjectType,
+                MethodExecutionResult.Name,
+                ExecutionTime.Seconds + ":" + ExecutionTime.Milliseconds,
+                Progress,
+                MethodExecutionResult.ReturnValue);
+            return sb.ToString();
+
         }
     }
 }

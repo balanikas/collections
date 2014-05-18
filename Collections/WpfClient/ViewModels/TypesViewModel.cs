@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using Collections;
+using Collections.Compiler;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using ICSharpCode.AvalonEdit.Document;
@@ -57,14 +59,15 @@ namespace WpfClient.ViewModels
 
             CmdCompile = new RelayCommand(() =>
             {
-                if (Methods.Count == 0)
+                if (Methods == null || Methods.Count == 0)
                 {
                     return;
                 }
 
                 List<string> errors;
-                if (_typesProvider.TryCompileFromText(CodeDocument.Text, out errors) != null)
+                if (_typesProvider.TryCompileFromText(CodeDocument.Text, out errors) != null && !errors.Any())
                 {
+
                     _typesProvider.SaveType(new LoadedType
                     {
                         FilePath = SelectedType.FilePath,
@@ -131,7 +134,10 @@ namespace WpfClient.ViewModels
 
         public MethodInfo SelectedMethod
         {
-            get { return _selectedMethod; }
+            get
+            {
+                return _selectedMethod;
+            }
             set
             {
                 _selectedMethod = value;
@@ -174,7 +180,7 @@ namespace WpfClient.ViewModels
                 "loading types from " + FilesPath);
 
 
-            _typesProvider.SetActiveCompilerService(Settings.CompilerServiceType);
+            _typesProvider.SetActiveCompilerService(Settings.Instance.Get(Settings.Keys.CompilerServiceType));
             var allTypes = new List<LoadedType>();
 
 

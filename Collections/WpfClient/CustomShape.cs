@@ -48,22 +48,32 @@ namespace WpfClient
         {
         }
 
+        public virtual void Update(MethodExecutionSummaryMessage message)
+        {
+            
+        }
+
         public void Destroy()
         {
-            if (_grid.Parent != null)
+            //if (_grid.Parent != null)
             {
                 _grid.Dispatcher.Invoke(() =>
                 {
-                    UIElementCollection children = ((Canvas) _grid.Parent).Children;
-                    if (children != null)
+                    if (_grid.Parent != null)
                     {
-                        children.Remove(_grid);
+                        UIElementCollection children = ((Canvas)_grid.Parent).Children;
+                        if (children != null)
+                        {
+                            children.Remove(_grid);
+                        }
                     }
+                    
                 });
             }
         }
 
         public event RightClickEventHandler OnRightClick;
+        public event LeftClickEventHandler OnLeftClick;
         public event MouseOverEventHandler OnMouseOver;
         public event KeyPressedEventHandler OnKeyPressed;
 
@@ -84,6 +94,13 @@ namespace WpfClient
                 if (OnRightClick != null)
                 {
                     OnRightClick(this, new RightClickEventArgs(Id));
+                }
+            }
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                if (OnLeftClick != null)
+                {
+                    OnLeftClick(this, new LeftClickEventArgs(Id));
                 }
             }
         }

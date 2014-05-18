@@ -101,3 +101,44 @@ continue with this : http://msdn.microsoft.com/en-us/magazine/dd419663.aspx
 
 
 data bind the shit in playviewmodel to canvas....btw why is all so slow??
+
+
+--- what do i want to be displayed in the play canvs???
+
+* executing type 
+* executing method
+* avg method execution
+* total exec of all iteration
+* progress 1-100
+* color changing (progress)
+* shape size changes (avg method exec time)
+* stickprov (return value, param values)
+
+
+
+------------------------
+* remove compiled successfully, runn successfully
+* remove log output: guid + 0% in explore mode
+* red color on log, not pink
+* select default(first method) when changing selected type!!
+* compiling invalid code crashes program!
+* log error message when loading from invalid path
+* does drag n drop work still?
+
+
+
+
+
+
+
+
+
+
+
+
+
+------
+
+* continue with UTs
+* in playmode, use togglebutton or toggle switch instead of 2 buttons (start,stop)
+* add desc in settings: Compiler Interval (how often will the compiler execute)..etc.

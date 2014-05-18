@@ -62,9 +62,14 @@ namespace WpfClient.ViewModels
             
         }
 
+        public void Update(MethodExecutionSummaryMessage message)
+        {
+           
+        }
+
         public void Destroy()
         {
-            throw new NotImplementedException();
+           // throw new NotImplementedException();
         }
 
 

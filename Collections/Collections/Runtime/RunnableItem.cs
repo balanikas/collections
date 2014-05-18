@@ -53,7 +53,7 @@ namespace Collections.Runtime
             foreach (ExecutionInfo execInfo in _executionInfos)
             {
                 object[] parameters = null;
-
+                
                 ParameterInfo[] reflectedParams = execInfo.ParameterInfos;
                 int paramCount = reflectedParams.Length;
                 if (paramCount > 0)
@@ -71,7 +71,7 @@ namespace Collections.Runtime
                 try
                 {
                     object result;
-                    if (paramCount == 0)
+                    if (execInfo.Cached != null)
                     {
                         //special optimization when method has no return value and no params
                         execInfo.Cached();

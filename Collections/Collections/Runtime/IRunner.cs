@@ -8,8 +8,9 @@ namespace Collections.Runtime
         void Start();
         void Destroy();
         bool IsAlive();
-        RunSummaryMessage GetCurrentState();
+        MethodExecutionSummaryMessage GetCurrentState();
 
         void AddUiListener(IGui listener);
+        void RemoveUiListener(IGui listener);
     }
 }

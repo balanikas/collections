@@ -41,6 +41,11 @@ namespace Collections.Runtime
             }
         }
 
+        public void RemoveUiListener(IGui listener)
+        {
+          
+        }
+
         public void Start()
         {
             foreach (IGui listener in _uiListeners)
@@ -91,7 +96,7 @@ namespace Collections.Runtime
         }
 
 
-        public RunSummaryMessage GetCurrentState()
+        public MethodExecutionSummaryMessage GetCurrentState()
         {
             return null;
         }

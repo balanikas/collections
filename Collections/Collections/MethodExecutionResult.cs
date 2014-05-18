@@ -1,4 +1,5 @@
 ﻿using System;
+using Collections.Messages;
 
 namespace Collections
 {
@@ -17,5 +18,7 @@ namespace Collections
         public bool Success { get; set; }
         public TimeSpan ExecutionTime { get; set; }
         public string ErrorMessage { get; set; }
+
+       
     }
 }

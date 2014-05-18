@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Collections;
+using Collections.Messages;
 using Collections.Runtime;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -22,12 +24,15 @@ namespace WpfClient.ViewModels
             CmdClearCanvas = new RelayCommand(OnClearCanvas);
             CmdClearLog = new RelayCommand(OnClearLog);
             Types = ViewModelLocator.Types;
+            InfoView = new InfoView();
 
             //Console.SetOut(new ConsoleWriter(_logger));
             _runtime.Reset();
         }
 
         public TypesViewModel Types { get; set; }
+
+        public InfoView InfoView { get; set; }
 
         public RelayCommand<MouseEventArgs> CmdMouseDown { get; private set; }
         public RelayCommand CmdClearLog { get; private set; }
@@ -66,37 +71,7 @@ namespace WpfClient.ViewModels
         }
 
 
-        private CustomShape CreateDrawingShape(Canvas canvas, IRuntime runtime)
-        {
-            var location = Mouse.GetPosition(canvas);
-            CustomShape shape = null;
-            if (Settings.DrawAs == DrawTypes.Circle)
-            {
-                shape = new CustomCircle(canvas.Children, location);
-            }
-            else if (Settings.DrawAs == DrawTypes.Rectangle)
-            {
-                shape = new CustomRectangle(canvas.Children, location);
-            }
-
-            shape.OnMouseOver += (source, args) =>
-            {
-
-            };
-            shape.OnKeyPressed += (source, args) =>
-            {
-                if (args.Key == Key.D1)
-                {
-                    runtime.Runners.RemoveById(args.EventInfo);
-                }
-                else if (args.Key == Key.D2)
-                {
-                    MainWindow.ToggleFlyout(1, runtime.Runners.GetById(args.EventInfo));
-                }
-            };
-
-            return shape;
-        }
+       
 
         private void CreateRunner(Canvas element)
         {
@@ -106,7 +81,7 @@ namespace WpfClient.ViewModels
                 return;
             }
 
-            var shape = CreateDrawingShape(element, _runtime);
+            var shape = UIHelper.CreateDrawingShape(element);
 
             IRunnable runnable;
             try
@@ -122,8 +97,8 @@ namespace WpfClient.ViewModels
 
             var settings = new RunnerSettings
             {
-                Iterations = Settings.Loops, 
-                RunnerType = Settings.ThreadingType
+                Iterations = Settings.Instance.Get(Settings.Keys.ExploreModeIterationCount),
+                RunnerType =  Settings.Instance.Get(Settings.Keys.ThreadingType)
             };
 
 
@@ -131,15 +106,73 @@ namespace WpfClient.ViewModels
             
             ContextMenu ctxMenu = ShapeContextMenu.Create(
                 (s, e) => _runtime.Runners.Remove(runner),
-                (s, e) => MainWindow.ToggleFlyout(1, _runtime.Runners.GetById(runner.Id), true),
+                (s, e) =>  MainWindow.ToggleFlyout(1, _runtime.Runners.GetById(runner.Id), true),
                 (s, e) => { }
                 );
 
             shape.AddContextMenu(ctxMenu);
-           
+            shape.OnLeftClick += (source, args) =>
+            {
+                InfoView.Register(_runtime.Runners.GetById(args.EventInfo));
+            };
             runner.AddUiListener(shape);
- 
+            InfoView.Register(runner);
+
             runner.Start();
+        }
+
+     
+    }
+
+    public class InfoView :  ViewModelBase, IGui
+    {
+        private MethodExecutionSummaryMessage _summary;
+        private IRunner _runner;
+        public string Id { get; set; }
+        public void Initialize()
+        {
+           
+        }
+
+     
+
+        public void Register(IRunner runner)
+        {
+            if (_runner != null)
+            {
+                _runner.RemoveUiListener(this);
+            }
+          
+           
+            _runner = runner;
+            Summary = _runner.GetCurrentState();
+            _runner.AddUiListener(this);
+        }
+
+        public void Update(MethodExecutionMessage message)
+        {
+            Summary = message.Summary;
+           
+        }
+
+        public void Update(MethodExecutionSummaryMessage message)
+        {
+           
+        }
+
+        public void Destroy()
+        {
+            Summary = null;
+        }
+
+        public MethodExecutionSummaryMessage Summary
+        {
+            get { return _summary; }
+            set
+            {
+                _summary = value;
+                RaisePropertyChanged("Summary");
+            }
         }
     }
 }

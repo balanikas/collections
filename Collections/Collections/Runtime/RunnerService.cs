@@ -1,31 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Collections.Compiler;
 
 namespace Collections.Runtime
 {
-    public class RunnerService
+    public class RunnerService : IDisposable
     {
         private readonly BroadcastBlock<RunnerServiceMessage> _broadcastToOutput;
         private readonly BroadcastBlock<CompilerServiceMessage> _broadcastToConsume;
-        private TimeSpan? _executionFrequency;
+        private TimeSpan? _executionInterval;
         private CancellationTokenSource _cancellationTokenSource;
+
+        public bool IsRunning
+        {
+            get;
+            private set;
+        }
+        
         public RunnerService(BroadcastBlock<RunnerServiceMessage> broadcastToOutput,
             BroadcastBlock<CompilerServiceMessage> broadcastToConsume)
         {
             _broadcastToConsume = broadcastToConsume;
             _broadcastToOutput = broadcastToOutput;
-            _executionFrequency = TimeSpan.FromMilliseconds(2000);
+            _executionInterval = TimeSpan.FromMilliseconds(1000);
         }
 
         public void Start(
             Action<CompilerServiceMessage> action = null,
-            TimeSpan? executionFrequency = null)
+            TimeSpan? executionInterval = null)
         {
-            _executionFrequency = executionFrequency ?? _executionFrequency;
+            if (IsRunning)
+            {
+                return;
+            }
+
+            IsRunning = true;
+            _executionInterval = executionInterval ?? _executionInterval;
             action = action ?? RunnerAction;
 
             _cancellationTokenSource = new CancellationTokenSource();
@@ -37,13 +52,26 @@ namespace Collections.Runtime
 
         public void Stop()
         {
-            using (_cancellationTokenSource)
+            if (!IsRunning)
+            {
+                return;
+            }
+            IsRunning = false;
+
+            _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+            if (_cancellationTokenSource != null)
             {
                 _cancellationTokenSource.Cancel();
+                
             }
-
-            _cancellationTokenSource = null;
             
+        }
+
+      
+
+        public TimeSpan ExecutionInterval
+        {
+            set { _executionInterval = value; }
         }
 
         ITargetBlock<string> StartService(
@@ -56,10 +84,9 @@ namespace Collections.Runtime
             ActionBlock<string> block = null;
             block = new ActionBlock<string>(async now =>
             {
-
-                while (await broadcastBlock.OutputAvailableAsync(cancellationToken))
+                
+                while (  await broadcastBlock.OutputAvailableAsync(cancellationToken))
                 {
-                    Thread.Sleep(_executionFrequency.Value);
                     CompilerServiceMessage message = broadcastBlock.Receive();
                     message = new CompilerServiceMessage(message, message.State);
                   
@@ -69,6 +96,14 @@ namespace Collections.Runtime
                     {
                         State = message.State
                     });
+
+                    try
+                    {
+                        broadcastBlock.Completion.Wait((int)_executionInterval.Value.TotalMilliseconds,cancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                    }
 
                 }
 
@@ -83,6 +118,24 @@ namespace Collections.Runtime
         private void RunnerAction(CompilerServiceMessage msg)
         {
 
+        }
+
+
+        public void Dispose()
+        {
+           Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_cancellationTokenSource != null)
+                {
+                    _cancellationTokenSource.Dispose();
+                    _cancellationTokenSource = null;
+                }
+            }
         }
     }
 }

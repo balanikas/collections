@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Collections.Logging;
 using Collections.Messages;
 
@@ -48,6 +49,11 @@ namespace Collections.Runtime
             }
         }
 
+        public void RemoveUiListener(IGui listener)
+        {
+            _uiListeners.Remove(listener);
+        }
+
         public string Id { get; private set; }
 
 
@@ -60,7 +66,7 @@ namespace Collections.Runtime
                 _bw.RunWorkerAsync();
             }
 
-            foreach (IGui listener in _uiListeners)
+            foreach (IGui listener in _uiListeners.ToList())
             {
                 listener.Initialize();
             }
@@ -70,10 +76,10 @@ namespace Collections.Runtime
         public void Destroy()
         {
             _bw.CancelAsync();
-            foreach (IGui listener in _uiListeners)
-            {
-                listener.Destroy();
-            }
+            //foreach (IGui listener in _uiListeners)
+            //{
+            //    listener.Destroy();
+            //}
         }
 
         public bool IsAlive()
@@ -86,15 +92,15 @@ namespace Collections.Runtime
             return false;
         }
 
-        public RunSummaryMessage GetCurrentState()
+        public MethodExecutionSummaryMessage GetCurrentState()
         {
-            return new RunSummaryMessage(_runnableObject.ObjectType, _watch.Elapsed, _methodExecutions);
+            return new MethodExecutionSummaryMessage(_runnableObject.ObjectType, _watch.Elapsed, _methodExecutions);
         }
 
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
-           
+            //_logger.InfoNow(string.Format("id:{0} {1}%",Id,0));
             var worker = sender as BackgroundWorker;
 
             _watch.Start();
@@ -134,19 +140,13 @@ namespace Collections.Runtime
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             _logger.Flush();
-            if (e.Cancelled)
+            if (e.Cancelled || e.Error != null)
             {
-                foreach (IGui listener in _uiListeners)
+                foreach (IGui listener in _uiListeners.ToList())
                 {
                     listener.Destroy();
                 }
-            }
-            else if (e.Error != null)
-            {
-                foreach (IGui listener in _uiListeners)
-                {
-                    listener.Destroy();
-                }
+                _uiListeners.Clear();
             }
         }
 
@@ -154,7 +154,7 @@ namespace Collections.Runtime
 
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            _logger.Info(string.Format("id:{0} {1}%",Id,e.ProgressPercentage));
+           
           
             var methodExecution = e.UserState as MethodExecutionResult;
          
@@ -163,6 +163,9 @@ namespace Collections.Runtime
                 methodExecution,
                 _watch.Elapsed,
                 e.ProgressPercentage);
+
+            msg.Summary = GetCurrentState();
+
             foreach (IGui listener in _uiListeners)
             {
                 listener.Update(msg);

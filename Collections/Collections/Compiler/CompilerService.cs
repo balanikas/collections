@@ -8,44 +8,74 @@ using Collections.Runtime;
 
 namespace Collections.Compiler
 {
-    public class CompilerService
+    public class CompilerService : IDisposable
     {
         private CancellationTokenSource _cancellationTokenSource;
         private ITargetBlock<CompilerServiceMessage> _targetBlock;
-        private readonly BroadcastBlock<CompilerServiceMessage> _broadcastToOutput;
-        private TimeSpan? _executionFrequency;
-        public CompilerService(BroadcastBlock<CompilerServiceMessage> broadcastToOutput)
+        private readonly BroadcastBlock<CompilerServiceMessage> _broadcaster;
+        private TimeSpan? _executionInterval;
+
+        public bool IsRunning
         {
-            _broadcastToOutput = broadcastToOutput;
-            _executionFrequency = TimeSpan.FromMilliseconds(1000);
+            get;
+            private set;
+        }
+
+        public CompilerService(BroadcastBlock<CompilerServiceMessage> broadcaster)
+        {
+            _broadcaster = broadcaster;
+            _executionInterval = TimeSpan.FromMilliseconds(1000);
         }
 
         public void Start(Action<CompilerServiceMessage> action = null, 
-            TimeSpan? executionFrequency = null)
+            TimeSpan? executionInterval = null)
         {
-            _executionFrequency = executionFrequency ?? _executionFrequency;
+
+            if (IsRunning)
+            {
+                return;
+            }
+
+            IsRunning = true;
+
+            _executionInterval = executionInterval ?? _executionInterval;
 
             action = action ?? CompilerAction;
             _cancellationTokenSource = new CancellationTokenSource();
 
-            _targetBlock = StartService(action, _broadcastToOutput, _cancellationTokenSource.Token);
+            _targetBlock = StartService(action, _broadcaster, _cancellationTokenSource.Token);
             _targetBlock.Post(new CompilerServiceMessage());
         }
 
+
+
         public void Stop()
         {
-            using (_cancellationTokenSource)
+            if (!IsRunning)
+            {
+                return;
+            }
+            IsRunning = false;
+
+            _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+            if (_cancellationTokenSource != null)
             {
                 _cancellationTokenSource.Cancel();
             }
+            
+        }
 
-            _cancellationTokenSource = null;
-            _targetBlock = null;
+        public TimeSpan ExecutionInterval {
+            set
+            {
+                _executionInterval = value;
+            }
         }
 
         ITargetBlock<CompilerServiceMessage> StartService(
             Action<CompilerServiceMessage> action, 
-            BroadcastBlock<CompilerServiceMessage> broadcastBlock, 
+            BroadcastBlock<CompilerServiceMessage> broadcaster, 
             CancellationToken cancellationToken)
         {
            
@@ -53,22 +83,30 @@ namespace Collections.Compiler
             string previousSource = null;
 
 
-            block = new ActionBlock<CompilerServiceMessage>(async now =>
+            block = new ActionBlock<CompilerServiceMessage>(async message =>
             {
 
-                while (await broadcastBlock.OutputAvailableAsync(cancellationToken))
+                while (await broadcaster.OutputAvailableAsync(cancellationToken))
                 {
-                    Thread.Sleep(_executionFrequency.Value);
-                    CompilerServiceMessage data = broadcastBlock.Receive();
-                    if (previousSource != data.Source)
+                  
+                    CompilerServiceMessage receivedMessage = broadcaster.Receive();
+                    if (previousSource != receivedMessage.Source)
                     {
-                        action(data);
-                        previousSource = data.Source;
-                        block.Post(data);
-                        if (data.CompilerErrors.Count == 0)
+                        action(receivedMessage);
+                        previousSource = receivedMessage.Source;
+                        block.Post(receivedMessage);
+                        if (receivedMessage.CompilerErrors.Count == 0)
                         {
-                            broadcastBlock.Post(data);
+                            broadcaster.Post(receivedMessage);
                         }
+                    }
+
+                    try
+                    {
+                        broadcaster.Completion.Wait((int)_executionInterval.Value.TotalMilliseconds, cancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
                     }
 
                 }
@@ -78,33 +116,28 @@ namespace Collections.Compiler
                 CancellationToken = cancellationToken
             });
 
-
-            //block = new ActionBlock<CompilerServiceMessage>(async now =>
-            //{
-            //    await Task.Delay(_executionFrequency.Value, cancellationToken).ConfigureAwait(false);
-
-            //    CompilerServiceMessage data = broadcastBlock.Receive();
-            //    if (previousSource != data.Source)
-            //    {
-            //        action(data);
-            //        previousSource = data.Source;
-            //        block.Post(data);
-            //        if (data.CompilerErrors.Count == 0)
-            //        {
-            //            broadcastBlock.Post(data);
-            //        }
-            //    }
-
-            //}, new ExecutionDataflowBlockOptions
-            //{
-            //    CancellationToken = cancellationToken
-            //});
-
             return block;
         }
 
         private void CompilerAction(CompilerServiceMessage msg)
         {
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_cancellationTokenSource != null)
+                {
+                    _cancellationTokenSource.Dispose();
+                    _cancellationTokenSource = null;
+                }
+            }
         }
     }
 }

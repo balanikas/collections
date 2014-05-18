@@ -28,7 +28,7 @@ namespace WpfClient.ViewModels
             Application.Current.Dispatcher.BeginInvoke((Action) (() =>
             {
 
-                var textBrush = new SolidColorBrush((message.IsError ? Colors.Red : Colors.White));
+                var textBrush = new SolidColorBrush((message.IsError ? Colors.Yellow : Colors.White));
                 LogEntries.Add(
                     new LogEntry
                     {
