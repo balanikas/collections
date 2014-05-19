@@ -2,7 +2,7 @@
 
 namespace Collections.Runtime
 {
-    public class RunnerSettings
+    public struct RunnerSettings
     {
         public int Iterations { get; set; }
         public RunnerType RunnerType { get; set; }

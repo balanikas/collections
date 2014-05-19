@@ -126,9 +126,14 @@ namespace WpfClient.ViewModels
 
     public class InfoView :  ViewModelBase, IGui
     {
-        private MethodExecutionSummaryMessage _summary;
+        private MethodExecutionMessage _message;
         private IRunner _runner;
         public string Id { get; set; }
+
+        public InfoView()
+        {
+            Message = new MethodExecutionMessage();
+        }
         public void Initialize()
         {
            
@@ -145,34 +150,33 @@ namespace WpfClient.ViewModels
           
            
             _runner = runner;
-            Summary = _runner.GetCurrentState();
+            
+            Message.Summary = _runner.GetCurrentState();
             _runner.AddUiListener(this);
         }
 
         public void Update(MethodExecutionMessage message)
         {
-            Summary = message.Summary;
-           
+            Message = message;
+            
         }
 
-        public void Update(MethodExecutionSummaryMessage message)
-        {
-           
-        }
 
         public void Destroy()
         {
-            Summary = null;
+            Message = null;
         }
 
-        public MethodExecutionSummaryMessage Summary
+        public MethodExecutionMessage Message
         {
-            get { return _summary; }
+            get { return _message; }
             set
             {
-                _summary = value;
-                RaisePropertyChanged("Summary");
+                _message = value;
+                RaisePropertyChanged("Message");
             }
         }
+
+
     }
 }

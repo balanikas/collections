@@ -58,10 +58,14 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="BWBasedRunnerTests.cs" />
     <Compile Include="CompilerServiceTests.cs" />
     <Compile Include="DefaultCompilerTests.cs" />
+    <Compile Include="RunnableItemTests.cs" />
+    <Compile Include="RunnerCollectionTests.cs" />
     <Compile Include="RunnerServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RuntimeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Collections\Collections.csproj">

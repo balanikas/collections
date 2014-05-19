@@ -294,6 +294,7 @@ namespace WpfClient.ViewModels
 
         private void Timer_Tick(object sender, EventArgs e)
         {
+            OnClearLog();
             CompilerServiceMessage compilerResults = _compilerBroadcasts.Receive();
 
             switch (compilerResults.State)

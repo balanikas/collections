@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Collections.Runtime
 {
-    class RunnerCollection : IRunnerCollection
+    public class RunnerCollection : IRunnerCollection
     {
         private readonly IDictionary<string, IRunner> _runners;
 
@@ -56,7 +56,7 @@ namespace Collections.Runtime
 
         public IEnumerable<IRunner> GetActiveRunners()
         {
-            return _runners.Where(x => x.Value.IsAlive() == true).Select(x=> x.Value);
+            return _runners.Where(x => x.Value.IsAlive()).Select(x=> x.Value);
 
         }
     }

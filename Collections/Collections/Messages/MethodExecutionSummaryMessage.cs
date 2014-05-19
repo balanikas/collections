@@ -6,12 +6,12 @@ namespace Collections.Messages
 {
     public class MethodExecutionSummaryMessage : Message
     {
-        public MethodExecutionSummaryMessage(Type objectType, TimeSpan timeElapsed, IEnumerable<MethodExecutionResult> methodExecutions)
+        public MethodExecutionSummaryMessage(Type objectType, TimeSpan timeElapsed, IEnumerable<MethodExecutionResult> methodExecutions, int executionCount)
         {
             ObjectType = objectType;
             ExecutionTime = timeElapsed;
 
-
+            ExecutionsCount = executionCount;
             Summarize(methodExecutions);
         }
 
@@ -36,8 +36,8 @@ namespace Collections.Messages
             AvgMethodExecutionTimeInMs = items.Average(x => x.ExecutionTime.TotalMilliseconds);
             MinMethodExecutionTime = items.Min(x => x.ExecutionTime.TotalMilliseconds);
             MaxMethodExecutionTime = items.Max(x => x.ExecutionTime.TotalMilliseconds);
-            ExecutionsCount = items.Count();
-            FailedExecutionsCount = items.Count(x => !x.Success);
+            
+            //FailedExecutionsCount = items.Count(x => !x.Success);
             MethodName = items.First().Name;
         }
     }

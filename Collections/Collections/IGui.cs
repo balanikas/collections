@@ -8,7 +8,7 @@ namespace Collections
         void Initialize();
         void Update(MethodExecutionMessage message);
 
-        void Update(MethodExecutionSummaryMessage message);
+      
         void Destroy();
 
 

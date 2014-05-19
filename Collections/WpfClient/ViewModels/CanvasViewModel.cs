@@ -62,10 +62,6 @@ namespace WpfClient.ViewModels
             
         }
 
-        public void Update(MethodExecutionSummaryMessage message)
-        {
-           
-        }
 
         public void Destroy()
         {

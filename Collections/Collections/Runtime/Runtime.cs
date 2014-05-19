@@ -63,12 +63,11 @@ namespace Collections.Runtime
                 return;
             }
 
-
-            Task task = Task.Factory.StartNew(() =>
+            Task.Factory.StartNew(() =>
             {
                 while (_isRunning)
                 {
-                    Thread.Sleep(10000);
+                    Task.Delay(TimeSpan.FromMilliseconds(10000));
                 }
 
                 Runners.RemoveAll();

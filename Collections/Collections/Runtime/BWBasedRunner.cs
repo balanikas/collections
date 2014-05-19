@@ -19,6 +19,7 @@ namespace Collections.Runtime
         private readonly RunnerSettings _settings;
         private readonly List<IGui> _uiListeners;
         private readonly Stopwatch _watch;
+        private int _execCount;
 
         public BWBasedRunner(IRunnable runnableObject, ILogger logger, RunnerSettings settings)
         {
@@ -59,19 +60,15 @@ namespace Collections.Runtime
 
         public void Start()
         {
-           
-
             if (_bw.IsBusy != true)
             {
                 _bw.RunWorkerAsync();
-            }
-
-            foreach (IGui listener in _uiListeners.ToList())
-            {
-                listener.Initialize();
+                foreach (IGui listener in _uiListeners.ToList())
+                {
+                    listener.Initialize();
+                }
             }
         }
-
 
         public void Destroy()
         {
@@ -94,7 +91,7 @@ namespace Collections.Runtime
 
         public MethodExecutionSummaryMessage GetCurrentState()
         {
-            return new MethodExecutionSummaryMessage(_runnableObject.ObjectType, _watch.Elapsed, _methodExecutions);
+            return new MethodExecutionSummaryMessage(_runnableObject.ObjectType, _watch.Elapsed, _methodExecutions, _execCount);
         }
 
 
@@ -108,7 +105,7 @@ namespace Collections.Runtime
             var methodExecution = new MethodExecutionResult();
             worker.ReportProgress(0, methodExecution);
 
-            for (int i = 1; i <= _settings.Iterations; i++)
+            for (_execCount = 1; _execCount <= _settings.Iterations; _execCount++)
             {
                 if (worker.CancellationPending)
                 {
@@ -117,20 +114,21 @@ namespace Collections.Runtime
                 }
 
                 TimeSpan beforeExecution = _watch.Elapsed;
-                bool log = i % (_settings.Iterations / 100) == 0 || i == _settings.Iterations;
+                bool log =  _settings.Iterations >= 100 && _execCount % (_settings.Iterations / 100) == 0 || _execCount == _settings.Iterations;
+               
                 methodExecution = _runnableObject.Update(log);
                 if (methodExecution != null)
                 {
                     methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
                     _methodExecutions.Add(methodExecution);
 
-                    var progressCount = (int)(i / (double)_settings.Iterations * 100);
+                    var progressCount = (int)(_execCount / (double)_settings.Iterations * 100);
                     worker.ReportProgress(progressCount, methodExecution);
                 }
 
-                if (i == _settings.Iterations)
+                if (_execCount == _settings.Iterations)
                 {
-                    var progressCount = (int)(i / (double)_settings.Iterations * 100);
+                    var progressCount = (int)(_execCount / (double)_settings.Iterations * 100);
                     worker.ReportProgress(progressCount, methodExecution);
                 }
             }

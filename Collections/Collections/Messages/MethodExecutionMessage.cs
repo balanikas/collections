@@ -5,6 +5,10 @@ namespace Collections.Messages
 {
     public class MethodExecutionMessage : Message
     {
+        public MethodExecutionMessage()
+        {
+            
+        }
         public MethodExecutionMessage(Type objectType, MethodExecutionResult methodExecutionResult, TimeSpan timeElapsed, int progress)
         {
             ObjectType = objectType;
@@ -13,7 +17,7 @@ namespace Collections.Messages
 
             MethodExecutionResult = methodExecutionResult;
         }
-
+        public int Progress { get; private set; }
         public Type ObjectType { get; private set; }
 
         public MethodExecutionResult MethodExecutionResult { get; private set; }

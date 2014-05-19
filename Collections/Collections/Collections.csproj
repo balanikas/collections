@@ -72,7 +72,6 @@
     <Compile Include="SynchronizedTraceListener.cs" />
     <Compile Include="ConsoleWriter.cs" />
     <Compile Include="Runtime\IRuntime.cs" />
-    <Compile Include="Messages\ErrorMessage.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="LoadedType.cs" />
     <Compile Include="MethodExecutionResult.cs" />

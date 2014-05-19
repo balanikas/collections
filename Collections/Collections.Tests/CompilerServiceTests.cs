@@ -16,11 +16,21 @@ namespace Collections.Tests
     public class CompilerServiceTests
     {
         private CompilerServiceMessage _messageToConsume;
+        private CompilerService _service;
+        private BroadcastBlock<CompilerServiceMessage> _consumableBroadcasts;
+
+
+        [SetUp]
+        public void SetUp()
+        {
+            _consumableBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
+            _service = new CompilerService(_consumableBroadcasts);
+        }
+
         [Test]
         public void CompilerService_StartAndStop_VerifyActionIsExecuted()
         {
-            var consumableBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
-            var service = new CompilerService(consumableBroadcasts);
+           
 
             var actionCount = 0;
 
@@ -31,7 +41,7 @@ namespace Collections.Tests
                 actionCount++;
             });
 
-            service.Start(action, TimeSpan.FromMilliseconds(100));
+            _service.Start(action, TimeSpan.FromMilliseconds(100));
 
             _messageToConsume = new CompilerServiceMessage("source", ServiceMessageState.Succeeded);
 
@@ -40,24 +50,21 @@ namespace Collections.Tests
             {
                 var message = new CompilerServiceMessage("source", ServiceMessageState.Succeeded);
                 Thread.Sleep(1);
-                consumableBroadcasts.Post(message);
+                _consumableBroadcasts.Post(message);
                 Thread.Sleep(1);
-                var serviceMessage = consumableBroadcasts.Receive();
+                var serviceMessage = _consumableBroadcasts.Receive();
                 Assert.AreEqual(ServiceMessageState.Succeeded,serviceMessage.State);
             }
             
             Assert.IsTrue(actionCount > 0);
             
-            service.Stop();
+            _service.Stop();
             Thread.Sleep(1000);
         }
 
         [Test]
         public void CompilerService_StartAndStop()
         {
-
-            var consumableBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
-            var service = new CompilerService(consumableBroadcasts);
 
 
             var action = new Action<CompilerServiceMessage>(message =>
@@ -67,10 +74,10 @@ namespace Collections.Tests
 
             Assert.DoesNotThrow(() =>
             {
-                service.Start(action, TimeSpan.FromMilliseconds(100));
-                Assert.IsTrue(service.IsRunning);
-                service.Stop();
-                Assert.IsFalse(service.IsRunning);
+                _service.Start(action, TimeSpan.FromMilliseconds(100));
+                Assert.IsTrue(_service.IsRunning);
+                _service.Stop();
+                Assert.IsFalse(_service.IsRunning);
 
             });
 
@@ -81,9 +88,7 @@ namespace Collections.Tests
         public void CompilerService_StartAndStop_MultipleTimes()
         {
 
-            var consumableBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
-            var service = new CompilerService(consumableBroadcasts);
-
+           
 
             var action = new Action<CompilerServiceMessage>(message =>
             {
@@ -92,13 +97,13 @@ namespace Collections.Tests
 
             Assert.DoesNotThrow(() =>
             {
-                service.Start(action, TimeSpan.FromMilliseconds(100));
-                service.Start(action, TimeSpan.FromMilliseconds(100));
-                Assert.IsTrue(service.IsRunning);
+                _service.Start(action, TimeSpan.FromMilliseconds(100));
+                _service.Start(action, TimeSpan.FromMilliseconds(100));
+                Assert.IsTrue(_service.IsRunning);
 
-                service.Stop();
-                service.Stop();
-                Assert.IsFalse(service.IsRunning);
+                _service.Stop();
+                _service.Stop();
+                Assert.IsFalse(_service.IsRunning);
             });
 
 
@@ -107,21 +112,18 @@ namespace Collections.Tests
         [Test]
         public void CompilerService_ChangeExecutionInterval()
         {
-            var consumableBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
-            var service = new CompilerService(consumableBroadcasts);
-
-
+            
             var action = new Action<CompilerServiceMessage>(message =>
             {
                
             });
-            service.Start(action, TimeSpan.FromMilliseconds(100));
+            _service.Start(action, TimeSpan.FromMilliseconds(100));
             Assert.DoesNotThrow(() =>
             {
-                service.ExecutionInterval = TimeSpan.FromMilliseconds(10);
-                service.ExecutionInterval = TimeSpan.FromMilliseconds(1000);
-                service.ExecutionInterval = TimeSpan.FromMilliseconds(10);
-                service.ExecutionInterval = TimeSpan.FromMilliseconds(1);
+                _service.ExecutionInterval = TimeSpan.FromMilliseconds(10);
+                _service.ExecutionInterval = TimeSpan.FromMilliseconds(1000);
+                _service.ExecutionInterval = TimeSpan.FromMilliseconds(10);
+                _service.ExecutionInterval = TimeSpan.FromMilliseconds(1);
                 Thread.Sleep(2000);
             });
 

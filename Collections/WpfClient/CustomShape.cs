@@ -48,10 +48,7 @@ namespace WpfClient
         {
         }
 
-        public virtual void Update(MethodExecutionSummaryMessage message)
-        {
-            
-        }
+     
 
         public void Destroy()
         {
