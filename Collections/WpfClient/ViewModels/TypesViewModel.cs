@@ -19,7 +19,6 @@ namespace WpfClient.ViewModels
         private readonly TypesProvider _typesProvider;
         private TextDocument _codeDocument;
         private string _filesPath;
-        private List<MethodInfo> _methods;
         private MethodInfo _selectedMethod;
         private LoadedType _selectedType;
         private ObservableCollection<LoadedType> _types;
@@ -43,27 +42,15 @@ namespace WpfClient.ViewModels
                 }
 
                 CodeDocument.Text = ((LoadedType) e.AddedItems[0]).Source;
-
-                SelectedType = (LoadedType) e.AddedItems[0];
-                SelectedMethod = SelectedType.MethodsInfos[0];
             });
 
             CmdMethodsSelectionChanged = new RelayCommand<SelectionChangedEventArgs>(e =>
             {
-                if (e.AddedItems.Count == 0)
-                {
-                    return;
-                }
-                SelectedMethod = (MethodInfo) e.AddedItems[0];
             });
 
             CmdCompile = new RelayCommand(() =>
             {
-                if (Methods == null || Methods.Count == 0)
-                {
-                    return;
-                }
-
+               
                 List<string> errors;
                 if (_typesProvider.TryCompileFromText(CodeDocument.Text, out errors) != null && !errors.Any())
                 {
@@ -74,6 +61,8 @@ namespace WpfClient.ViewModels
                         Source = CodeDocument.Text,
                         TypeInfo = SelectedType.TypeInfo
                     });
+
+                    ViewModelLocator.Logger.InfoNow("Compilation succeeded");
 
                     LoadTypes();
                 }
@@ -97,7 +86,10 @@ namespace WpfClient.ViewModels
 
         public ObservableCollection<LoadedType> Types
         {
-            get { return _types; }
+            get
+            {
+                return _types;
+            }
             set
             {
                 _types = value;
@@ -105,16 +97,11 @@ namespace WpfClient.ViewModels
             }
         }
 
-
         public TextDocument CodeDocument
         {
             get { return _codeDocument; }
             set
             {
-                if (_codeDocument == null)
-                {
-                    return;
-                }
                 _codeDocument = value;
                 RaisePropertyChanged("CodeDocument");
             }
@@ -122,12 +109,13 @@ namespace WpfClient.ViewModels
 
         public LoadedType SelectedType
         {
-            get { return _selectedType; }
+            get
+            {
+                return _selectedType;
+            }
             set
             {
                 _selectedType = value;
-                Methods = _selectedType.MethodsInfos;
-
                 RaisePropertyChanged("SelectedType");
             }
         }
@@ -141,18 +129,7 @@ namespace WpfClient.ViewModels
             set
             {
                 _selectedMethod = value;
-
                 RaisePropertyChanged("SelectedMethod");
-            }
-        }
-
-        public List<MethodInfo> Methods
-        {
-            get { return _methods; }
-            set
-            {
-                _methods = value;
-                RaisePropertyChanged("Methods");
             }
         }
 
@@ -167,11 +144,6 @@ namespace WpfClient.ViewModels
             }
         }
 
-        public void HighlightMethod(LoadedType type, MethodInfo method)
-        {
-            //SelectedType = type;
-            //SelectedMethod = method;
-        }
 
         private async void LoadTypes()
         {
@@ -179,6 +151,8 @@ namespace WpfClient.ViewModels
                 "Please wait...",
                 "loading types from " + FilesPath);
 
+            var previousSelectedTypeName = SelectedType != null? SelectedType.TypeInfo.FullName:null;
+            var previousSelectedMethodName = SelectedMethod != null? SelectedMethod.Name:null;
 
             _typesProvider.SetActiveCompilerService(Settings.Instance.Get(Settings.Keys.CompilerServiceType));
             var allTypes = new List<LoadedType>();
@@ -197,6 +171,16 @@ namespace WpfClient.ViewModels
 
             Types = new ObservableCollection<LoadedType>(allTypes);
 
+            if (previousSelectedTypeName != null)
+            {
+                var foundType = Types.FirstOrDefault(t => t.TypeInfo.FullName == previousSelectedTypeName);
+                SelectedType = foundType;
+                if (foundType != null)
+                {
+                    SelectedMethod = foundType.MethodsInfos.FirstOrDefault(m => m.Name == previousSelectedMethodName);
+                }
+            }
+            
             await controller.CloseAsync();
         }
     }

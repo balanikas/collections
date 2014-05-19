@@ -8,6 +8,7 @@
              xmlns:viewModels="clr-namespace:WpfClient.ViewModels"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:command="http://www.galasoft.ch/mvvmlight"
+              d:DataContext="{d:DesignInstance Type=viewModels:TypesViewModel, IsDesignTimeCreatable=True}"
              mc:Ignorable="d">
     <!--<UserControl.DataContext>
         <viewModels:TypesViewModel/>
@@ -42,15 +43,15 @@
 
 
             </Grid>
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+            <StackPanel  DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
                 <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="224"
                           VerticalAlignment="Top" Width="500" RenderTransformOrigin="0.5,0.5" SelectedIndex="0"
                           SelectionMode="Single"
-                          ItemsSource="{Binding Types}">
+                          ItemsSource="{Binding Types}" IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding Path=SelectedType}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <command:EventToCommand PassEventArgsToCommand="True"
-                                                    Command="{Binding CmdTypesSelectionChanged}" />
+                                                    Command="{Binding  CmdTypesSelectionChanged}" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
 
@@ -66,7 +67,8 @@
 
                 </ListView>
 
-                <ListView ItemsSource="{Binding Path=SelectedType.MethodsInfos}" SelectedValue="{Binding SelectedMethod}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                <ListView ItemsSource="{Binding Path=Types/MethodsInfos}" IsSynchronizedWithCurrentItem="true" SelectedItem="{Binding Path=SelectedMethod}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           Height="224"
                           VerticalAlignment="Top" Width="500" SelectedIndex="0" RenderTransformOrigin="0.5,0.5">
                     <i:Interaction.Triggers>
