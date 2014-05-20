@@ -6,13 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Collections.Compiler;
+using Collections.Messages;
 
 namespace Collections.Runtime
 {
     public class RunnerService : IDisposable
     {
-        private readonly BroadcastBlock<RunnerServiceMessage> _broadcastToOutput;
-        private readonly BroadcastBlock<CompilerServiceMessage> _broadcastToConsume;
+        private readonly BroadcastBlock<RunnerServiceOutputMessage> _runnerServiceOutputMsgBuf;
+        private readonly BroadcastBlock<CompilerServiceOutputMessage> _compilerServiceMsgBuf;
         private TimeSpan? _executionInterval;
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -22,16 +23,16 @@ namespace Collections.Runtime
             private set;
         }
         
-        public RunnerService(BroadcastBlock<RunnerServiceMessage> broadcastToOutput,
-            BroadcastBlock<CompilerServiceMessage> broadcastToConsume)
+        public RunnerService(BroadcastBlock<CompilerServiceOutputMessage> compilerServiceMsgBuf ,
+            BroadcastBlock<RunnerServiceOutputMessage> runnerServiceOutputMsgBuf)
         {
-            _broadcastToConsume = broadcastToConsume;
-            _broadcastToOutput = broadcastToOutput;
+            _compilerServiceMsgBuf = compilerServiceMsgBuf;
+            _runnerServiceOutputMsgBuf = runnerServiceOutputMsgBuf;
             _executionInterval = TimeSpan.FromMilliseconds(1000);
         }
 
         public void Start(
-            Action<CompilerServiceMessage> action = null,
+            Func<CompilerServiceOutputMessage, RunnerServiceOutputMessage> func = null,
             TimeSpan? executionInterval = null)
         {
             if (IsRunning)
@@ -41,12 +42,11 @@ namespace Collections.Runtime
 
             IsRunning = true;
             _executionInterval = executionInterval ?? _executionInterval;
-            action = action ?? RunnerAction;
+            func = func ?? DefaultRunnerExecution;
 
             _cancellationTokenSource = new CancellationTokenSource();
 
-            var targetBlock = StartService(action, _broadcastToConsume, _broadcastToOutput, _cancellationTokenSource.Token);
-            targetBlock.Post(String.Empty);
+            StartService(func, _cancellationTokenSource.Token).Post("");
         }
 
 
@@ -75,31 +75,26 @@ namespace Collections.Runtime
         }
 
         ITargetBlock<string> StartService(
-              Action<CompilerServiceMessage> action,
-              BroadcastBlock<CompilerServiceMessage> broadcastBlock,
-              BroadcastBlock<RunnerServiceMessage> runnerBlock,
+              Func<CompilerServiceOutputMessage,RunnerServiceOutputMessage> func,
               CancellationToken cancellationToken)
         {
 
             ActionBlock<string> block = null;
             block = new ActionBlock<string>(async now =>
             {
-                
-                while (  await broadcastBlock.OutputAvailableAsync(cancellationToken))
-                {
-                    CompilerServiceMessage message = broadcastBlock.Receive();
-                    message = new CompilerServiceMessage(message, message.State);
-                  
-                    action(message);
 
-                    runnerBlock.Post(new RunnerServiceMessage
-                    {
-                        State = message.State
-                    });
+                while (await _compilerServiceMsgBuf.OutputAvailableAsync(cancellationToken))
+                {
+                    CompilerServiceOutputMessage message = _compilerServiceMsgBuf.Receive();
+                   
+                  
+                    var result = func(message);
+
+                    _runnerServiceOutputMsgBuf.Post(result);
 
                     try
                     {
-                        broadcastBlock.Completion.Wait((int)_executionInterval.Value.TotalMilliseconds,cancellationToken);
+                        _compilerServiceMsgBuf.Completion.Wait((int)_executionInterval.Value.TotalMilliseconds, cancellationToken);
                     }
                     catch (OperationCanceledException)
                     {
@@ -115,9 +110,9 @@ namespace Collections.Runtime
             return block;
         }
    
-        private void RunnerAction(CompilerServiceMessage msg)
+        private RunnerServiceOutputMessage DefaultRunnerExecution(CompilerServiceOutputMessage msg)
         {
-
+            return new RunnerServiceOutputMessage();
         }
 
 

@@ -68,7 +68,7 @@
 
         <!-- explore mode-->
         <Label Content="Explore Mode" FontSize="20" HorizontalContentAlignment="Center"  Height="50"></Label>
-        <Label Content="Iterations" />
+        <Label Content="Iterations (set how many times the selected method will execute)" />
 
         <Slider x:Name="SldExploreModeIterationCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="1000000" Minimum="1"
                 SmallChange="1000" Value="100000" AutoToolTipPlacement="TopLeft" 
@@ -76,18 +76,18 @@
 
         <!-- play mode-->
         <Label Content="Play Mode" FontSize="20" HorizontalContentAlignment="Center" Height="50"></Label>
-        
-        <Label Content="Iterations" />
+
+        <Label Content="Iterations (set how many times the selected method will execute)" />
         <Slider x:Name="SldPlayModeIterationCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="1000000" Minimum="1"
                 SmallChange="1000" Value="100000" AutoToolTipPlacement="TopLeft" 
                 ValueChanged="SldPlayModeIterationCount_OnValueChanged"  TickFrequency="100" LargeChange="100000" />
 
-        <Label Content="Compiler Interval" />
+        <Label Content="Compiler Interval (set how often the compiler will try to compile the code)" />
         <Slider x:Name="SldCompilerInterval" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="10000" Minimum="1"
                 SmallChange="100" Value="1000" AutoToolTipPlacement="TopLeft" 
                 ValueChanged="SldCompilerInterval_OnValueChanged"  LargeChange="1000" />
 
-        <Label Content="Runner Interval" />
+        <Label Content="Runner Interval (set how often the execution of the selected method will be run)" />
         <Slider x:Name="SldRunnerInterval" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="10000" Minimum="1"
                 SmallChange="100" Value="1000" AutoToolTipPlacement="TopLeft" 
                 ValueChanged="SldRunnerInterval_OnValueChanged"  LargeChange="1000" />

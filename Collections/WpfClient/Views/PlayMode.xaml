@@ -12,47 +12,46 @@
     mc:Ignorable="d"
     d:DesignHeight="1000" d:DesignWidth="1000"
     d:DataContext="{d:DesignInstance Type=vm:PlayModeViewModel, IsDesignTimeCreatable=True}">
- 
+
     <Grid>
-        <!--<Grid.DataContext >
-            <vm:PlayModeViewModel></vm:PlayModeViewModel>
-        </Grid.DataContext>-->
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition ></RowDefinition>
+            <RowDefinition Height="0*" ></RowDefinition>
+            <RowDefinition  ></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-      
 
-        <Grid Grid.Row="0" Grid.Column="0"  Margin="0,5,0,5">
+        <DockPanel  Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" LastChildFill="True">
 
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="5*" />
-            </Grid.ColumnDefinitions>
-
-            <Button x:Name="BtnStart" Content="start" Grid.Column="0" Margin="5,0,5,0"
-                Command="{Binding CmdStart}"   >
+            <Grid DockPanel.Dock="Top" Margin="0,5,0,5">
 
 
-            </Button>
-            <Button x:Name="BtnStop" Content="stop" Grid.Column="1" Margin="5,0,5,0"
-                Command="{Binding CmdStop}" />
-            <ComboBox Grid.Column="2" Margin="5,0,5,0" x:Name="CmbCompiledMethods" ItemsSource="{Binding Path=CompiledMethods}" 
-                      SelectedValue="{Binding Path=SelectedCompiledMethod}" 
-                      IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=HasItems}" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
 
-            </ComboBox>
-        </Grid>
-      
+                <ToggleButton Content="ACTIVATE" IsChecked="{Binding IsActivated}" Grid.Column="0"/>
 
+                <ComboBox Grid.Column="1" Margin="5,0,5,0" x:Name="CmbCompiledMethods" 
+                      SelectedItem="{Binding SelectedCompiledMethod, Mode=OneWay}" 
+                      ItemsSource="{Binding CompiledMethods}" 
+                      IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=HasItems}"
+                      >
 
-        <avalonedit:TextEditor Grid.Row="1" Grid.Column="0" Background="White"
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <command:EventToCommand PassEventArgsToCommand="True"
+                                                    Command="{Binding CmdSelectedMethodChanged}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+            </Grid>
+
+            <avalonedit:TextEditor  Background="White"
                                    x:Name="AvalonEdit"
                                    FontFamily="Consolas"
                                    FontSize="10pt"
@@ -67,41 +66,28 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </avalonedit:TextEditor>
-        <DockPanel Grid.Row="1" Grid.Column="1" LastChildFill="True">
-
-            <Canvas x:Name="Canvas" DockPanel.Dock="Top" >
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Loaded">
-                        <command:EventToCommand PassEventArgsToCommand="True"
-                                                    Command="{Binding CmdCanvasLoaded}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <Canvas.Background>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#FF1B3C13" Offset="0.008" />
-                        <GradientStop Color="#FF173410" Offset="1" />
-                        <GradientStop Color="#FF458935" Offset="0.682" />
-                    </RadialGradientBrush>
-                </Canvas.Background>
-
-              
-                <StackPanel>
-                    <Label FontSize="40" Content="ExecutionTime" ></Label>
-                    <Label FontSize="40" Content="{Binding CanvasCtx.ExecutionTime}" ></Label>
-                    <Label FontSize="40" Content="Progress" ></Label>
-                    <Label FontSize="40" Content="{Binding CanvasCtx.Progress}" ></Label>
-                    <!--<Label FontSize="40" Content="MethodExecitionTime" ></Label>
-                    <Label FontSize="40" Content="{Binding MethodExecitionTime}" ></Label>-->
-                   
-                </StackPanel>
-               
-            </Canvas>
         </DockPanel>
 
+        <Canvas x:Name="Canvas" Grid.Row="1" Grid.Column="1">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Loaded">
+                    <command:EventToCommand PassEventArgsToCommand="True"
+                                                    Command="{Binding CmdCanvasLoaded}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <Canvas.Background>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF1B3C13" Offset="0.008" />
+                    <GradientStop Color="#FF173410" Offset="1" />
+                    <GradientStop Color="#FF458935" Offset="0.682" />
+                </RadialGradientBrush>
+            </Canvas.Background>
+        </Canvas>
+
+
         <Expander Grid.Row="1" Grid.Column="1" Header="Log" ExpandDirection="Up" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom"
-                  Opacity="0.9" IsExpanded="True" Height="500" VerticalAlignment="Bottom" >
+                  Opacity="0.9" IsExpanded="True" Height="300" VerticalAlignment="Bottom" Margin="5,0,5,5" >
             <DockPanel>
-             
                 <Button Content="Clear log" Command="{Binding CmdClearLog}" DockPanel.Dock="Top" />
                 <controls:LogViewer DockPanel.Dock="Bottom" />
             </DockPanel>

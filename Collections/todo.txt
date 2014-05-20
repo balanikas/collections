@@ -142,3 +142,10 @@ data bind the shit in playviewmodel to canvas....btw why is all so slow??
 * continue with UTs
 * in playmode, use togglebutton or toggle switch instead of 2 buttons (start,stop)
 * add desc in settings: Compiler Interval (how often will the compiler execute)..etc.
+
+
+
+
+* new message structure one abstratc and 3 impls
+* rename broadcasts to buffers
+* add a third buffer

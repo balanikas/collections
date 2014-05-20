@@ -10,10 +10,7 @@
              xmlns:command="http://www.galasoft.ch/mvvmlight"
               d:DataContext="{d:DesignInstance Type=viewModels:TypesViewModel, IsDesignTimeCreatable=True}"
              mc:Ignorable="d">
-    <!--<UserControl.DataContext>
-        <viewModels:TypesViewModel/>
-    </UserControl.DataContext>-->
-    <Grid >
+
         <DockPanel LastChildFill="True">
             <Grid Margin="0,5" DockPanel.Dock="Top">
 
@@ -101,5 +98,5 @@
                                    SyntaxHighlighting="C#" ShowLineNumbers="True" VerticalAlignment="Stretch" />
 
         </DockPanel>
-    </Grid>
+
 </UserControl>

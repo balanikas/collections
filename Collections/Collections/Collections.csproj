@@ -55,11 +55,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\CompilerServiceMessage.cs" />
     <Compile Include="Compiler\CompilerService.cs" />
+    <Compile Include="Messages\ServiceMessageState.cs" />
     <Compile Include="Runtime\IRunnerCollection.cs" />
     <Compile Include="Runtime\RunnerCollection.cs" />
     <Compile Include="Runtime\RunnerService.cs" />
-    <Compile Include="Compiler\CompilerServiceMessage.cs" />
+    <Compile Include="Messages\CompilerServiceOutputMessage.cs" />
     <Compile Include="Compiler\CompilerType.cs" />
     <Compile Include="Compiler\DefaultCompiler.cs" />
     <Compile Include="ExecutionInfo.cs" />
@@ -68,7 +70,7 @@
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="LogMessage.cs" />
     <Compile Include="Compiler\RoslynCompiler.cs" />
-    <Compile Include="Runtime\RunnerServiceMessage.cs" />
+    <Compile Include="Messages\RunnerServiceOutputMessage.cs" />
     <Compile Include="SynchronizedTraceListener.cs" />
     <Compile Include="ConsoleWriter.cs" />
     <Compile Include="Runtime\IRuntime.cs" />

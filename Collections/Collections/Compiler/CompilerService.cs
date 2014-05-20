@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using Collections.Messages;
 using Collections.Runtime;
 
 namespace Collections.Compiler
@@ -11,9 +12,9 @@ namespace Collections.Compiler
     public class CompilerService : IDisposable
     {
         private CancellationTokenSource _cancellationTokenSource;
-        private ITargetBlock<CompilerServiceMessage> _targetBlock;
-        private readonly BroadcastBlock<CompilerServiceMessage> _broadcaster;
+        private readonly BroadcastBlock<CompilerServiceMessage> _compilerServiceMessage;
         private TimeSpan? _executionInterval;
+        private readonly BroadcastBlock<CompilerServiceOutputMessage> _compilerServiceOutputMsgBuf;
 
         public bool IsRunning
         {
@@ -21,13 +22,15 @@ namespace Collections.Compiler
             private set;
         }
 
-        public CompilerService(BroadcastBlock<CompilerServiceMessage> broadcaster)
+        public CompilerService(BroadcastBlock<CompilerServiceMessage> compilerServiceMessage,
+            BroadcastBlock<CompilerServiceOutputMessage> compilerServiceOutputMsgBuf)
         {
-            _broadcaster = broadcaster;
+            _compilerServiceOutputMsgBuf = compilerServiceOutputMsgBuf;
+            _compilerServiceMessage = compilerServiceMessage;
             _executionInterval = TimeSpan.FromMilliseconds(1000);
         }
 
-        public void Start(Action<CompilerServiceMessage> action = null, 
+        public void Start(Func<CompilerServiceMessage, CompilerServiceOutputMessage> func = null, 
             TimeSpan? executionInterval = null)
         {
 
@@ -40,11 +43,10 @@ namespace Collections.Compiler
 
             _executionInterval = executionInterval ?? _executionInterval;
 
-            action = action ?? CompilerAction;
+            func = func ?? DefaultCompilerExecution;
             _cancellationTokenSource = new CancellationTokenSource();
 
-            _targetBlock = StartService(action, _broadcaster, _cancellationTokenSource.Token);
-            _targetBlock.Post(new CompilerServiceMessage());
+            StartService(func, _cancellationTokenSource.Token).Post("");
         }
 
 
@@ -73,37 +75,36 @@ namespace Collections.Compiler
             }
         }
 
-        ITargetBlock<CompilerServiceMessage> StartService(
-            Action<CompilerServiceMessage> action, 
-            BroadcastBlock<CompilerServiceMessage> broadcaster, 
+        private ITargetBlock<string> StartService(
+            Func<CompilerServiceMessage,CompilerServiceOutputMessage> action,
             CancellationToken cancellationToken)
         {
-           
-            ActionBlock<CompilerServiceMessage> block = null;
+
+            ActionBlock<string> block = null;
             string previousSource = null;
 
 
-            block = new ActionBlock<CompilerServiceMessage>(async message =>
+            block = new ActionBlock<string>(async message =>
             {
 
-                while (await broadcaster.OutputAvailableAsync(cancellationToken))
+                while (await _compilerServiceMessage.OutputAvailableAsync(cancellationToken))
                 {
-                  
-                    CompilerServiceMessage receivedMessage = broadcaster.Receive();
+
+                    CompilerServiceMessage receivedMessage = _compilerServiceMessage.Receive();
                     if (previousSource != receivedMessage.Source)
                     {
-                        action(receivedMessage);
                         previousSource = receivedMessage.Source;
-                        block.Post(receivedMessage);
-                        if (receivedMessage.CompilerErrors.Count == 0)
+                        var result = action(receivedMessage);
+                        
+                       // if (result.CompilerErrors.Count == 0)
                         {
-                            broadcaster.Post(receivedMessage);
+                            _compilerServiceOutputMsgBuf.Post(result);
                         }
                     }
 
                     try
                     {
-                        broadcaster.Completion.Wait((int)_executionInterval.Value.TotalMilliseconds, cancellationToken);
+                        _compilerServiceMessage.Completion.Wait((int)_executionInterval.Value.TotalMilliseconds, cancellationToken);
                     }
                     catch (OperationCanceledException)
                     {
@@ -119,8 +120,9 @@ namespace Collections.Compiler
             return block;
         }
 
-        private void CompilerAction(CompilerServiceMessage msg)
+        private CompilerServiceOutputMessage DefaultCompilerExecution(CompilerServiceMessage msg)
         {
+            return new CompilerServiceOutputMessage(null,null);
         }
 
         public void Dispose()

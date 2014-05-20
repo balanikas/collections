@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Collections;
 using Collections.Compiler;
+using Collections.Messages;
 using Collections.Runtime;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -19,225 +22,108 @@ namespace WpfClient.ViewModels
     {
         private readonly CompilerService _compilerService;
         private readonly RunnerService _runnerService;
-        private BroadcastBlock<CompilerServiceMessage> _compilerBroadcasts;
-        private BroadcastBlock<RunnerServiceMessage> _runnerBroadcasts;
-        private TextDocument _codeDocument;
-        private readonly TypesProvider _typesProvider;
         private readonly IRuntime _runtime;
-        private DispatcherTimer _timer;
-        private List<IGui> _uiListeners;
-        private bool _isStarted = false;
-        private int _compilerInterval;
+        private readonly DispatcherTimer _timer;
+        private readonly TypesProvider _typesProvider;
+        private readonly List<IGui> _uiListeners;
         private Canvas _canvas;
-        private List<MethodInfo> _compiledMethods;
-        private MethodInfo _selectedCompiledMethod;
+        private TextDocument _codeDocument;
+        private ObservableCollection<MethodInfo> _compiledMethods;
+        private int _compilerInterval;
+        private BroadcastBlock<CompilerServiceMessage> _compilerServiceMsgBuf;
+        private BroadcastBlock<CompilerServiceOutputMessage> _compilerServiceOutputMsgBuf;
+        private bool _isActivated = false;
         private int _runnerInterval;
-
-        private void OnSettingsUpdated(object sender, SettingsUpdatedEventArgs e)
-        {
-            if (e.Type == Setting.CompilerInterval)
-            {
-                CompilerInterval = (int)e.Value;
-            }
-            if (e.Type == Setting.RunnerInterval)
-            {
-                RunnerInterval = (int)e.Value;
-            }
-        }
+        private BroadcastBlock<RunnerServiceOutputMessage> _runnerServiceOutputMsgBuf;
+        private MethodInfo _selectedCompiledMethod;
+        private MethodInfo _selectedMethod;
 
         public PlayModeViewModel(IRuntime runtime, TypesProvider typesProvider)
         {
             _runtime = runtime;
             _runtime.Reset();
             _typesProvider = typesProvider;
-
-            Settings.Instance.OnSettingsUpdated += OnSettingsUpdated;
-        
             _codeDocument = new TextDocument();
+            _uiListeners = new List<IGui>();
+            CompiledMethods = new ObservableCollection<MethodInfo>();
+
             CodeDocument.Text =
                 "class X { \n public void Calc() { \n for(int i = 0; i < 10000; i++) { \n var s = i; } \n  } \n public void Calc2(){} \n }";
 
+            SetupServices();
+            _compilerService = new CompilerService(_compilerServiceMsgBuf, _compilerServiceOutputMsgBuf);
 
-            _compilerBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
+            _runnerService = new RunnerService(_compilerServiceOutputMsgBuf, _runnerServiceOutputMsgBuf);
 
             typesProvider.SetActiveCompilerService(CompilerType.Default);
 
-
-            _compilerService = new CompilerService(_compilerBroadcasts);
-            _runnerBroadcasts = new BroadcastBlock<RunnerServiceMessage>(null);
-            _runnerService = new RunnerService(_runnerBroadcasts, _compilerBroadcasts);
-
             _timer = new DispatcherTimer();
-            _timer.Tick += Timer_Tick;
+            _timer.Tick += LogServices;
             _timer.Interval = new TimeSpan(0, 0, 0, 0, 30);
-
-
-            CmdStart = new RelayCommand(() =>
-            {
-                _isStarted = true;
-                _compilerService.Start(CompilerAction, TimeSpan.FromMilliseconds(CompilerInterval));
-                _runnerService.Start(RunnerAction);
-
-                _compilerBroadcasts.Post(new CompilerServiceMessage(CodeDocument.Text));
-
-
-                _timer.Start();
-            });
-
-            CmdStop = new RelayCommand(() =>
-            {
-                _isStarted = false;
-                _timer.Stop();
-                _compilerService.Stop();
-                _runnerService.Stop();
-                _uiListeners.Clear();
-                OnClearLog();
-            });
-
+            
             CmdCodeDocumentTextChanged = new RelayCommand<EventArgs>((args) =>
             {
-                if (!_isStarted)
+                if (!IsActivated)
                 {
                     return;
                 }
-                _compilerBroadcasts.Post(new CompilerServiceMessage(CodeDocument.Text));
+                _compilerServiceMsgBuf.Post(new CompilerServiceMessage(CodeDocument.Text));
             });
 
             CmdCanvasLoaded = new RelayCommand<RoutedEventArgs>((args) => { _canvas = args.Source as Canvas; });
 
             CmdClearLog = new RelayCommand(OnClearLog);
 
+            CmdSelectedMethodChanged = new RelayCommand<SelectionChangedEventArgs>((args) =>
+            {
+                if (args.AddedItems.Count == 1)
+                {
+                    _selectedMethod = args.AddedItems[0] as MethodInfo;
+                }
+                else
+                {
+                    _selectedMethod = null;
+                }
+               
+            });
 
-            _uiListeners = new List<IGui>();
-            CanvasCtx = new CanvasViewModel();
-
-            _uiListeners.Add(CanvasCtx);
-
+            Settings.Instance.OnSettingsUpdated += OnSettingsUpdated;
             CompilerInterval = Settings.Instance.Get(Settings.Keys.CompilerInterval);
             RunnerInterval = Settings.Instance.Get(Settings.Keys.RunnerInterval);
         }
 
-       
-
-
-        private void RunnerAction(CompilerServiceMessage msg)
-        {
-            if (!_isStarted || msg.State == (ServiceMessageState.NotHandled | ServiceMessageState.Failed))
-            {
-                msg.State = ServiceMessageState.NotHandled;
-                return;
-            }
-            
-            if (msg.CompilerErrors.Count == 0 && msg.Types.Any())
-            {
-                // var methods = msg.Types[0].MethodsInfos.Where(x => x.DeclaringType == msg.Types[0].TypeInfo.AsType()).ToList();
-                // methods = Utils.GetSupportedMethods(methods);
-                if (SelectedCompiledMethod != null)
-                {
-
-                    if (_runtime.Runners.GetActiveRunners().Any())
-                    {
-                        foreach (var r in _runtime.Runners.GetActiveRunners())
-                        {
-                            r.Destroy();
-                        }
-                        return;
-                    }
-                    
-                    _runtime.Logger.InfoNow(string.Format("executing method {0}.{1}", msg.Types[0].TypeInfo.Name,
-                        SelectedCompiledMethod.Name));
-
-
-                    var runnable = new RunnableItem(msg.Types[0].TypeInfo,
-                        new List<MethodInfo>() {SelectedCompiledMethod});
-                    var settings = new RunnerSettings()
-                    {
-                        CompilerServiceType = Settings.Instance.Get(Settings.Keys.CompilerServiceType),
-                        Iterations = Settings.Instance.Get(Settings.Keys.PlayModeIterationCount),
-                        RunnerType = Settings.Instance.Get(Settings.Keys.ThreadingType)
-                    };
-                    var runner = _runtime.CreateAndAddRunner(runnable, settings);
-
-                    
-                    _canvas.Dispatcher.BeginInvoke((new Action(delegate
-                    {
-                        _canvas.Children.Clear();
-                        var shape = UIHelper.CreateDrawingShape(_canvas,
-                            new Point(_canvas.ActualWidth/2, _canvas.ActualHeight/2));
-                        runner.AddUiListener(shape);
-
-                        foreach (var listener in _uiListeners)
-                        {
-                            runner.AddUiListener(listener);
-                        }
-
-                        runner.Start();
-                    })));
-                }
-
-
-                msg.State = ServiceMessageState.Succeeded;
-            }
-            else
-            {
-                msg.State = ServiceMessageState.Failed;
-            }
-        }
-
-        private void CompilerAction(CompilerServiceMessage msg)
-        {
-            if (!_isStarted || String.IsNullOrEmpty(msg.Source))
-            {
-                return;
-            }
-            List<string> errors;
-            var types = _typesProvider.TryCompileFromText(msg.Source, out errors);
-
-            if (errors.Any())
-            {
-                msg.State = ServiceMessageState.Failed;
-            }
-            else
-            {
-                msg.State = ServiceMessageState.Succeeded;
-            }
-
-
-            msg.CompilerErrors = errors;
-            msg.Types = types;
-            if (!msg.CompilerErrors.Any())
-            {
-                CompiledMethods = types[0].MethodsInfos;
-                //SelectedCompiledMethod = types[0].MethodsInfos[0];
-            }
-            else
-            {
-                CompiledMethods = null;
-            }
-
-            _runtime.Logger.InfoNow(string.Format("compilation errors:  {0}", string.Join("\n", errors.ToArray())));
-        }
-
-
-        public RelayCommand CmdStart { get; private set; }
-        public RelayCommand CmdStop { get; private set; }
+        public RelayCommand<SelectionChangedEventArgs> CmdSelectedMethodChanged { get; private set; }
         public RelayCommand<RoutedEventArgs> CmdCanvasLoaded { get; private set; }
         public RelayCommand CmdClearLog { get; private set; }
         public RelayCommand<EventArgs> CmdCodeDocumentTextChanged { get; private set; }
 
 
-        public CanvasViewModel CanvasCtx { get; private set; }
-
-
-        private void OnClearLog()
+        public bool IsActivated
         {
-            ViewModelLocator.LogViewer.LogEntries.Clear();
+            get
+            {
+                return _isActivated;
+            }
+            set
+            {
+                if (value)
+                {
+                   OnActivated();
+                }
+                else
+                {
+                   OnDeactivated();
+                }
+                _isActivated = value;
+            }
         }
 
-
-        public List<MethodInfo> CompiledMethods
+        public ObservableCollection<MethodInfo> CompiledMethods
         {
-            get { return _compiledMethods; }
+            get
+            {
+                return _compiledMethods;
+            }
             set
             {
                 _compiledMethods = value;
@@ -247,7 +133,10 @@ namespace WpfClient.ViewModels
 
         public MethodInfo SelectedCompiledMethod
         {
-            get { return _selectedCompiledMethod; }
+            get
+            {
+                return _selectedCompiledMethod;
+            }
             set
             {
                 _selectedCompiledMethod = value;
@@ -265,7 +154,6 @@ namespace WpfClient.ViewModels
                     return;
                 }
                 _codeDocument = value;
-
                 RaisePropertyChanged("CodeDocument");
             }
         }
@@ -292,10 +180,162 @@ namespace WpfClient.ViewModels
             }
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void OnSettingsUpdated(object sender, SettingsUpdatedEventArgs e)
+        {
+            if (e.Type == Setting.CompilerInterval)
+            {
+                CompilerInterval = (int)e.Value;
+            }
+            if (e.Type == Setting.RunnerInterval)
+            {
+                RunnerInterval = (int)e.Value;
+            }
+        }
+
+        private void SetupServices()
+        {
+            _compilerServiceMsgBuf = new BroadcastBlock<CompilerServiceMessage>(message =>
+            {
+                return new CompilerServiceMessage(message.Source);
+            });
+            
+            _compilerServiceOutputMsgBuf = new BroadcastBlock<CompilerServiceOutputMessage>(message =>
+            {
+                var clone = new CompilerServiceOutputMessage(message.CompilerErrors, message.Types, message.State);
+                return clone;
+            });
+            _runnerServiceOutputMsgBuf = new BroadcastBlock<RunnerServiceOutputMessage>(message =>
+            {
+                var clone = new RunnerServiceOutputMessage(message.State, message.ErrorMessage);
+                
+                return clone;
+            });
+        }
+
+        private RunnerServiceOutputMessage RunnerAction(CompilerServiceOutputMessage message)
+        {
+
+            if (!IsActivated || message.State == (ServiceMessageState.Failed | ServiceMessageState.NotHandled))
+            {
+                return new RunnerServiceOutputMessage();
+            }
+
+            if (message.CompilerErrors.Count == 0 && message.Types.Any())
+            {
+
+                if (_selectedMethod != null)
+                {
+
+                    if (_runtime.Runners.GetActiveRunners().Any())
+                    {
+                        foreach (var r in _runtime.Runners.GetActiveRunners())
+                        {
+                            r.Destroy();
+                        }
+                        return new RunnerServiceOutputMessage();
+                    }
+
+                    var settings = new RunnerSettings()
+                    {
+                        CompilerServiceType = Settings.Instance.Get(Settings.Keys.CompilerServiceType),
+                        Iterations = Settings.Instance.Get(Settings.Keys.PlayModeIterationCount),
+                        RunnerType = Settings.Instance.Get(Settings.Keys.ThreadingType)
+                    };
+
+                    try
+                    {
+                        var runnable = new RunnableItem(message.Types[0].TypeInfo,
+                            new List<MethodInfo>() { _selectedMethod });
+
+                        var runner = _runtime.CreateAndAddRunner(runnable, settings);
+
+                        _canvas.Dispatcher.BeginInvoke((new Action(delegate
+                        {
+                            _canvas.Children.Clear();
+                            var shape = UIHelper.CreateDrawingShape(_canvas,
+                                new Point(_canvas.ActualWidth / 2, _canvas.ActualHeight / 2));
+                            runner.AddUiListener(shape);
+
+                            foreach (var listener in _uiListeners)
+                            {
+                                runner.AddUiListener(listener);
+                            }
+
+                            runner.Start();
+                        })));
+                    }
+                    catch (Exception e)
+                    {
+                        return new RunnerServiceOutputMessage(ServiceMessageState.Failed, e.Message);
+                    }
+
+                }
+                return new RunnerServiceOutputMessage(ServiceMessageState.Succeeded);
+            }
+
+            return new RunnerServiceOutputMessage(ServiceMessageState.Failed);
+        }
+
+        private CompilerServiceOutputMessage CompilerAction(CompilerServiceMessage message)
+        {
+
+            if (!IsActivated || String.IsNullOrEmpty(message.Source))
+            {
+                return new CompilerServiceOutputMessage(null,null);
+            }
+            List<string> errors;
+            var types = _typesProvider.TryCompileFromText(message.Source, out errors);
+
+            if (!errors.Any())
+            {
+                if (_selectedMethod != null)
+                {
+                    CompiledMethods = new ObservableCollection<MethodInfo>(types[0].MethodsInfos);
+                    SelectedCompiledMethod = CompiledMethods.FirstOrDefault(x => x.Name == _selectedMethod.Name);
+                }
+                else
+                {
+                    CompiledMethods = new ObservableCollection<MethodInfo>(types[0].MethodsInfos);
+                }
+                
+                return new CompilerServiceOutputMessage(errors, types, ServiceMessageState.Succeeded);
+            }
+            else
+            {
+                CompiledMethods = null;
+                return new CompilerServiceOutputMessage(errors, types, ServiceMessageState.Failed);
+            }
+            
+        }
+
+        private void OnClearLog()
+        {
+            ViewModelLocator.LogViewer.LogEntries.Clear();
+        }
+
+        private void OnActivated()
+        {
+            _compilerService.Start(CompilerAction, TimeSpan.FromMilliseconds(CompilerInterval));
+            _runnerService.Start(RunnerAction);
+            _compilerServiceMsgBuf.Post(new CompilerServiceMessage(CodeDocument.Text));
+            _timer.Start();
+        }
+
+        private void OnDeactivated()
+        {
+            _timer.Stop();
+            _compilerService.Stop();
+            _runnerService.Stop();
+            _uiListeners.Clear();
+            OnClearLog();
+            CompiledMethods = null;
+        }
+
+
+        private void LogServices(object sender, EventArgs e)
         {
             OnClearLog();
-            CompilerServiceMessage compilerResults = _compilerBroadcasts.Receive();
+            CompilerServiceOutputMessage compilerResults = _compilerServiceOutputMsgBuf.Receive();
 
             switch (compilerResults.State)
             {
@@ -312,7 +352,7 @@ namespace WpfClient.ViewModels
             }
 
 
-            RunnerServiceMessage runnerResults = _runnerBroadcasts.Receive();
+            RunnerServiceOutputMessage runnerResults = _runnerServiceOutputMsgBuf.Receive();
 
             switch (runnerResults.State)
             {
@@ -323,6 +363,7 @@ namespace WpfClient.ViewModels
                     break;
                 case ServiceMessageState.Failed:
                     _runtime.Logger.ErrorNow("Runner failed to complete");
+                    _runtime.Logger.ErrorNow(runnerResults.ErrorMessage);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
