@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -44,6 +46,35 @@ namespace WpfClient
             //};
 
             return shape;
+        }
+
+        public static bool IsPathValid(string path)
+        {
+            if (String.IsNullOrEmpty(path))
+            {
+                return false;
+            }
+
+            if (Directory.Exists(path))
+            {
+                return true;
+            }
+            
+            if (File.Exists(path))
+            {
+                var  isCompilableFile = path.EndsWith(".cs") || path.EndsWith(".vb");
+                if (isCompilableFile)
+                {
+                    return true;
+                }
+                var isAssembly = path.EndsWith(".dll") || path.EndsWith(".exe");
+                if (isAssembly)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

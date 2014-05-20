@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using WpfClient.ViewModels;
 
 namespace WpfClient.Views
 {
@@ -34,7 +35,7 @@ namespace WpfClient.Views
                         folder = Path.GetDirectoryName(folder);
                     }
 
-
+                   
                     //LoadTypes();
                 }
             }

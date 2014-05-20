@@ -33,11 +33,11 @@ namespace Collections.Messages
             {
                 return;
             }
-            AvgMethodExecutionTimeInMs = items.Average(x => x.ExecutionTime.TotalMilliseconds);
-            MinMethodExecutionTime = items.Min(x => x.ExecutionTime.TotalMilliseconds);
-            MaxMethodExecutionTime = items.Max(x => x.ExecutionTime.TotalMilliseconds);
+            AvgMethodExecutionTimeInMs = Math.Round(items.Average(x => x.ExecutionTime.TotalMilliseconds),3);
+            MinMethodExecutionTime = Math.Round(items.Min(x => x.ExecutionTime.TotalMilliseconds),3);
+            MaxMethodExecutionTime = Math.Round(items.Max(x => x.ExecutionTime.TotalMilliseconds),3);
             
-            //FailedExecutionsCount = items.Count(x => !x.Success);
+            FailedExecutionsCount = items.Count(x => !x.Success);
             MethodName = items.First().Name;
         }
     }

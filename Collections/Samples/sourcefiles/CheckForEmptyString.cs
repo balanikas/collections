@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
 namespace Samples
@@ -7,7 +7,7 @@ namespace Samples
     {
         public static void UsingLength(string value)
         {
-            Trace.WriteLine("1");
+            Trace.WriteLine(value);
             Console.WriteLine("2");
             Debug.WriteLine("3");
             if (value.Length != 0)

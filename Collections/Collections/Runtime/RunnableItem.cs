@@ -20,7 +20,7 @@ namespace Collections.Runtime
             bool areMethodsValid = Utils.MethodsUseSupportedTypes(methods);
             if (!areMethodsValid)
             {
-                throw new ArgumentException("method(s) contains unsupported types");
+                throw new ArgumentException(string.Format("method {0}  in type {1} contains unsupported types",methods[0], type));
             }
 
             _objectInstance = CreateInstanceFromType(ObjectType);
@@ -29,7 +29,7 @@ namespace Collections.Runtime
                 IEnumerable<MethodInfo> staticMethods = methods.Where(m => !m.IsStatic);
                 if (staticMethods.Any())
                 {
-                    throw new ArgumentException("cannot invoke non-static method of static class");
+                    throw new ArgumentException(string.Format("cannot invoke non-static method of static class {0}", type));
                 }
             }
 
@@ -131,24 +131,6 @@ namespace Collections.Runtime
                         return null;
                     }
                     throw new Exception("only types with empty constructors are allowed");
-                    //todo: this doesnt work because lets say a type has many ctors with params,
-                    //which one to choose? lets limit now to only allow empty constructors...until a better solution
-                    //var parameters = new List<object>();
-
-
-                    //var constructors = type.GetConstructors();
-                    //foreach (var c in constructors)
-                    //{
-                    //    var constructorParameters = c.GetParameters();
-                    //    ci = type.GetConstructor(constructorParameters.Select(p => p.ParameterType).ToArray());
-
-                    //    foreach (var item in constructorParameters)
-                    //    {
-                    //        parameters.Add(Randomizer.RandomizeParamValue(item.ParameterType.Name));
-                    //    }
-                    //    obj = ci.Invoke(parameters.ToArray());
-
-                    //}
                 }
                 //constructor is paramless
                 obj = ci.Invoke(new object[] {});

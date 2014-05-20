@@ -5,14 +5,14 @@ using GalaSoft.MvvmLight;
 
 namespace WpfClient.ViewModels
 {
-    public class InfoView :  ViewModelBase, IGui
+    public class MethodExecutionView :  ViewModelBase, IGui
     {
         private MethodExecutionMessage _message;
         private IRunner _runner;
         private bool _isExpanded;
         public string Id { get; set; }
 
-        public InfoView()
+        public MethodExecutionView()
         {
             Message = new MethodExecutionMessage();
         }

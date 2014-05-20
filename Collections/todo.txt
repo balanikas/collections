@@ -24,9 +24,6 @@ continue with this : http://msdn.microsoft.com/en-us/magazine/dd419663.aspx
 
 
 
-* contextmenu -> show in code explorer (will show the code in the explorer)
-* when code has changed, highlight that in some way
-* feels awkward to have info as a flyout.. maybe make more like the log window.
 * add a "shake" effect on runners, when they have high fail rate.
 * present a log over 10 randomly collected successed executions, and 10 failed ones. Maybe make that as a setting value
 * make splitter to use accent color
@@ -34,64 +31,8 @@ continue with this : http://msdn.microsoft.com/en-us/magazine/dd419663.aspx
 * having that optimization for methods withaout params and return values might be misleading for users.
 
 
-
----------------- TODO ---------------------
-* continue with the new stuff.
-* now its quick and dirty.
-* the dataflow is out of sync
-
-
-
-
----- architecture ----
-
-* divide into modules. what modules are there?
-- gui
-	- canvas, shapes, animations
-	- explore mode
-	- play mode
-	- other (roslyn ) mode
-	- 
-- runners, method execution, updates, dataflow stuff, (the engine)
-- type loader, reflection, all that (content/resources)
-- logging
-- runtime that binds all modules (the main)
-- messaging, own module or part of engine?
-- bootstrapper
-
-
---- the engine ---
-* deps:
-	- compiler (native or roslyn), as an ICompilerService maybe
-	- objectbehavior/objectcontainer (how to run stuff)
-	- irunner (tpl or bw)
-	- typeloader
-	- runner settings
-
-	-- 
-
-
-
---- REFACTOOOORRRR ---
-* split types loader into 2: what it does and the compiler
-
-
-* typesviewmodel and exploremodeviewmodel, make them awesome databinded piece of works!!!
-* find usages for the collapsible log entry
 * if invalid path then tell user
-* useless log out put right now
-* right click and show code does nothing
-* ui thread must be 100% fluid !!!!!
-* use avalon dock???
-* compile error not in a msgbox!
-* labels for items in settings OK
-* non linear slider: found sample, but cannot set it to use metro style
 
-
-
-
-
-* code changes are permanently stored
 * type selected but no method is selected, annoying
 * strange the alog is reused...when switching tabs stuff needs to be closed and resetted!
 * in playmode, no animations no nothing...
@@ -124,16 +65,11 @@ data bind the shit in playviewmodel to canvas....btw why is all so slow??
 
 
 
-
-
-
-
-
-
-
-
-------
-
 * continue with UTs
-* in playmode, use togglebutton or toggle switch instead of 2 buttons (start,stop)
-* add desc in settings: Compiler Interval (how often will the compiler execute)..etc.
+
+
+* if errors during execution make shape jump around
+
+
+* in bwrunner, store methodexecutions not in list but in a table...works? why not?
+* format exec info decimal points

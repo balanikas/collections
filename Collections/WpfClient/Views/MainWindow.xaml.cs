@@ -27,17 +27,12 @@ namespace WpfClient
             return _self.ShowProgressAsync(title, message);
         }
 
-        public static void ToggleFlyout(int index, IRunner userState = null, bool keepOpenIfOpened = false)
+        public static void ToggleFlyout(int index,bool keepOpenIfOpened = false)
         {
             var flyout = _self.Flyouts.Items[index] as Flyout;
             if (flyout == null)
             {
                 return;
-            }
-
-            if (flyout is RunnerInfoFlyout && userState != null)
-            {
-                ((RunnerInfoFlyout) flyout).AddContent(userState.GetCurrentState());
             }
             if (keepOpenIfOpened)
             {
@@ -51,8 +46,8 @@ namespace WpfClient
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Tuple<Theme, Accent> theme = ThemeManager.DetectTheme(Application.Current);
-
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
+          
             string accentName;
             switch (TabControl.SelectedIndex)
             {
@@ -69,8 +64,8 @@ namespace WpfClient
                     accentName = "Blue";
                     break;
             }
-            Accent accent = ThemeManager.DefaultAccents.First(x => x.Name == accentName);
-            ThemeManager.ChangeTheme(Application.Current, accent, theme.Item1);
+            Accent accent = ThemeManager.Accents.First(x => x.Name == accentName);
+            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1);
         }
     }
 }

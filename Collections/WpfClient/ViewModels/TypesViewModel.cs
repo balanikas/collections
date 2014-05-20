@@ -21,6 +21,7 @@ namespace WpfClient.ViewModels
         private MethodInfo _selectedMethod;
         private LoadedType _selectedType;
         private ObservableCollection<LoadedType> _types;
+        private object _isLoadButtonEnabled;
 
 
         public TypesViewModel(TypesProvider typesProvider)
@@ -139,7 +140,28 @@ namespace WpfClient.ViewModels
             {
                 _filesPath = value;
 
+                if (!UIHelper.IsPathValid(_filesPath))
+                {
+                    IsLoadButtonEnabled = false;
+                    ViewModelLocator.Logger.ErrorNow(_filesPath + " is not a valid path for a code file, assembly file, or directory containing code files");
+                    
+                }
+                else
+                {
+                    IsLoadButtonEnabled = true;
+                }
+
+
                 RaisePropertyChanged("FilesPath");
+            }
+        }
+
+        public object IsLoadButtonEnabled
+        {
+            get { return _isLoadButtonEnabled; }
+            set {
+                _isLoadButtonEnabled = value;
+                RaisePropertyChanged("IsLoadButtonEnabled");
             }
         }
 

@@ -53,7 +53,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>appicon.ico</ApplicationIcon>
+    <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>F4C9F9C30EBF0AEB904D35530A41E1E379B785DA</ManifestCertificateThumbprint>
@@ -115,11 +115,8 @@
     <Resource Include="Resources\Sample.cs" />
     <Compile Include="UIHelper.cs" />
     <Compile Include="ViewModels\CanvasViewModel.cs" />
-    <Compile Include="ViewModels\InfoView.cs" />
+    <Compile Include="ViewModels\MethodExecutionView.cs" />
     <Compile Include="ViewModels\PlayModeViewModel.cs" />
-    <Compile Include="Views\RunnerInfoFlyout.xaml.cs">
-      <DependentUpon>RunnerInfoFlyout.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\AboutFlyout.xaml.cs">
       <DependentUpon>AboutFlyout.xaml</DependentUpon>
     </Compile>
@@ -169,10 +166,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Resources\Icons.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\RunnerInfoFlyout.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -233,9 +226,6 @@
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="appicon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\canvas_background.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -265,6 +255,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\WindowsIcons-license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="app.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

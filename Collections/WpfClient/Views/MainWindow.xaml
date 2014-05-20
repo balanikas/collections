@@ -8,7 +8,7 @@
     xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF45"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:WpfClient" x:Class="WpfClient.MainWindow"
-    Title="Collections" Height="852.5" Width="1844.5" ShowIconOnTitleBar="True">
+    Title="Collections" Height="852.5" Width="1844.5" ShowIconOnTitleBar="True" ResizeMode="CanResizeWithGrip">
     <Controls:MetroWindow.Resources>
 
     </Controls:MetroWindow.Resources>
@@ -25,7 +25,6 @@
         <Controls:FlyoutsControl>
 
             <local:SettingsFlyout Header="Settings" Position="Right" Width="500" CanCloseFlyout="True" />
-            <local:RunnerInfoFlyout Header="Info" Position="Bottom" Width="500" CanCloseFlyout="True" />
             <local:AboutFlyout Header="About" Position="Right" Width="500" CanCloseFlyout="True" />
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
@@ -49,7 +48,7 @@
                         <views:PlayMode />
                     </Controls:MetroTabItem>
                     <Controls:MetroTabItem Header="Other" x:Name="Tab2">
-                        <TextBlock FontSize="30" Text="????????? ooooowwoww" />
+                        <TextBlock FontSize="30" Text="Not yet implemented" />
                     </Controls:MetroTabItem>
                 </TabControl>
 

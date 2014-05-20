@@ -10,7 +10,7 @@
     xmlns:vm="clr-namespace:WpfClient.ViewModels"
     x:Class="WpfClient.Views.PlayMode"
     mc:Ignorable="d"
-    d:DesignHeight="1000" d:DesignWidth="1000"
+    d:DesignHeight="500" d:DesignWidth="500"
     d:DataContext="{d:DesignInstance Type=vm:PlayModeViewModel, IsDesignTimeCreatable=True}">
 
     <Grid>
@@ -21,12 +21,13 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <DockPanel  Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" LastChildFill="True">
+        <DockPanel  Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Margin="5,5,5,5" LastChildFill="True">
 
-            <Grid DockPanel.Dock="Top" Margin="0,5,0,5">
+            <Grid DockPanel.Dock="Top" Margin="0,0,0,5">
 
 
                 <Grid.ColumnDefinitions>
@@ -36,7 +37,7 @@
 
                 <ToggleButton Content="ACTIVATE" IsChecked="{Binding IsActivated}" Grid.Column="0"/>
 
-                <ComboBox Grid.Column="1" Margin="5,0,5,0" x:Name="CmbCompiledMethods" 
+                <ComboBox Grid.Column="1" Margin="5,0,0,0" x:Name="CmbCompiledMethods" 
                       SelectedItem="{Binding SelectedCompiledMethod, Mode=OneWay}" 
                       ItemsSource="{Binding CompiledMethods}" 
                       IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=HasItems}"
@@ -68,24 +69,29 @@
             </avalonedit:TextEditor>
         </DockPanel>
 
-        <Canvas x:Name="Canvas" Grid.Row="1" Grid.Column="1">
+        <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Stretch"
+                      Background="{DynamicResource AccentColorBrush}"
+                      ShowsPreview="True"
+                      Width="5"
+                      >
+
+
+        </GridSplitter>
+        
+        <Canvas x:Name="Canvas" Grid.Row="1" Grid.Column="2">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Loaded">
                     <command:EventToCommand PassEventArgsToCommand="True"
                                                     Command="{Binding CmdCanvasLoaded}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <Canvas.Background>
-                <RadialGradientBrush>
-                    <GradientStop Color="#FF1B3C13" Offset="0.008" />
-                    <GradientStop Color="#FF173410" Offset="1" />
-                    <GradientStop Color="#FF458935" Offset="0.682" />
-                </RadialGradientBrush>
-            </Canvas.Background>
+            
         </Canvas>
 
 
-        <Expander Grid.Row="1" Grid.Column="1" Header="Log" ExpandDirection="Up" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom"
+        <Expander Grid.Row="1" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom"
                   Opacity="0.9" IsExpanded="True" Height="300" VerticalAlignment="Bottom" Margin="5,0,5,5" >
             <DockPanel>
                 <Button Content="Clear log" Command="{Binding CmdClearLog}" DockPanel.Dock="Top" />

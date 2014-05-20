@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
              xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF45"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:views="clr-namespace:WpfClient.Views"
@@ -10,7 +11,7 @@
              xmlns:viewModels="clr-namespace:WpfClient.ViewModels"
              mc:Ignorable="d"
               d:DataContext="{d:DesignInstance Type=viewModels:ExploreModeViewModel, IsDesignTimeCreatable=True}"
-             d:DesignHeight="800" d:DesignWidth="1200">
+             d:DesignHeight="500" d:DesignWidth="500">
 
     <Grid>
 
@@ -22,7 +23,7 @@
         </Grid.ColumnDefinitions>
 
 
-        <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="True" Grid.ColumnSpan="2" Margin="10,10,10,10">
+        <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="True" Grid.ColumnSpan="2" Margin="5,5,10,5">
             <Button Content="Clear Canvas" Command="{Binding CmdClearCanvas}" DockPanel.Dock="Top" />
             <views:TypesView x:Name="TypesView" />
         </DockPanel>
@@ -31,16 +32,16 @@
         <GridSplitter Grid.Column="1" Grid.Row="0"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Stretch"
-                      Background="#FF2F2F2F"
+                      Background="{DynamicResource AccentColorBrush}"
                       ShowsPreview="True"
-                      Width="5" />
-        <DockPanel Grid.Column="2" Grid.Row="0" Margin="10,10,10,10">
-           
+                      Width="5"
+                      >
 
-            <Canvas x:Name="Canvas">
-                <Canvas.Background>
-                    <ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/canvas_background.jpg" TileMode="Tile" />
-                </Canvas.Background>
+
+        </GridSplitter>
+
+        <Canvas Grid.Column="2" x:Name="Canvas" Background="Transparent">
+               
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDown">
                         <cmd:EventToCommand PassEventArgsToCommand="True"
@@ -49,7 +50,7 @@
 
                 </i:Interaction.Triggers>
             </Canvas>
-        </DockPanel>
+
 
         
         <Expander Grid.Row="0" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Stretch"
@@ -63,7 +64,7 @@
 
         </Expander>
         <Expander DataContext="{Binding InfoView}" Grid.Row="0" Grid.Column="2" Header="Info" ExpandDirection="Down" HorizontalAlignment="Stretch"
-                  Opacity="0.9" IsExpanded="{Binding Path=IsExpanded}" Height="150" VerticalAlignment="Top">
+                  Opacity="0.9" IsExpanded="{Binding Path=IsExpanded}" Height="200" VerticalAlignment="Top">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -76,28 +77,30 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Content="Type" Grid.Column="0" Grid.Row="0" />
                 <Label Content="{Binding Path= Message.ObjectType}" Grid.Column="1" Grid.Row="0" />
                 <Label Content="Method" Grid.Column="0" Grid.Row="1" />
                 <Label Content="{Binding Path= Message.Summary.MethodName}" Grid.Column="1" Grid.Row="1" />
-                <Label Content="Progress" Grid.Column="0" Grid.Row="2" />
+                <Label Content="Progress (%)" Grid.Column="0" Grid.Row="2" />
                 <Label Content="{Binding Path= Message.Progress}" Grid.Column="1" Grid.Row="2" />
 
-                <Label Content="ExecutionTime" Grid.Column="0" Grid.Row="3" />
+                <Label Content="ExecutionTime (ms)" Grid.Column="0" Grid.Row="3" />
                 <Label Content="{Binding Path= Message.ExecutionTime}" Grid.Column="1" Grid.Row="3" />
 
 
-                <Label Content="AvgMethodExecTime" Grid.Column="2" Grid.Row="0" />
+                <Label Content="AvgMethodExecTime (ms)" Grid.Column="2" Grid.Row="0" />
                 <Label Content="{Binding Path= Message.Summary.AvgMethodExecutionTimeInMs}" Grid.Column="3" Grid.Row="0" />
                 <Label Content="Executions" Grid.Column="2" Grid.Row="1" />
                 <Label Content="{Binding Path= Message.Summary.ExecutionsCount}" Grid.Column="3" Grid.Row="1" />
 
-                <Label Content="MaxMethodExecTime" Grid.Column="2" Grid.Row="2" />
+                <Label Content="MaxMethodExecTime (ms)" Grid.Column="2" Grid.Row="2" />
                 <Label Content="{Binding Path= Message.Summary.MaxMethodExecutionTime}" Grid.Column="3" Grid.Row="2" />
-                <Label Content="MinMethodExecTime" Grid.Column="2" Grid.Row="3" />
+                <Label Content="MinMethodExecTime (ms)" Grid.Column="2" Grid.Row="3" />
                 <Label Content="{Binding Path= Message.Summary.MinMethodExecutionTime}" Grid.Column="3" Grid.Row="3" />
-
+                <Label Content="FailedExecutions (%)" Grid.Column="2" Grid.Row="4" />
+                <Label Content="{Binding Path= Message.Summary.FailedExecutionsCount}" Grid.Column="3" Grid.Row="4" />
 
             </Grid>
 

@@ -32,7 +32,7 @@
                          TextWrapping="Wrap" />
                 <Button Content="Load" Grid.Column="1"
                         Margin="5,0,0,0"
-                        Command="{Binding CmdLoadTypes}" />
+                        Command="{Binding CmdLoadTypes}" IsEnabled="{Binding IsLoadButtonEnabled}"/>
                 <Button Content="Compile" Grid.Column="2"
                         Margin="5,0,0,0"
 

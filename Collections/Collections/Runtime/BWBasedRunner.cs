@@ -113,17 +113,22 @@ namespace Collections.Runtime
                     break;
                 }
 
-                TimeSpan beforeExecution = _watch.Elapsed;
-                bool log =  _settings.Iterations >= 100 && _execCount % (_settings.Iterations / 100) == 0 || _execCount == _settings.Iterations;
                
-                methodExecution = _runnableObject.Update(log);
+                bool log =  _settings.Iterations >= 100 && _execCount % (_settings.Iterations / 100) == 0 || _execCount == _settings.Iterations;
+                
+                TimeSpan beforeExecution = _watch.Elapsed;
+                methodExecution = _runnableObject.Update(true);
                 if (methodExecution != null)
                 {
                     methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
                     _methodExecutions.Add(methodExecution);
 
                     var progressCount = (int)(_execCount / (double)_settings.Iterations * 100);
-                    worker.ReportProgress(progressCount, methodExecution);
+                    if (log)
+                    {
+                        worker.ReportProgress(progressCount, methodExecution);
+                    }
+                    
                 }
 
                 if (_execCount == _settings.Iterations)

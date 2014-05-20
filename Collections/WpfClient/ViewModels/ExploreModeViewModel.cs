@@ -22,7 +22,7 @@ namespace WpfClient.ViewModels
             CmdClearCanvas = new RelayCommand(OnClearCanvas);
             CmdClearLog = new RelayCommand(OnClearLog);
             Types = ViewModelLocator.Types;
-            InfoView = new InfoView();
+            InfoView = new MethodExecutionView();
 
             //Console.SetOut(new ConsoleWriter(_logger));
             _runtime.Reset();
@@ -30,7 +30,7 @@ namespace WpfClient.ViewModels
 
         public TypesViewModel Types { get; set; }
 
-        public InfoView InfoView { get; set; }
+        public MethodExecutionView InfoView { get; set; }
 
         public RelayCommand<MouseEventArgs> CmdMouseDown { get; private set; }
         public RelayCommand CmdClearLog { get; private set; }
@@ -60,6 +60,7 @@ namespace WpfClient.ViewModels
             GC.Collect();
             GC.WaitForPendingFinalizers();
             OnClearLog();
+            InfoView.IsExpanded = false;
         }
 
         private void OnClearLog()
@@ -103,16 +104,18 @@ namespace WpfClient.ViewModels
                 (s, e) => _runtime.Runners.Remove(runner),
                 (s, e) =>
                 {
-                    InfoView.IsExpanded = !InfoView.IsExpanded;
+
+                    InfoView.IsExpanded = true;
+                    InfoView.Register(runner);
                 },
-                (s, e) => { }
+                (s, e) => {  }
                 );
 
             shape.AddContextMenu(ctxMenu);
             shape.OnLeftClick += (source, args) =>
             {
                 InfoView.Register(_runtime.Runners.GetById(args.EventInfo));
-                InfoView.IsExpanded = !InfoView.IsExpanded;
+                InfoView.IsExpanded = true;
             };
             runner.AddUiListener(shape);
             InfoView.Register(runner);
