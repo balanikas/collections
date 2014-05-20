@@ -2,7 +2,6 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Reflection;
-using Microsoft.CSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Collections.Compiler

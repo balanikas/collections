@@ -1,9 +1,7 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mail;
 using System.Reflection;
 using System.Threading.Tasks;
 using Collections.Compiler;
@@ -133,7 +131,7 @@ namespace Collections
 
         public List<LoadedType> FromAssembly(string filePath)
         {
-            var data = new List<LoadedType>();
+            var types = new List<LoadedType>();
 
             bool isEmpty = String.IsNullOrEmpty(filePath);
             bool isValid = filePath.IndexOfAny(Path.GetInvalidPathChars()) == -1;
@@ -159,7 +157,7 @@ namespace Collections
 
             foreach (string path in filePaths)
             {
-                Assembly assembly = Assembly.LoadFile(filePath);
+                Assembly assembly = Assembly.LoadFile(path);
                 foreach (TypeInfo definedType in assembly.DefinedTypes)
                 {
                     if (definedType.IsInterface ||
@@ -167,7 +165,7 @@ namespace Collections
                     {
                         continue;
                     }
-                    data.Add(new LoadedType
+                    types.Add(new LoadedType
                     {
                         TypeInfo = definedType,
                         FilePath = filePath,
@@ -178,7 +176,7 @@ namespace Collections
             }
 
             
-            return data;
+            return types;
         }
 
 

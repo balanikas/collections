@@ -73,10 +73,10 @@ namespace Collections.Runtime
         public void Destroy()
         {
             _bw.CancelAsync();
-            //foreach (IGui listener in _uiListeners)
-            //{
-            //    listener.Destroy();
-            //}
+            foreach (IGui listener in _uiListeners.ToList())
+            {
+                listener.Destroy();
+            }
         }
 
         public bool IsAlive()

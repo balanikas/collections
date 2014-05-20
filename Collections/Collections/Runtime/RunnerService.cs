@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using Collections.Compiler;
 using Collections.Messages;
 
 namespace Collections.Runtime
@@ -78,9 +73,7 @@ namespace Collections.Runtime
               Func<CompilerServiceOutputMessage,RunnerServiceOutputMessage> func,
               CancellationToken cancellationToken)
         {
-
-            ActionBlock<string> block = null;
-            block = new ActionBlock<string>(async now =>
+            var block = new ActionBlock<string>(async now =>
             {
 
                 while (await _compilerServiceMsgBuf.OutputAvailableAsync(cancellationToken))
@@ -109,7 +102,7 @@ namespace Collections.Runtime
 
             return block;
         }
-   
+
         private RunnerServiceOutputMessage DefaultRunnerExecution(CompilerServiceOutputMessage msg)
         {
             return new RunnerServiceOutputMessage();

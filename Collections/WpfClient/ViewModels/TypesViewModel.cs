@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using Collections;
-using Collections.Compiler;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using ICSharpCode.AvalonEdit.Document;

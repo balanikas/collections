@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Collections.Messages;
-using Collections.Runtime;
 
 namespace Collections.Compiler
 {
@@ -79,12 +75,10 @@ namespace Collections.Compiler
             Func<CompilerServiceMessage,CompilerServiceOutputMessage> action,
             CancellationToken cancellationToken)
         {
-
-            ActionBlock<string> block = null;
             string previousSource = null;
 
 
-            block = new ActionBlock<string>(async message =>
+            var block = new ActionBlock<string>(async message =>
             {
 
                 while (await _compilerServiceMessage.OutputAvailableAsync(cancellationToken))
@@ -96,7 +90,7 @@ namespace Collections.Compiler
                         previousSource = receivedMessage.Source;
                         var result = action(receivedMessage);
                         
-                       // if (result.CompilerErrors.Count == 0)
+                        // if (result.CompilerErrors.Count == 0)
                         {
                             _compilerServiceOutputMsgBuf.Post(result);
                         }

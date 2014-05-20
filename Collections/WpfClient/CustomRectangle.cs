@@ -12,7 +12,7 @@ namespace WpfClient
     {
         private readonly Rectangle _rect;
 
-        public CustomRectangle(UIElementCollection parent, Point position, string title = "")
+        public CustomRectangle(UIElementCollection parent, Point position)
             : base(parent, position)
         {
             _rect = new Rectangle();

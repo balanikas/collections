@@ -1,11 +1,9 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Collections;
 using Collections.Compiler;
 using Collections.Logging;
 using Collections.Runtime;
 using WpfClient.ViewModels;
-using WpfClient.Views;
 
 namespace WpfClient
 {

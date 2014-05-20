@@ -110,13 +110,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AnimationsHelper.cs" />
-    <Compile Include="NeverEndingDataFlowTplService.cs" />
     <Compile Include="Controls\CollapsibleLogEntry.cs" />
     <Compile Include="Controls\PropertyChangedBase.cs" />
-    <Compile Include="Controls\QuadraticEquation.cs" />
-    <Compile Include="Controls\QuadraticSlider.cs" />
+    <Resource Include="Resources\Sample.cs" />
     <Compile Include="UIHelper.cs" />
     <Compile Include="ViewModels\CanvasViewModel.cs" />
+    <Compile Include="ViewModels\InfoView.cs" />
     <Compile Include="ViewModels\PlayModeViewModel.cs" />
     <Compile Include="Views\RunnerInfoFlyout.xaml.cs">
       <DependentUpon>RunnerInfoFlyout.xaml</DependentUpon>

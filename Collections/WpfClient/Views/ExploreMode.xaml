@@ -63,42 +63,42 @@
 
         </Expander>
         <Expander DataContext="{Binding InfoView}" Grid.Row="0" Grid.Column="2" Header="Info" ExpandDirection="Down" HorizontalAlignment="Stretch"
-                  Opacity="0.9" IsExpanded="False" Height="150" VerticalAlignment="Top">
+                  Opacity="0.9" IsExpanded="{Binding Path=IsExpanded}" Height="150" VerticalAlignment="Top">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
-                <Label Content="Type" Grid.Column="0" Grid.Row="0"></Label>
-                <Label Content="{Binding Path= Message.ObjectType}" Grid.Column="1" Grid.Row="0"></Label>
-                <Label Content="Method" Grid.Column="0" Grid.Row="1"></Label>
-                <Label Content="{Binding Path= Message.Summary.MethodName}" Grid.Column="1" Grid.Row="1"></Label>
-                <Label Content="Progress" Grid.Column="0" Grid.Row="2"></Label>
-                <Label Content="{Binding Path= Message.Progress}" Grid.Column="1" Grid.Row="2"></Label>
+                <Label Content="Type" Grid.Column="0" Grid.Row="0" />
+                <Label Content="{Binding Path= Message.ObjectType}" Grid.Column="1" Grid.Row="0" />
+                <Label Content="Method" Grid.Column="0" Grid.Row="1" />
+                <Label Content="{Binding Path= Message.Summary.MethodName}" Grid.Column="1" Grid.Row="1" />
+                <Label Content="Progress" Grid.Column="0" Grid.Row="2" />
+                <Label Content="{Binding Path= Message.Progress}" Grid.Column="1" Grid.Row="2" />
 
-                <Label Content="ExecutionTime" Grid.Column="0" Grid.Row="3"></Label>
-                <Label Content="{Binding Path= Message.ExecutionTime}" Grid.Column="1" Grid.Row="3"></Label>
+                <Label Content="ExecutionTime" Grid.Column="0" Grid.Row="3" />
+                <Label Content="{Binding Path= Message.ExecutionTime}" Grid.Column="1" Grid.Row="3" />
 
 
-                <Label Content="AvgMethodExecTime" Grid.Column="2" Grid.Row="0"></Label>
-                <Label Content="{Binding Path= Message.Summary.AvgMethodExecutionTimeInMs}" Grid.Column="3" Grid.Row="0"></Label>
-                <Label Content="Executions" Grid.Column="2" Grid.Row="1"></Label>
-                <Label Content="{Binding Path= Message.Summary.ExecutionsCount}" Grid.Column="3" Grid.Row="1"></Label>
+                <Label Content="AvgMethodExecTime" Grid.Column="2" Grid.Row="0" />
+                <Label Content="{Binding Path= Message.Summary.AvgMethodExecutionTimeInMs}" Grid.Column="3" Grid.Row="0" />
+                <Label Content="Executions" Grid.Column="2" Grid.Row="1" />
+                <Label Content="{Binding Path= Message.Summary.ExecutionsCount}" Grid.Column="3" Grid.Row="1" />
 
-                <Label Content="MaxMethodExecTime" Grid.Column="2" Grid.Row="2"></Label>
-                <Label Content="{Binding Path= Message.Summary.MaxMethodExecutionTime}" Grid.Column="3" Grid.Row="2"></Label>
-                <Label Content="MinMethodExecTime" Grid.Column="2" Grid.Row="3"></Label>
-                <Label Content="{Binding Path= Message.Summary.MinMethodExecutionTime}" Grid.Column="3" Grid.Row="3"></Label>
+                <Label Content="MaxMethodExecTime" Grid.Column="2" Grid.Row="2" />
+                <Label Content="{Binding Path= Message.Summary.MaxMethodExecutionTime}" Grid.Column="3" Grid.Row="2" />
+                <Label Content="MinMethodExecTime" Grid.Column="2" Grid.Row="3" />
+                <Label Content="{Binding Path= Message.Summary.MinMethodExecutionTime}" Grid.Column="3" Grid.Row="3" />
 
-             
+
             </Grid>
 
         </Expander>

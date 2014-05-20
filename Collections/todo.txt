@@ -116,12 +116,7 @@ data bind the shit in playviewmodel to canvas....btw why is all so slow??
 
 
 
-------------------------
-* remove compiled successfully, runn successfully
-* remove log output: guid + 0% in explore mode
-* red color on log, not pink
-* select default(first method) when changing selected type!!
-* compiling invalid code crashes program!
+
 * log error message when loading from invalid path
 * does drag n drop work still?
 
@@ -142,10 +137,3 @@ data bind the shit in playviewmodel to canvas....btw why is all so slow??
 * continue with UTs
 * in playmode, use togglebutton or toggle switch instead of 2 buttons (start,stop)
 * add desc in settings: Compiler Interval (how often will the compiler execute)..etc.
-
-
-
-
-* new message structure one abstratc and 3 impls
-* rename broadcasts to buffers
-* add a third buffer

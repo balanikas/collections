@@ -29,7 +29,7 @@ namespace WpfClient.ViewModels
             {
 
                 var textBrush = new SolidColorBrush((message.IsError ? Colors.Yellow : Colors.White));
-                LogEntries.Add(
+                LogEntries.Insert(0,
                     new LogEntry
                     {
                         Message = message.Message,

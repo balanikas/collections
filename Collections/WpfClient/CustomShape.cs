@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Collections;
@@ -79,10 +78,6 @@ namespace WpfClient
             _grid.ContextMenu = ctxMenu;
         }
 
-        private void menuClose_Click(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         private void _grid_MouseDown(object sender, MouseButtonEventArgs e)
         {

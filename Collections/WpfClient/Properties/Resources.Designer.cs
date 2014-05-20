@@ -59,5 +59,30 @@ namespace WpfClient.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to class Sample
+        ///{
+        ///    public void SlowCalculation()
+        ///    {
+        ///        for (int i = 0; i &lt; 10000; i++)
+        ///        {
+        ///            //do something
+        ///        }
+        ///    }
+        ///
+        ///    public void FastCalculation()
+        ///    {
+        ///        return;
+        ///    }
+        ///}
+        ///
+        ///.
+        /// </summary>
+        internal static string Sample {
+            get {
+                return ResourceManager.GetString("Sample", resourceCulture);
+            }
+        }
     }
 }

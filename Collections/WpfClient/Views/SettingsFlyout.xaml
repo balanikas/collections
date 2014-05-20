@@ -4,7 +4,6 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                 xmlns:c="clr-namespace:WpfClient.Controls"
                  mc:Ignorable="d"
                  d:DesignHeight="300"
                  d:DesignWidth="300"
@@ -20,36 +19,14 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- for testing -->
-            <SolidColorBrush x:Key="ListViewBackground" Color="White" />
-
-            <Style x:Key="CustomListViewItemStyle"
-                   TargetType="{x:Type ListViewItem}"
-                   BasedOn="{StaticResource MetroListViewItem}">
-                <Setter Property="Foreground"
-                        Value="Black" />
-            </Style>
-            <Style x:Key="CustomGridViewColumnHeader"
-                   TargetType="{x:Type GridViewColumnHeader}"
-                   BasedOn="{StaticResource MetroGridViewColumnHeader}">
-                <Style.Resources>
-                    <SolidColorBrush x:Key="GrayBrush8"
-                                     Color="#FFE0E0E0" />
-                </Style.Resources>
-                <Setter Property="Foreground"
-                        Value="Black" />
-            </Style>
         </ResourceDictionary>
     </controls:Flyout.Resources>
 
     <StackPanel Orientation="Vertical"
                 Margin="10">
-        <!-- general-->
 
-        <Label Content="General" FontSize="20" HorizontalContentAlignment="Center"  Height="50"></Label>
-      
+        <Label Content="General" FontSize="20" HorizontalContentAlignment="Center"  Height="50" />
 
-      
 
         <Label Content="Drawing shape" />
         <ComboBox x:Name="cmbGraphics" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectedIndex="0"
@@ -67,7 +44,7 @@
                      IsChecked="True" />
 
         <!-- explore mode-->
-        <Label Content="Explore Mode" FontSize="20" HorizontalContentAlignment="Center"  Height="50"></Label>
+        <Label Content="Explore Mode" FontSize="20" HorizontalContentAlignment="Center"  Height="50" />
         <Label Content="Iterations (set how many times the selected method will execute)" />
 
         <Slider x:Name="SldExploreModeIterationCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="1000000" Minimum="1"
@@ -75,7 +52,7 @@
                 ValueChanged="SldExploreModeIterationCount_OnValueChanged"  TickFrequency="100" LargeChange="100000" />
 
         <!-- play mode-->
-        <Label Content="Play Mode" FontSize="20" HorizontalContentAlignment="Center" Height="50"></Label>
+        <Label Content="Play Mode" FontSize="20" HorizontalContentAlignment="Center" Height="50" />
 
         <Label Content="Iterations (set how many times the selected method will execute)" />
         <Slider x:Name="SldPlayModeIterationCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="1000000" Minimum="1"

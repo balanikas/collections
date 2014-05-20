@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Resources;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +15,7 @@ using Collections.Runtime;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using ICSharpCode.AvalonEdit.Document;
+using WpfClient.Properties;
 
 namespace WpfClient.ViewModels
 {
@@ -47,8 +48,7 @@ namespace WpfClient.ViewModels
             _uiListeners = new List<IGui>();
             CompiledMethods = new ObservableCollection<MethodInfo>();
 
-            CodeDocument.Text =
-                "class X { \n public void Calc() { \n for(int i = 0; i < 10000; i++) { \n var s = i; } \n  } \n public void Calc2(){} \n }";
+            CodeDocument.Text = Resources.Sample;
 
             SetupServices();
             _compilerService = new CompilerService(_compilerServiceMsgBuf, _compilerServiceOutputMsgBuf);
@@ -61,7 +61,7 @@ namespace WpfClient.ViewModels
             _timer.Tick += LogServices;
             _timer.Interval = new TimeSpan(0, 0, 0, 0, 30);
             
-            CmdCodeDocumentTextChanged = new RelayCommand<EventArgs>((args) =>
+            CmdCodeDocumentTextChanged = new RelayCommand<EventArgs>(args =>
             {
                 if (!IsActivated)
                 {
@@ -70,11 +70,11 @@ namespace WpfClient.ViewModels
                 _compilerServiceMsgBuf.Post(new CompilerServiceMessage(CodeDocument.Text));
             });
 
-            CmdCanvasLoaded = new RelayCommand<RoutedEventArgs>((args) => { _canvas = args.Source as Canvas; });
+            CmdCanvasLoaded = new RelayCommand<RoutedEventArgs>(args => { _canvas = args.Source as Canvas; });
 
             CmdClearLog = new RelayCommand(OnClearLog);
 
-            CmdSelectedMethodChanged = new RelayCommand<SelectionChangedEventArgs>((args) =>
+            CmdSelectedMethodChanged = new RelayCommand<SelectionChangedEventArgs>(args =>
             {
                 if (args.AddedItems.Count == 1)
                 {
@@ -319,6 +319,7 @@ namespace WpfClient.ViewModels
             _runnerService.Start(RunnerAction);
             _compilerServiceMsgBuf.Post(new CompilerServiceMessage(CodeDocument.Text));
             _timer.Start();
+            _runtime.Logger.InfoNow("Services started, running live code");
         }
 
         private void OnDeactivated()
@@ -327,14 +328,15 @@ namespace WpfClient.ViewModels
             _compilerService.Stop();
             _runnerService.Stop();
             _uiListeners.Clear();
-            OnClearLog();
             CompiledMethods = null;
+            _runtime.Logger.InfoNow("Services stopped");
+
         }
 
-
+        
         private void LogServices(object sender, EventArgs e)
         {
-            OnClearLog();
+           // OnClearLog();
             CompilerServiceOutputMessage compilerResults = _compilerServiceOutputMsgBuf.Receive();
 
             switch (compilerResults.State)
@@ -342,7 +344,7 @@ namespace WpfClient.ViewModels
                 case ServiceMessageState.NotHandled:
                     break;
                 case ServiceMessageState.Succeeded:
-                    _runtime.Logger.InfoNow("Code compiled successfully");
+                    //_runtime.Logger.InfoNow("Code compiled successfully");
                     break;
                 case ServiceMessageState.Failed:
                     _runtime.Logger.ErrorNow(string.Join("\n", compilerResults.CompilerErrors.ToArray()));
@@ -351,7 +353,7 @@ namespace WpfClient.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
 
-
+            
             RunnerServiceOutputMessage runnerResults = _runnerServiceOutputMsgBuf.Receive();
 
             switch (runnerResults.State)
@@ -359,7 +361,7 @@ namespace WpfClient.ViewModels
                 case ServiceMessageState.NotHandled:
                     break;
                 case ServiceMessageState.Succeeded:
-                    _runtime.Logger.InfoNow("Runner completed successfully");
+                    //_runtime.Logger.InfoNow("Runner completed successfully");
                     break;
                 case ServiceMessageState.Failed:
                     _runtime.Logger.ErrorNow("Runner failed to complete");

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Collections;
-using Collections.Messages;
 using Collections.Runtime;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -70,9 +68,6 @@ namespace WpfClient.ViewModels
             
         }
 
-
-       
-
         private void CreateRunner(Canvas element)
         {
             LoadedType type = Types.SelectedType;
@@ -106,7 +101,10 @@ namespace WpfClient.ViewModels
             
             ContextMenu ctxMenu = ShapeContextMenu.Create(
                 (s, e) => _runtime.Runners.Remove(runner),
-                (s, e) =>  MainWindow.ToggleFlyout(1, _runtime.Runners.GetById(runner.Id), true),
+                (s, e) =>
+                {
+                    InfoView.IsExpanded = !InfoView.IsExpanded;
+                },
                 (s, e) => { }
                 );
 
@@ -114,6 +112,7 @@ namespace WpfClient.ViewModels
             shape.OnLeftClick += (source, args) =>
             {
                 InfoView.Register(_runtime.Runners.GetById(args.EventInfo));
+                InfoView.IsExpanded = !InfoView.IsExpanded;
             };
             runner.AddUiListener(shape);
             InfoView.Register(runner);
@@ -122,61 +121,5 @@ namespace WpfClient.ViewModels
         }
 
      
-    }
-
-    public class InfoView :  ViewModelBase, IGui
-    {
-        private MethodExecutionMessage _message;
-        private IRunner _runner;
-        public string Id { get; set; }
-
-        public InfoView()
-        {
-            Message = new MethodExecutionMessage();
-        }
-        public void Initialize()
-        {
-           
-        }
-
-     
-
-        public void Register(IRunner runner)
-        {
-            if (_runner != null)
-            {
-                _runner.RemoveUiListener(this);
-            }
-          
-           
-            _runner = runner;
-            
-            Message.Summary = _runner.GetCurrentState();
-            _runner.AddUiListener(this);
-        }
-
-        public void Update(MethodExecutionMessage message)
-        {
-            Message = message;
-            
-        }
-
-
-        public void Destroy()
-        {
-            Message = null;
-        }
-
-        public MethodExecutionMessage Message
-        {
-            get { return _message; }
-            set
-            {
-                _message = value;
-                RaisePropertyChanged("Message");
-            }
-        }
-
-
     }
 }

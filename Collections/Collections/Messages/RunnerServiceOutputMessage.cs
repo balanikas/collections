@@ -1,8 +1,4 @@
-﻿using System;
-using Collections.Compiler;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-namespace Collections.Messages
+﻿namespace Collections.Messages
 
 {
 

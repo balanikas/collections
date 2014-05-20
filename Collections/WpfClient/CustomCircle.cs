@@ -12,7 +12,7 @@ namespace WpfClient
     {
         private readonly Ellipse _ellipse;
 
-        public CustomCircle(UIElementCollection parent, Point position, string title = "")
+        public CustomCircle(UIElementCollection parent, Point position)
             : base(parent, position)
         {
             _ellipse = new Ellipse();

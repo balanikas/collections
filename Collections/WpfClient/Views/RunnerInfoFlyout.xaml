@@ -19,25 +19,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- for testing -->
-            <SolidColorBrush x:Key="ListViewBackground" Color="White" />
-
-            <Style x:Key="CustomListViewItemStyle"
-                   TargetType="{x:Type ListViewItem}"
-                   BasedOn="{StaticResource MetroListViewItem}">
-                <Setter Property="Foreground"
-                        Value="Black" />
-            </Style>
-            <Style x:Key="CustomGridViewColumnHeader"
-                   TargetType="{x:Type GridViewColumnHeader}"
-                   BasedOn="{StaticResource MetroGridViewColumnHeader}">
-                <Style.Resources>
-                    <SolidColorBrush x:Key="GrayBrush8"
-                                     Color="#FFE0E0E0" />
-                </Style.Resources>
-                <Setter Property="Foreground"
-                        Value="Black" />
-            </Style>
         </ResourceDictionary>
     </controls:Flyout.Resources>
 

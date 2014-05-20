@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Collections;
 using Collections.Compiler;
 using Collections.Runtime;
 using MahApps.Metro.Controls;
