@@ -82,7 +82,7 @@
     <Compile Include="Runtime\RunnerType.cs" />
     <Compile Include="TypesProvider.cs" />
     <Compile Include="Messages\MethodExecutionMessage.cs" />
-    <Compile Include="Messages\MethodExecutionSummaryMessage.cs" />
+    <Compile Include="Messages\MethodExecutionResultAggregation.cs" />
     <Compile Include="Runtime\Runtime.cs" />
     <Compile Include="Runtime\IRunnable.cs" />
     <Compile Include="Runtime\IRunner.cs" />

@@ -24,7 +24,6 @@ namespace WpfClient.ViewModels
             Types = ViewModelLocator.Types;
             InfoView = new MethodExecutionView();
 
-            //Console.SetOut(new ConsoleWriter(_logger));
             _runtime.Reset();
         }
 

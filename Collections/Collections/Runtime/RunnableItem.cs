@@ -13,10 +13,12 @@ namespace Collections.Runtime
 
         private ThreadSafeRandom _randomizer;
         public Type ObjectType { get; private set; }
+        public MethodInfo Method { get; private set; }
 
         public RunnableItem(Type type, List<MethodInfo> methods)
         {
             ObjectType = type;
+            Method = methods[0];
             bool areMethodsValid = Utils.MethodsUseSupportedTypes(methods);
             if (!areMethodsValid)
             {
@@ -86,16 +88,14 @@ namespace Collections.Runtime
                     {
                         methodExecutionResult = new MethodExecutionResult();
                         methodExecutionResult.ReturnValue = result;
-                        methodExecutionResult.Success = true;
+                        methodExecutionResult.Failed = false;
                         methodExecutionResult.ArgsValues = parameters;
-                        methodExecutionResult.Name = execInfo.MethodInfo.Name;
                     }
                 }
                 catch (Exception e)
                 {
                     methodExecutionResult = new MethodExecutionResult();
-                    methodExecutionResult.Success = false;
-                    methodExecutionResult.Name = execInfo.MethodInfo.Name;
+                    methodExecutionResult.Failed = true;
                     string errorMsg = e.InnerException != null ? e.InnerException.Message : e.Message;
                     methodExecutionResult.ErrorMessage = errorMsg;
                     return methodExecutionResult;

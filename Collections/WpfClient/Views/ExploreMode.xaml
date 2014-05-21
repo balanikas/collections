@@ -86,12 +86,12 @@
                 <Label Content="Progress (%)" Grid.Column="0" Grid.Row="2" />
                 <Label Content="{Binding Path= Message.Progress}" Grid.Column="1" Grid.Row="2" />
 
-                <Label Content="ExecutionTime (ms)" Grid.Column="0" Grid.Row="3" />
-                <Label Content="{Binding Path= Message.ExecutionTime}" Grid.Column="1" Grid.Row="3" />
+                <Label Content="TotalExecutionTime (ms)" Grid.Column="0" Grid.Row="3" />
+                <Label Content="{Binding Path= Message.TotalExecutionTime}" Grid.Column="1" Grid.Row="3" />
 
 
                 <Label Content="AvgMethodExecTime (ms)" Grid.Column="2" Grid.Row="0" />
-                <Label Content="{Binding Path= Message.Summary.AvgMethodExecutionTimeInMs}" Grid.Column="3" Grid.Row="0" />
+                <Label Content="{Binding Path= Message.Summary.AvgMethodExecutionTime}" Grid.Column="3" Grid.Row="0" />
                 <Label Content="Executions" Grid.Column="2" Grid.Row="1" />
                 <Label Content="{Binding Path= Message.Summary.ExecutionsCount}" Grid.Column="3" Grid.Row="1" />
 

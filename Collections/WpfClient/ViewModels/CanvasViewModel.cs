@@ -41,7 +41,7 @@ namespace WpfClient.ViewModels
             set
             {
                 _executionTime = value;
-                RaisePropertyChanged("ExecutionTime");
+                RaisePropertyChanged("TotalExecutionTime");
             }
         }
 

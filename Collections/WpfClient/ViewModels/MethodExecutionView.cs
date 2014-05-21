@@ -42,6 +42,7 @@ namespace WpfClient.ViewModels
             _runner = runner;
             
             Message.Summary = _runner.GetCurrentState();
+            RaisePropertyChanged("Message");
             _runner.AddUiListener(this);
         }
 

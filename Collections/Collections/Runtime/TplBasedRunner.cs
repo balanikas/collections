@@ -96,7 +96,7 @@ namespace Collections.Runtime
         }
 
 
-        public MethodExecutionSummaryMessage GetCurrentState()
+        public MethodExecutionResultAggregation GetCurrentState()
         {
             return null;
         }
@@ -133,6 +133,7 @@ namespace Collections.Runtime
 
                     var msg = new MethodExecutionMessage(
                         _runnable.ObjectType,
+                        null,
                         methodExecutionResult,
                         watch.Elapsed,
                         progressCount);

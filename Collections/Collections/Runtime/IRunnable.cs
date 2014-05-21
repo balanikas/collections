@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Collections.Runtime
 {
@@ -7,5 +8,6 @@ namespace Collections.Runtime
         MethodExecutionResult Update(bool log);
 
         Type ObjectType { get; }
+        MethodInfo Method { get; }
     }
 }

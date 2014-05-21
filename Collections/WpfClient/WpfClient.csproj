@@ -111,8 +111,16 @@
     </ApplicationDefinition>
     <Compile Include="AnimationsHelper.cs" />
     <Compile Include="Controls\CollapsibleLogEntry.cs" />
+    <Compile Include="Controls\CustomRect.xaml.cs">
+      <DependentUpon>CustomRect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CustomEllipse.xaml.cs">
+      <DependentUpon>CustomEllipse.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PropertyChangedBase.cs" />
     <Resource Include="Resources\Sample.cs" />
+    <Compile Include="CustomEllipse.cs" />
+    <Compile Include="CustomRect.cs" />
     <Compile Include="UIHelper.cs" />
     <Compile Include="ViewModels\CanvasViewModel.cs" />
     <Compile Include="ViewModels\MethodExecutionView.cs" />
@@ -121,8 +129,6 @@
       <DependentUpon>AboutFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="ShapeContextMenu.cs" />
-    <Compile Include="CustomCircle.cs" />
-    <Compile Include="CustomRectangle.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Views\SettingsFlyout.xaml.cs">
       <DependentUpon>SettingsFlyout.xaml</DependentUpon>
@@ -147,6 +153,14 @@
     <Compile Include="Views\PlayMode.xaml.cs">
       <DependentUpon>PlayMode.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\CustomRect.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CustomEllipse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\LogViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

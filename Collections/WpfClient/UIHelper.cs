@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.Expression.Media.Effects;
 
 namespace WpfClient
 {
@@ -22,17 +23,14 @@ namespace WpfClient
             var drawType = Settings.Instance.Get(Settings.Keys.DrawAs);
             if (drawType == DrawTypes.Circle)
             {
-                shape = new CustomCircle(canvas.Children, location);
+                shape = new CustomEllipse(canvas.Children, location);
             }
             else if (drawType == DrawTypes.Rectangle)
             {
-                shape = new CustomRectangle(canvas.Children, location);
+                shape = new CustomRect(canvas.Children, location);
             }
 
-            shape.OnMouseOver += (source, args) =>
-            {
-                
-            };
+          
             //shape.OnKeyPressed += (source, args) =>
             //{
             //    if (args.Key == Key.D1)
@@ -75,6 +73,20 @@ namespace WpfClient
             }
 
             return false;
+        }
+
+        public static void AddPixelation(FrameworkElement el, double pixelation)
+        {
+            var pixelateEffect = el.Effect as PixelateEffect;
+            if (pixelateEffect == null)
+            {
+                pixelateEffect = new PixelateEffect { Pixelation = 0 };
+                el.Effect = pixelateEffect;
+            }
+            if (pixelateEffect.Pixelation <= 0.8)
+            {
+                pixelateEffect.Pixelation += pixelation;
+            }
         }
     }
 }

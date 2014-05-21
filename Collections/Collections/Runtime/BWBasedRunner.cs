@@ -12,24 +12,23 @@ namespace Collections.Runtime
 {
     public class BWBasedRunner : IRunner
     {
-        private readonly IRunnable _runnableObject;
+        private readonly IRunnable _runnableItem;
         private readonly BackgroundWorker _bw;
         private readonly ILogger _logger;
-        private readonly ConcurrentBag<MethodExecutionResult> _methodExecutions;
         private readonly RunnerSettings _settings;
         private readonly List<IGui> _uiListeners;
         private readonly Stopwatch _watch;
+        private readonly MethodExecutionResultAggregation _aggregation;
         private int _execCount;
 
-        public BWBasedRunner(IRunnable runnableObject, ILogger logger, RunnerSettings settings)
+        public BWBasedRunner(IRunnable runnableItem, ILogger logger, RunnerSettings settings)
         {
             _uiListeners = new List<IGui>();
-
-            _runnableObject = runnableObject;
+            _aggregation = new MethodExecutionResultAggregation();
+            _runnableItem = runnableItem;
             _settings = settings;
             _logger = logger;
             _watch = new Stopwatch();
-            _methodExecutions = new ConcurrentBag<MethodExecutionResult>();
             Console.SetOut(new StringWriter());
 
             _bw = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
@@ -89,15 +88,15 @@ namespace Collections.Runtime
             return false;
         }
 
-        public MethodExecutionSummaryMessage GetCurrentState()
+        public MethodExecutionResultAggregation GetCurrentState()
         {
-            return new MethodExecutionSummaryMessage(_runnableObject.ObjectType, _watch.Elapsed, _methodExecutions, _execCount);
+            return new MethodExecutionResultAggregation(_aggregation);
         }
 
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            //_logger.InfoNow(string.Format("id:{0} {1}%",Id,0));
+
             var worker = sender as BackgroundWorker;
 
             _watch.Start();
@@ -117,11 +116,11 @@ namespace Collections.Runtime
                 bool log =  _settings.Iterations >= 100 && _execCount % (_settings.Iterations / 100) == 0 || _execCount == _settings.Iterations;
                 
                 TimeSpan beforeExecution = _watch.Elapsed;
-                methodExecution = _runnableObject.Update(true);
+                methodExecution = _runnableItem.Update(true);
                 if (methodExecution != null)
                 {
                     methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
-                    _methodExecutions.Add(methodExecution);
+                    _aggregation.Add(methodExecution);
 
                     var progressCount = (int)(_execCount / (double)_settings.Iterations * 100);
                     if (log)
@@ -162,7 +161,8 @@ namespace Collections.Runtime
             var methodExecution = e.UserState as MethodExecutionResult;
          
             var msg = new MethodExecutionMessage(
-                _runnableObject.ObjectType,
+                _runnableItem.ObjectType,
+                _runnableItem.Method,
                 methodExecution,
                 _watch.Elapsed,
                 e.ProgressPercentage);
