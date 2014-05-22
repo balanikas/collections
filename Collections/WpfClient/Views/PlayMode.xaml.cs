@@ -8,8 +8,12 @@ namespace WpfClient.Views
         public PlayMode()
         {
             InitializeComponent();
-            PlayModeViewModel vm = ViewModelLocator.PlayModeMode;
-            DataContext = vm;
+            Loaded += (sender, args) =>
+            {
+                PlayModeViewModel vm = ViewModelLocator.PlayModeMode;
+                DataContext = vm;
+            };
+
         }
     }
 }

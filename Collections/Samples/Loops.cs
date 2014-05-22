@@ -49,7 +49,7 @@ namespace Samples
             Parallel.For(0, loopCount, x => { long nthPrime = FindPrimeNumber(100); });
         }
 
-        public long FindPrimeNumber(int n)
+        private long FindPrimeNumber(int n)
         {
             int count = 0;
             long a = 2;

@@ -70,7 +70,7 @@
           MouseEnter="OnMouseEnter" 
           MouseLeave="OnMouseLeave"
           Visibility="Collapsed"
-          Width="150" Height="150">
+          Width="120" Height="120">
         <Grid.RenderTransform>
             <TransformGroup>
                 <ScaleTransform/>
@@ -88,6 +88,6 @@
             </Rectangle.Fill>
 
         </Rectangle>
-            <Label x:Name="Text"  Content="hej" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+        <Label x:Name="Text"  FontSize="8" FontFamily="Segoe UI"  HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
     </Grid>
 </UserControl>

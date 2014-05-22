@@ -70,6 +70,7 @@
     <Compile Include="StringComparison.cs" />
     <Compile Include="StringUtils.cs" />
     <Compile Include="TypeCasting.cs" />
+    <Compile Include="UsingTrace.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="visualbasic.vb" />

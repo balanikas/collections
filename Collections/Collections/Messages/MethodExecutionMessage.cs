@@ -34,12 +34,11 @@ namespace Collections.Messages
         {
 
             var sb = new StringBuilder(50);
-            sb.AppendFormat("Type: {0}\nMethod: {1}\nExecutionTime: {2}\nProgress: {3}\nReturnValue: {4}\n",
+            sb.AppendFormat("{1}\nin\n {0}\nEllapsed: {2}\nProgress: {3} %\n",
                 ObjectType,
                 Method.Name,
                 TotalExecutionTime.Seconds + ":" + TotalExecutionTime.Milliseconds,
-                Progress,
-                MethodExecutionResult.ReturnValue);
+                Progress);
             return sb.ToString();
 
         }

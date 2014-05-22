@@ -97,24 +97,6 @@ namespace WpfClient
             }
         }
 
-        //public void UpdateSetting(Setting key, object value)
-        //{
-        //    //if (_settings[key] != value)
-        //    //{
-        //    //    if (value.GetType() == _settings[key].GetType())
-        //    //    {
-        //    //        _settings[key] = value;
-        //    //        TriggerNotification(key, value);
-        //    //    }
-                
-        //    //}
-           
-        //}
-
-        //public T GetSetting<T>(Setting key) where T : struct
-        //{
-        //    return (T) _settings[key];
-        //}
 
         public event EventHandler<SettingsUpdatedEventArgs> OnSettingsUpdated;
         private void TriggerNotification(Setting key, object value)

@@ -31,28 +31,38 @@ namespace Collections.Messages
 
         public void Add(MethodExecutionResult result)
         {
-            AvgMethodExecutionTime = (AvgMethodExecutionTime + result.ExecutionTime.TotalMilliseconds )/2;
-            MinMethodExecutionTime = 1;
-            MaxMethodExecutionTime = 1;
+            var execTime = result.ExecutionTime.TotalMilliseconds;
+            AvgMethodExecutionTime = (AvgMethodExecutionTime + execTime) / 2;
+            if (MinMethodExecutionTime == default(double))
+            {
+                MinMethodExecutionTime = execTime;
+            }
+            else
+            {
+                if (MinMethodExecutionTime > execTime)
+                {
+                    MinMethodExecutionTime = execTime;
+                }
+            }
+            if (MaxMethodExecutionTime == default(double))
+            {
+                MaxMethodExecutionTime = execTime;
+            }
+            else
+            {
+                if (MaxMethodExecutionTime < execTime)
+                {
+                    MaxMethodExecutionTime = execTime;
+                }
+            }
             ExecutionsCount++;
-            FailedExecutionsCount += result.Failed ? 1 : 0;
+
+            if (result.Failed)
+            {
+                FailedExecutionsCount ++;
+            }
+            
         }
 
-
-
-        //public void Aggregate(IEnumerable<MethodExecutionResult> methodExecutions)
-        //{
-
-        //    if (!methodExecutions.Any())
-        //    {
-        //        return;
-        //    }
-        //    AvgMethodExecutionTime = Math.Round(methodExecutions.Average(x => x.ExecutionTime.TotalMilliseconds), 3);
-        //    MinMethodExecutionTime = Math.Round(methodExecutions.Min(x => x.ExecutionTime.TotalMilliseconds), 3);
-        //    MaxMethodExecutionTime = Math.Round(methodExecutions.Max(x => x.ExecutionTime.TotalMilliseconds), 3);
-
-        //    ExecutionsCount = methodExecutions.Count();
-        //    FailedExecutionsCount = methodExecutions.Count(x => x.Failed);
-        //}
     }
 }

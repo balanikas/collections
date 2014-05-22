@@ -7,9 +7,6 @@ namespace Samples
     {
         public static void UsingLength(string value)
         {
-            Trace.WriteLine("1");
-            Console.WriteLine("2");
-            Debug.WriteLine("3");
             if (value.Length != 0)
             {
             }

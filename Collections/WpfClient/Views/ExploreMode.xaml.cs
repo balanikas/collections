@@ -8,14 +8,19 @@ namespace WpfClient.Views
         public ExploreMode()
         {
             InitializeComponent();
-
-            ExploreModeViewModel vm = ViewModelLocator.ExploreMode;
-            DataContext = vm;
+            Loaded += (sender, args) =>
+            {
+                ExploreModeViewModel vm = ViewModelLocator.ExploreMode;
+                DataContext = vm;
 
 #if DEBUG
-            vm.Types.FilesPath = @"C:\dev\GitHub\collections\Collections\Samples\sourcefiles";
+                vm.Types.FilesPath = @"C:\dev\GitHub\collections\Collections\Samples\sourcefiles";
 #endif
-            TypesView.DataContext = vm.Types;
+                TypesView.DataContext = vm.Types;
+            };
+           
         }
+
+        
     }
 }

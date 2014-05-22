@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using Collections.Messages;
@@ -11,7 +12,11 @@ namespace WpfClient
         private UIElementCollection _parent;
         public override void Destroy()
         {
-            _parent.Remove(_control);
+            Application.Current.Dispatcher.BeginInvoke((Action)(() =>
+            {
+                _parent.Remove(_control);
+            }));
+            
         }
 
         public override void AddContextMenu(ContextMenu ctxMenu)
@@ -42,9 +47,10 @@ namespace WpfClient
             
         }
 
+
         public override void Update(MethodExecutionMessage msg)
         {
-          
+
             _control.UpdateText = msg.ToString();
                 
             if (msg.Progress >= 100)

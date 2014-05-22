@@ -8,9 +8,15 @@ namespace WpfClient.Controls
         public LogViewer()
         {
             InitializeComponent();
+            this.Loaded += (sender, args) =>
+            {
+                DataContext = ViewModelLocator.LogViewer.LogEntries;
 
-            DataContext = ViewModelLocator.LogViewer.LogEntries;
+            };
+            
         }
+
+        
 
         public ObservableCollection<LogEntry> LogEntries { get; set; }
     }
