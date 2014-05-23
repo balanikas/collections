@@ -13,14 +13,14 @@ namespace Collections.Runtime
     public class BWBasedRunner : IRunner
     {
         private readonly IRunnable _runnableItem;
-        private readonly BackgroundWorker _bw;
+        private readonly BackgroundWorker _worker;
         private readonly ILogger _logger;
         private readonly RunnerSettings _settings;
         private readonly List<IGui> _uiListeners;
         private readonly Stopwatch _watch;
         private readonly MethodExecutionResultAggregation _aggregation;
-        private int _execCount;
 
+        public string Id { get; private set; }
         public BWBasedRunner(IRunnable runnableItem, ILogger logger, RunnerSettings settings)
         {
             _uiListeners = new List<IGui>();
@@ -29,12 +29,12 @@ namespace Collections.Runtime
             _settings = settings;
             _logger = logger;
             _watch = new Stopwatch();
-            Console.SetOut(new StringWriter());
+            //Console.SetOut(new StringWriter());
 
-            _bw = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
-            _bw.DoWork += bw_DoWork;
-            _bw.ProgressChanged += bw_ProgressChanged;
-            _bw.RunWorkerCompleted += bw_RunWorkerCompleted;
+            _worker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
+            _worker.DoWork += worker_DoWork;
+            _worker.ProgressChanged += worker_ProgressChanged;
+            _worker.RunWorkerCompleted += worker_RunWorkerCompleted;
 
             Id = Guid.NewGuid().ToString();
            
@@ -54,14 +54,11 @@ namespace Collections.Runtime
             _uiListeners.Remove(listener);
         }
 
-        public string Id { get; private set; }
-
-
         public void Start()
         {
-            if (_bw.IsBusy != true)
+            if (_worker.IsBusy != true)
             {
-                _bw.RunWorkerAsync();
+                _worker.RunWorkerAsync();
                 foreach (IGui listener in _uiListeners.ToList())
                 {
                     listener.Initialize();
@@ -71,7 +68,7 @@ namespace Collections.Runtime
 
         public void Destroy()
         {
-            _bw.CancelAsync();
+            _worker.CancelAsync();
             foreach (IGui listener in _uiListeners.ToList())
             {
                 listener.Destroy();
@@ -80,7 +77,7 @@ namespace Collections.Runtime
 
         public bool IsAlive()
         {
-            if (_bw.IsBusy)
+            if (_worker.IsBusy)
             {
                 return true;
             }
@@ -94,17 +91,17 @@ namespace Collections.Runtime
         }
 
 
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
 
             var worker = sender as BackgroundWorker;
-
+         
             _watch.Start();
 
             var methodExecution = new MethodExecutionResult();
             worker.ReportProgress(0, methodExecution);
 
-            for (_execCount = 1; _execCount <= _settings.Iterations; _execCount++)
+            for (int execCount = 1; execCount <= _settings.Iterations; execCount++)
             {
                 if (worker.CancellationPending)
                 {
@@ -113,7 +110,7 @@ namespace Collections.Runtime
                 }
 
                
-                bool log =  _settings.Iterations >= 100 && _execCount % (_settings.Iterations / 100) == 0 || _execCount == _settings.Iterations;
+                bool log =  _settings.Iterations >= 100 && execCount % (_settings.Iterations / 100) == 0 || execCount == _settings.Iterations;
                 
                 TimeSpan beforeExecution = _watch.Elapsed;
                 methodExecution = _runnableItem.Update(true);
@@ -122,7 +119,7 @@ namespace Collections.Runtime
                     methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
                     _aggregation.Add(methodExecution);
 
-                    var progressCount = (int)(_execCount / (double)_settings.Iterations * 100);
+                    var progressCount = (int)(execCount / (double)_settings.Iterations * 100);
                     if (log)
                     {
                         worker.ReportProgress(progressCount, methodExecution);
@@ -130,16 +127,16 @@ namespace Collections.Runtime
                     
                 }
 
-                if (_execCount == _settings.Iterations)
+                if (execCount == _settings.Iterations)
                 {
-                    var progressCount = (int)(_execCount / (double)_settings.Iterations * 100);
+                    var progressCount = (int)(execCount / (double)_settings.Iterations * 100);
                     worker.ReportProgress(progressCount, methodExecution);
                 }
             }
             _watch.Stop();
         }
 
-        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             _logger.Flush();
             if (e.Cancelled || e.Error != null)
@@ -154,7 +151,7 @@ namespace Collections.Runtime
 
         
 
-        private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
            
           

@@ -1,20 +1,82 @@
-﻿using Collections;
+﻿using System;
+using System.Linq;
+using Collections;
 using Collections.Messages;
 using Collections.Runtime;
 using GalaSoft.MvvmLight;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace WpfClient.ViewModels
 {
     public class MethodExecutionView :  ViewModelBase, IGui
     {
+        public class InfoView
+        {
+          
+
+            public void Update(MethodExecutionResultAggregation msg)
+            {
+                AvgMethodExecutionTime = Math.Round(msg.AvgMethodExecutionTime, 3);
+                MinMethodExecutionTime = Math.Round(msg.MinMethodExecutionTime, 3);
+                MaxMethodExecutionTime = Math.Round(msg.MaxMethodExecutionTime, 3);
+                ExecutionsCount = msg.ExecutionsCount;
+                FailedExecutionsCount = msg.FailedExecutionsCount;
+                
+            }
+
+            public void Update(MethodExecutionMessage msg)
+            {
+                TypeName = msg.ObjectType.ToString();
+                MethodName = msg.Method.ToString();
+                Progress = msg.Progress;
+                TotalExecutionTime = Math.Round(msg.TotalExecutionTime.TotalMilliseconds,3);
+                AvgMethodExecutionTime = Math.Round(msg.Summary.AvgMethodExecutionTime, 3);
+                MinMethodExecutionTime = Math.Round(msg.Summary.MinMethodExecutionTime, 3);
+                MaxMethodExecutionTime = Math.Round(msg.Summary.MaxMethodExecutionTime, 3);
+                ExecutionsCount = msg.Summary.ExecutionsCount;
+                FailedExecutionsCount = msg.Summary.FailedExecutionsCount;
+                if (msg.MethodExecutionResult.ArgsValues != null)
+                {
+                    MethodArgs = string.Join(",", msg.MethodExecutionResult.ArgsValues.Select(x => x.ToString()));
+                }
+                else
+                {
+                    MethodArgs = null;
+                }
+
+                if (msg.MethodExecutionResult.ReturnValue != null)
+                {
+                    MethodReturnValue = msg.MethodExecutionResult.ReturnValue.ToString();
+                }
+                else
+                {
+                    MethodReturnValue = null;
+                }
+                
+            }
+            public string TypeName { get; set; }
+            public string MethodName { get; set; }
+            public int Progress { get; set; }
+            public double TotalExecutionTime { get; set; }
+            public double AvgMethodExecutionTime { get; set; }
+            public double MinMethodExecutionTime { get; set; }
+            public double MaxMethodExecutionTime { get; set; }
+            public int ExecutionsCount { get; set; }
+            public int FailedExecutionsCount { get; set; }
+
+            public string MethodArgs { get; set; }
+            public string MethodReturnValue { get; set; }
+        }
+
         private MethodExecutionMessage _message;
         private IRunner _runner;
         private bool _isExpanded;
+        private InfoView _infoView;
         public string Id { get; set; }
 
         public MethodExecutionView()
         {
-            Message = new MethodExecutionMessage();
+            _infoView = new InfoView();
         }
         public void Initialize()
         {
@@ -41,33 +103,35 @@ namespace WpfClient.ViewModels
            
             _runner = runner;
             
-            Message.Summary = _runner.GetCurrentState();
-            RaisePropertyChanged("Message");
+            _infoView.Update(_runner.GetCurrentState());
+            RaisePropertyChanged("Info");
             _runner.AddUiListener(this);
         }
 
         public void Update(MethodExecutionMessage message)
         {
-            Message = message;
-            
+            _infoView.Update(message);
+            RaisePropertyChanged("Info");
         }
 
 
         public void Destroy()
         {
-            Message = new MethodExecutionMessage();
+            _infoView = new InfoView();
         }
 
-        public MethodExecutionMessage Message
+        public InfoView Info
         {
-            get { return _message; }
+            get { return _infoView; }
             set
             {
-                _message = value;
-                RaisePropertyChanged("Message");
+                _infoView = value;
+                RaisePropertyChanged("Info");
             }
         }
 
 
     }
+
+    
 }

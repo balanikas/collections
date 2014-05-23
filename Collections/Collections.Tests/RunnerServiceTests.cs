@@ -16,31 +16,33 @@ namespace Collections.Tests
     [TestFixture]
     public class RunnerServiceTests
     {
-        private CompilerServiceMessage _messageToConsume;
+        private CompilerServiceOutputMessage _messageToConsume;
         [Test]
         public void RunnerService_StartAndStop_VerifyActionIsExecuted()
         {
-            var consumableBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
-            var outputBroadcasts = new BroadcastBlock<RunnerServiceMessage>(null);
-            var service = new RunnerService(outputBroadcasts, consumableBroadcasts);
+            var consumableBroadcasts = new BroadcastBlock<CompilerServiceOutputMessage>(null);
+            var outputBroadcasts = new BroadcastBlock<RunnerServiceOutputMessage>(null);
+            var service = new RunnerService(consumableBroadcasts,outputBroadcasts);
 
             var actionCount = 0;
-
-            var action = new Action<CompilerServiceMessage>(message =>
+            var errors = new List<string>();
+            var types = new List<LoadedType>();
+            var action = new Func<CompilerServiceOutputMessage,RunnerServiceOutputMessage>(message =>
             {
-                Assert.AreEqual(message.Source, _messageToConsume.Source);
-                message.State = ServiceMessageState.Succeeded;
+                CollectionAssert.AreEqual(message.CompilerErrors, _messageToConsume.CompilerErrors);
+               
                 actionCount++;
+                return new RunnerServiceOutputMessage(ServiceMessageState.Succeeded);
             });
 
             service.Start(action, TimeSpan.FromMilliseconds(100));
 
-            _messageToConsume = new CompilerServiceMessage("source", ServiceMessageState.Succeeded);
+            _messageToConsume = new CompilerServiceOutputMessage(errors, types);
 
 
             for (int i = 0; i < 1000; i++)
             {
-                var message = new CompilerServiceMessage("source", ServiceMessageState.Succeeded);
+                var message = new CompilerServiceOutputMessage(errors, types);
                 Thread.Sleep(1);
                 consumableBroadcasts.Post(message);
                 Thread.Sleep(1);
@@ -58,13 +60,14 @@ namespace Collections.Tests
         public void RunnerService_StartAndStop()
         {
 
-            var consumableBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
-            var outputBroadcasts = new BroadcastBlock<RunnerServiceMessage>(null);
-            var service = new RunnerService(outputBroadcasts, consumableBroadcasts);
+            var consumableBroadcasts = new BroadcastBlock<CompilerServiceOutputMessage>(null);
+            var outputBroadcasts = new BroadcastBlock<RunnerServiceOutputMessage>(null);
+            var service = new RunnerService(consumableBroadcasts,outputBroadcasts );
 
 
-            var action = new Action<CompilerServiceMessage>(message =>
+            var action = new Func<CompilerServiceOutputMessage, RunnerServiceOutputMessage>(message =>
             {
+                return new RunnerServiceOutputMessage(ServiceMessageState.Succeeded);
             });
 
 
@@ -84,13 +87,14 @@ namespace Collections.Tests
         public void RunnerService_StartAndStop_MultipleTimes()
         {
 
-            var consumableBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
-            var outputBroadcasts = new BroadcastBlock<RunnerServiceMessage>(null);
-            var service = new RunnerService(outputBroadcasts, consumableBroadcasts);
+            var consumableBroadcasts = new BroadcastBlock<CompilerServiceOutputMessage>(null);
+            var outputBroadcasts = new BroadcastBlock<RunnerServiceOutputMessage>(null);
+            var service = new RunnerService(consumableBroadcasts,outputBroadcasts );
 
 
-            var action = new Action<CompilerServiceMessage>(message =>
+            var action = new Func<CompilerServiceOutputMessage, RunnerServiceOutputMessage>(message =>
             {
+                return new RunnerServiceOutputMessage(ServiceMessageState.Succeeded);
             });
 
 
@@ -111,15 +115,16 @@ namespace Collections.Tests
         [Test]
         public void RunnerService_ChangeExecutionInterval()
         {
-            var consumableBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
-            var outputBroadcasts = new BroadcastBlock<RunnerServiceMessage>(null);
-            var service = new RunnerService(outputBroadcasts, consumableBroadcasts);
+            var consumableBroadcasts = new BroadcastBlock<CompilerServiceOutputMessage>(null);
+            var outputBroadcasts = new BroadcastBlock<RunnerServiceOutputMessage>(null);
+            var service = new RunnerService(consumableBroadcasts,outputBroadcasts );
 
 
-            var action = new Action<CompilerServiceMessage>(message =>
+            var action = new Func<CompilerServiceOutputMessage, RunnerServiceOutputMessage>(message =>
             {
-               
+                return new RunnerServiceOutputMessage(ServiceMessageState.Succeeded);
             });
+
             service.Start(action, TimeSpan.FromMilliseconds(100));
             Assert.DoesNotThrow(() =>
             {

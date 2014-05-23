@@ -50,13 +50,16 @@ namespace WpfClient
 
         public override void Update(MethodExecutionMessage msg)
         {
-
-            _control.UpdateText = msg.ToString();
-                
-            if (msg.Progress >= 100)
+            Application.Current.Dispatcher.BeginInvoke((Action)(() =>
             {
-                _control.Freeze = true;
-            }
+                _control.UpdateText = msg.ToString();
+
+                if (msg.Progress >= 100)
+                {
+                    _control.Freeze = true;
+                }
+            }));
+           
         }
     }
 }

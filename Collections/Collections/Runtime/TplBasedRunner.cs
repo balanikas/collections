@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Collections.Logging;
@@ -10,27 +12,31 @@ namespace Collections.Runtime
 {
     public class TplBasedRunner : IRunner
     {
-        private readonly IRunnable _runnable;
+        private readonly IRunnable _runnableItem;
         private readonly CancellationTokenSource _cts;
         private readonly ILogger _logger;
         private readonly List<IGui> _uiListeners;
         private readonly RunnerSettings _settings;
         private Task _task;
+        private readonly Stopwatch _watch;
+        private readonly MethodExecutionResultAggregation _aggregation;
 
-        public TplBasedRunner(IRunnable runnable, ILogger logger,RunnerSettings settings)
+        public string Id { get; private set; }
+
+        public TplBasedRunner(IRunnable runnableItem, ILogger logger, RunnerSettings settings)
         {
             _uiListeners = new List<IGui>();
-
-            _runnable = runnable;
+            _aggregation = new MethodExecutionResultAggregation();
+            _runnableItem = runnableItem;
             _settings = settings;
             _logger = logger;
             _cts = new CancellationTokenSource();
 
             Id = Guid.NewGuid().ToString();
-          
+            _watch = new Stopwatch();
         }
 
-        public string Id { get; private set; }
+       
 
         public void AddUiListener(IGui listener)
         {
@@ -43,31 +49,54 @@ namespace Collections.Runtime
 
         public void RemoveUiListener(IGui listener)
         {
-          
+            _uiListeners.Remove(listener);
         }
 
         public void Start()
         {
+            if (_task != null)
+            {
+                if (_task.Status == TaskStatus.Running ||
+                _task.Status == TaskStatus.WaitingToRun)
+                {
+                    return;
+                }
+            }
+            
+
             foreach (IGui listener in _uiListeners)
             {
                 listener.Initialize();
             }
 
 
-            _task = Task.Factory.StartNew(() => { DoWork(); }, _cts.Token);
+            _task = Task.Factory.StartNew(() => { DoWork(); }, _cts.Token,
+                TaskCreationOptions.LongRunning,TaskScheduler.Default);
 
             _task.ContinueWith(t =>
             {
                 switch (t.Status)
                 {
                     case TaskStatus.Canceled:
+                        {
+                            foreach (IGui listener in _uiListeners.ToList())
+                            {
+                                listener.Destroy();
+                            }
+                            _uiListeners.Clear();
+                        }
                         break;
                     case TaskStatus.RanToCompletion:
                         break;
                     case TaskStatus.Faulted:
                         if (t.Exception != null)
                         {
-                            Debugger.Break();
+                            _logger.ErrorNow("runner faulted: \n" + t.Exception.InnerException.Message);
+                            foreach (IGui listener in _uiListeners.ToList())
+                            {
+                                listener.Destroy();
+                            }
+                            _uiListeners.Clear();
                         }
                         break;
                     default:
@@ -98,57 +127,62 @@ namespace Collections.Runtime
 
         public MethodExecutionResultAggregation GetCurrentState()
         {
-            return null;
+            return new MethodExecutionResultAggregation(_aggregation);
         }
 
         private void DoWork()
         {
-            //todo: not having following line, fucks up loop..sometimes...wtf investigate 
-            Debug.WriteLine(_task);
+            _watch.Start();
 
-            var watch = new Stopwatch();
-            watch.Start();
+            var methodExecution = new MethodExecutionResult();
+            ReportProgress(methodExecution, 0);
 
-            for (int i = 1; (i <= _settings.Iterations); i++)
+            for (int execCount = 1; execCount <= _settings.Iterations; execCount++)
             {
-                CancellationToken ct = _cts.Token;
-                ct.ThrowIfCancellationRequested();
+                
 
-                MethodExecutionResult methodExecutionResult;
+                bool log = _settings.Iterations >= 100 && execCount % (_settings.Iterations / 100) == 0 || execCount == _settings.Iterations;
 
-
-                //check if end of loop, or check every now and then
-                if (i % (_settings.Iterations / 10) == 0 || i == _settings.Iterations)
+                TimeSpan beforeExecution = _watch.Elapsed;
+                methodExecution = _runnableItem.Update(true);
+                if (methodExecution != null)
                 {
-                    methodExecutionResult = _runnable.Update(false);
+                    methodExecution.ExecutionTime = _watch.Elapsed - beforeExecution;
+                    _aggregation.Add(methodExecution);
 
-                    if (i == _settings.Iterations)
+                    var progressCount = (int)(execCount / (double)_settings.Iterations * 100);
+                    if (log)
                     {
-                        watch.Stop();
-                        _logger.Flush();
+                        ReportProgress(methodExecution, progressCount);
                     }
 
-                    var progressCount = (int)(i / (double)_settings.Iterations * 100);
-                    _logger.Info(Id + ": " + progressCount);
-
-                    var msg = new MethodExecutionMessage(
-                        _runnable.ObjectType,
-                        null,
-                        methodExecutionResult,
-                        watch.Elapsed,
-                        progressCount);
-
-                    foreach (IGui listener in _uiListeners)
-                    {
-                        listener.Update(msg);
-                    }
                 }
-                else
+
+                if (execCount == _settings.Iterations)
                 {
-                    _runnable.Update(false);
+                    var progressCount = (int)(execCount / (double)_settings.Iterations * 100);
+                    ReportProgress(methodExecution, progressCount);
                 }
             }
-            watch.Stop();
+            _watch.Stop();
+        }
+
+        private void ReportProgress(MethodExecutionResult methodExecution, int progress)
+        {
+
+            var msg = new MethodExecutionMessage(
+                _runnableItem.ObjectType,
+                _runnableItem.Method,
+                methodExecution,
+                _watch.Elapsed,
+                progress);
+
+            msg.Summary = GetCurrentState();
+           
+            foreach (IGui listener in _uiListeners)
+            {
+                listener.Update(msg);
+            }
         }
     }
 }

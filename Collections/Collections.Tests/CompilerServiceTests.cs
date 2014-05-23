@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Collections.Compiler;
+using Collections.Messages;
 using Collections.Runtime;
 using NUnit.Framework;
 
@@ -18,13 +19,15 @@ namespace Collections.Tests
         private CompilerServiceMessage _messageToConsume;
         private CompilerService _service;
         private BroadcastBlock<CompilerServiceMessage> _consumableBroadcasts;
+        private BroadcastBlock<CompilerServiceOutputMessage> _outputBroadcasts;
 
 
         [SetUp]
         public void SetUp()
         {
             _consumableBroadcasts = new BroadcastBlock<CompilerServiceMessage>(null);
-            _service = new CompilerService(_consumableBroadcasts);
+            _outputBroadcasts = new BroadcastBlock<CompilerServiceOutputMessage>(null);
+            _service = new CompilerService(_consumableBroadcasts, _outputBroadcasts);
         }
 
         [Test]
@@ -34,11 +37,11 @@ namespace Collections.Tests
 
             var actionCount = 0;
 
-            var action = new Action<CompilerServiceMessage>(message =>
+            var action = new Func<CompilerServiceMessage, CompilerServiceOutputMessage>(message =>
             {
                 Assert.AreEqual(message.Source, _messageToConsume.Source);
-                message.State = ServiceMessageState.Succeeded;
                 actionCount++;
+                return new CompilerServiceOutputMessage(new List<string>(), new List<LoadedType>(),ServiceMessageState.Succeeded);
             });
 
             _service.Start(action, TimeSpan.FromMilliseconds(100));
@@ -52,7 +55,7 @@ namespace Collections.Tests
                 Thread.Sleep(1);
                 _consumableBroadcasts.Post(message);
                 Thread.Sleep(1);
-                var serviceMessage = _consumableBroadcasts.Receive();
+                var serviceMessage = _outputBroadcasts.Receive();
                 Assert.AreEqual(ServiceMessageState.Succeeded,serviceMessage.State);
             }
             
@@ -67,8 +70,9 @@ namespace Collections.Tests
         {
 
 
-            var action = new Action<CompilerServiceMessage>(message =>
+            var action = new Func<CompilerServiceMessage, CompilerServiceOutputMessage>(message =>
             {
+                return new CompilerServiceOutputMessage(new List<string>(), new List<LoadedType>(), ServiceMessageState.Succeeded);
             });
 
 
@@ -88,10 +92,11 @@ namespace Collections.Tests
         public void CompilerService_StartAndStop_MultipleTimes()
         {
 
-           
 
-            var action = new Action<CompilerServiceMessage>(message =>
+
+            var action = new Func<CompilerServiceMessage, CompilerServiceOutputMessage>(message =>
             {
+                return new CompilerServiceOutputMessage(new List<string>(), new List<LoadedType>(), ServiceMessageState.Succeeded);
             });
 
 
@@ -112,10 +117,10 @@ namespace Collections.Tests
         [Test]
         public void CompilerService_ChangeExecutionInterval()
         {
-            
-            var action = new Action<CompilerServiceMessage>(message =>
+
+            var action = new Func<CompilerServiceMessage, CompilerServiceOutputMessage>(message =>
             {
-               
+                return new CompilerServiceOutputMessage(new List<string>(), new List<LoadedType>(), ServiceMessageState.Succeeded);
             });
             _service.Start(action, TimeSpan.FromMilliseconds(100));
             Assert.DoesNotThrow(() =>

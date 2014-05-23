@@ -15,7 +15,7 @@ namespace Collections.Logging
             _subscribers = new List<ILogSubscriber>();
             _logBuffer = new ConcurrentQueue<LogMessage>();
 
-            var traceListener = new SynchronizedTraceListener(Info);
+            var traceListener = new SynchronizedTraceListener(InfoNow);
             Trace.Listeners.Add(traceListener);
         }
 

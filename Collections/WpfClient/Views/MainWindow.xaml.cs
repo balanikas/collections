@@ -46,6 +46,7 @@ namespace WpfClient
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+           
             var theme = ThemeManager.DetectAppStyle(Application.Current);
           
             string accentName;
