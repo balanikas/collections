@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using MahApps.Metro.Controls;
+using WpfClient.ViewModels;
 
 namespace WpfClient
 {
@@ -49,6 +52,12 @@ namespace WpfClient
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }

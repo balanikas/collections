@@ -5,9 +5,9 @@ namespace Collections.Compiler
 {
     public interface ICompiler
     {
-        Assembly Compile(string sourceCode);
-        Assembly TryCompile(string sourceCode, out List<string> errors);
-
+        bool TryCompile(string sourceCode, out Assembly compiledAssembly);
+        bool TryCompile(string sourceCode, out Assembly compiledAssembly, out List<string> errors);
+        bool TryCompile(string[] files, out Assembly compiledAssembly);
         CompilerType Type { get; }
     }
 }

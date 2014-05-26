@@ -44,29 +44,5 @@ namespace WpfClient
             }
         }
 
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-           
-            var theme = ThemeManager.DetectAppStyle(Application.Current);
-          
-            string accentName;
-            switch (TabControl.SelectedIndex)
-            {
-                case 0:
-                    accentName = "Blue";
-                    break;
-                case 1:
-                    accentName = "Green";
-                    break;
-                case 2:
-                    accentName = "Purple";
-                    break;
-                default:
-                    accentName = "Blue";
-                    break;
-            }
-            Accent accent = ThemeManager.Accents.First(x => x.Name == accentName);
-            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1);
-        }
     }
 }

@@ -120,6 +120,7 @@
     <Resource Include="Resources\Sample.cs" />
     <Compile Include="CustomEllipse.cs" />
     <Compile Include="CustomRect.cs" />
+    <Compile Include="PathValidator.cs" />
     <Compile Include="UIHelper.cs" />
     <Compile Include="ViewModels\CanvasViewModel.cs" />
     <Compile Include="ViewModels\MethodExecutionView.cs" />

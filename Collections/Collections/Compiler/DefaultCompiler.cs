@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Reflection;
+using Collections.Logging;
 
 namespace Collections.Compiler
 {
@@ -10,18 +11,21 @@ namespace Collections.Compiler
         private readonly CompilerParameters _compilerParams;
         private CodeDomProvider _compiler;
         private string _language;
+        private readonly ILogger _logger;
 
 
-        public DefaultCompiler(string language = "CSharp")
+        public DefaultCompiler(ILogger logger, string language = "CSharp")
         {
             Type = CompilerType.Default;
             Language = language;
+            _logger = logger;
 
             _compilerParams = new CompilerParameters
             {
                 GenerateExecutable = false,
                 GenerateInMemory = true,
                 CompilerOptions = "/t:library /d:TRACE"
+                
             };
 
             _compilerParams.ReferencedAssemblies.Add("System.dll");
@@ -38,41 +42,73 @@ namespace Collections.Compiler
             }
         }
 
-        public Assembly Compile(string sourceCode)
+        public bool TryCompile(string sourceCode, out Assembly compiledAssembly)
         {
-           
+            compiledAssembly = null;
+
+            
+
             CompilerResults compilationResults = _compiler.CompileAssemblyFromSource(_compilerParams, sourceCode);
 
             if (compilationResults.Errors.Count > 0)
             {
-                string message = String.Empty;
-                foreach (CompilerError error in compilationResults.Errors)
+                foreach (var error in compilationResults.Errors)
                 {
-                    message += error.ErrorText + Environment.NewLine;
+                    
+                    _logger.ErrorNow(error.ToString());
+                    
                 }
-                throw new Exception(message);
+                
+                return false;
             }
-            return compilationResults.CompiledAssembly;
+
+            compiledAssembly = compilationResults.CompiledAssembly;
+            return true;
         }
 
-        public Assembly TryCompile(string sourceCode, out List<string> errors)
+        public bool TryCompile(string [] files, out Assembly compiledAssembly)
         {
-            
+            compiledAssembly = null;
+
+
+
+            CompilerResults compilationResults = _compiler.CompileAssemblyFromFile(_compilerParams, files);
+
+            if (compilationResults.Errors.Count > 0)
+            {
+                foreach (var error in compilationResults.Errors)
+                {
+
+                    _logger.ErrorNow(error.ToString());
+
+                }
+
+                return false;
+            }
+
+            compiledAssembly = compilationResults.CompiledAssembly;
+            return true;
+        }
+
+
+        public bool TryCompile(string sourceCode, out Assembly compiledAssembly, out List<string> errors)
+        {
+            compiledAssembly = null;
             errors = new List<string>();
-            
+
             CompilerResults compilationResults = _compiler.CompileAssemblyFromSource(_compilerParams, sourceCode);
-            
+
             if (compilationResults.Errors.Count > 0)
             {
                 foreach (var error in compilationResults.Errors)
                 {
                     errors.Add(error.ToString());
                 }
-                
-                return null;
+                return false;
             }
 
-            return compilationResults.CompiledAssembly;
+            compiledAssembly = compilationResults.CompiledAssembly;
+            return true;
         }
 
         public CompilerType Type

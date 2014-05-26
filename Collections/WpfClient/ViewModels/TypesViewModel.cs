@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using Collections;
 using GalaSoft.MvvmLight;
@@ -22,6 +23,7 @@ namespace WpfClient.ViewModels
         private LoadedType _selectedType;
         private ObservableCollection<LoadedType> _types;
         private object _isLoadButtonEnabled;
+        private bool _isCodeDocumentEnabled;
 
 
         public TypesViewModel(TypesProvider typesProvider)
@@ -38,10 +40,13 @@ namespace WpfClient.ViewModels
                 if (e.AddedItems.Count == 0)
                 {
                     CodeDocument.Text = String.Empty;
+                    IsCodeDocumentEnabled = false;
                     return;
                 }
 
-                CodeDocument.Text = ((LoadedType) e.AddedItems[0]).Source;
+                var type = ((LoadedType) e.AddedItems[0]);
+                CodeDocument.Text = type.Source;
+                IsCodeDocumentEnabled = type.AllowEditSource;
             });
 
             CmdMethodsSelectionChanged = new RelayCommand<SelectionChangedEventArgs>(e =>
@@ -50,9 +55,8 @@ namespace WpfClient.ViewModels
 
             CmdCompile = new RelayCommand(() =>
             {
-               
                 List<string> errors;
-                if (_typesProvider.TryCompileFromText(CodeDocument.Text, out errors) != null && !errors.Any())
+                if (_typesProvider.TryCompileFromText(CodeDocument.Text, out errors).Any())
                 {
 
                     _typesProvider.SaveType(new LoadedType
@@ -68,12 +72,16 @@ namespace WpfClient.ViewModels
                 }
                 else
                 {
-                    foreach (string error in errors)
+                    foreach (var error in errors)
                     {
                         ViewModelLocator.Logger.ErrorNow(error);
                     }
+                    
                 }
+               
             });
+
+            _typesProvider.SetActiveCompilerService(Settings.Instance.Get(Settings.Keys.CompilerServiceType));
         }
 
 
@@ -104,6 +112,16 @@ namespace WpfClient.ViewModels
             {
                 _codeDocument = value;
                 RaisePropertyChanged("CodeDocument");
+            }
+        }
+
+        public bool IsCodeDocumentEnabled
+        {
+            get { return _isCodeDocumentEnabled; }
+            private set
+            {
+                _isCodeDocumentEnabled = value;
+                RaisePropertyChanged("IsCodeDocumentEnabled");
             }
         }
 
@@ -140,16 +158,16 @@ namespace WpfClient.ViewModels
             {
                 _filesPath = value;
 
-                if (!UIHelper.IsPathValid(_filesPath))
-                {
-                    IsLoadButtonEnabled = false;
-                    ViewModelLocator.Logger.ErrorNow(_filesPath + " is not a valid path for a code file, assembly file, or directory containing code files");
+                //if (!UIHelper.IsPathValid(_filesPath))
+                //{
+                //    IsLoadButtonEnabled = false;
+                //    ViewModelLocator.Logger.ErrorNow(_filesPath + " is not a valid path for a code file, assembly file, or directory containing code files");
                     
-                }
-                else
-                {
-                    IsLoadButtonEnabled = true;
-                }
+                //}
+                //else
+                //{
+                //    IsLoadButtonEnabled = true;
+                //}
 
 
                 RaisePropertyChanged("FilesPath");
@@ -168,6 +186,17 @@ namespace WpfClient.ViewModels
 
         private async void LoadTypes()
         {
+            if (!PathValidator.IsWellFormedPath(FilesPath))
+            {
+                ViewModelLocator.Logger.ErrorNow(string.Format("malformed path '{0}'",FilesPath));
+                return;
+            }
+            if (PathValidator.DeterminePathType(FilesPath) == PathValidator.PathType.Unknown)
+            {
+                ViewModelLocator.Logger.ErrorNow(string.Format("'{0}' is empty or not a valid path for a code file, assembly file, or directory containing code files", FilesPath));
+                return;
+            }
+
             ProgressDialogController controller = await MainWindow.ShowProgress(
                 "Please wait...",
                 "loading types from " + FilesPath);
@@ -176,21 +205,32 @@ namespace WpfClient.ViewModels
             var previousSelectedMethodName = SelectedMethod != null? SelectedMethod.Name:null;
 
             _typesProvider.SetActiveCompilerService(Settings.Instance.Get(Settings.Keys.CompilerServiceType));
-            var allTypes = new List<LoadedType>();
+            
+            
 
-
-            if (Utils.IsValidAssembly(FilesPath))
+            try
             {
-                List<LoadedType> types = await _typesProvider.FromAssemblyAsync(FilesPath);
-                allTypes.AddRange(types);
+                List<LoadedType> types = null;
+                switch (PathValidator.DeterminePathType(FilesPath))
+                {
+                    case PathValidator.PathType.SourceFile:
+                        types = await _typesProvider.FromSourceFileAsync(FilesPath);
+                        break;
+                    case PathValidator.PathType.SourceFolder:
+                        types = await _typesProvider.FromSourceFolderAsync(FilesPath);
+                        break;
+                    case PathValidator.PathType.AssemblyFile:
+                        types = await _typesProvider.FromAssemblyFileAsync(FilesPath);
+                        break;
+                }
+                Types = new ObservableCollection<LoadedType>(types);
+     
             }
-            else if (File.Exists(FilesPath) || Directory.Exists(FilesPath))
+            catch (Exception e)
             {
-                List<LoadedType> types = await _typesProvider.FromDiscAsync(FilesPath);
-                allTypes.AddRange(types);
+                ViewModelLocator.Logger.ErrorNow(e.Message);
+                return;
             }
-
-            Types = new ObservableCollection<LoadedType>(allTypes);
 
             if (previousSelectedTypeName != null)
             {

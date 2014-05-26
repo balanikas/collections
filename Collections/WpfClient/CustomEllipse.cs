@@ -44,7 +44,7 @@ namespace WpfClient
             _control.Freeze = false;
             var sb = _control.Resources["SBGrowth"] as Storyboard;
             sb.Begin();
-            
+           
         }
 
 

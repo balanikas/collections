@@ -76,6 +76,7 @@ namespace WpfClient.ViewModels
 
             CmdSelectedMethodChanged = new RelayCommand<SelectionChangedEventArgs>(args =>
             {
+                args.Handled = true;
                 if (args.AddedItems.Count == 1)
                 {
                     _selectedMethod = args.AddedItems[0] as MethodInfo;
@@ -232,7 +233,7 @@ namespace WpfClient.ViewModels
                         {
                             r.Destroy();
                         }
-                        return new RunnerServiceOutputMessage();
+                        //return new RunnerServiceOutputMessage();
                     }
 
                     var settings = new RunnerSettings()

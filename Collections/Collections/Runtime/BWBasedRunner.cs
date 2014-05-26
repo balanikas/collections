@@ -19,17 +19,18 @@ namespace Collections.Runtime
         private readonly List<IGui> _uiListeners;
         private readonly Stopwatch _watch;
         private readonly MethodExecutionResultAggregation _aggregation;
+        private MethodExecutionMessage _lastMessage;
 
         public string Id { get; private set; }
         public BWBasedRunner(IRunnable runnableItem, ILogger logger, RunnerSettings settings)
         {
             _uiListeners = new List<IGui>();
             _aggregation = new MethodExecutionResultAggregation();
+            _lastMessage = new MethodExecutionMessage();
             _runnableItem = runnableItem;
             _settings = settings;
             _logger = logger;
             _watch = new Stopwatch();
-            //Console.SetOut(new StringWriter());
 
             _worker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
             _worker.DoWork += worker_DoWork;
@@ -85,9 +86,9 @@ namespace Collections.Runtime
             return false;
         }
 
-        public MethodExecutionResultAggregation GetCurrentState()
+        public MethodExecutionMessage GetCurrentState()
         {
-            return new MethodExecutionResultAggregation(_aggregation);
+            return _lastMessage;
         }
 
 
@@ -156,19 +157,19 @@ namespace Collections.Runtime
            
           
             var methodExecution = e.UserState as MethodExecutionResult;
-         
-            var msg = new MethodExecutionMessage(
+
+            _lastMessage = new MethodExecutionMessage(
                 _runnableItem.ObjectType,
                 _runnableItem.Method,
                 methodExecution,
                 _watch.Elapsed,
                 e.ProgressPercentage);
 
-            msg.Summary = GetCurrentState();
-
+            _lastMessage.Aggregation = _aggregation;
+       
             foreach (IGui listener in _uiListeners)
             {
-                listener.Update(msg);
+                listener.Update(_lastMessage);
             }
         }
     }

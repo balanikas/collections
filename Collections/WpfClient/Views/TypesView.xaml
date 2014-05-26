@@ -35,7 +35,7 @@
                         Command="{Binding CmdLoadTypes}" IsEnabled="{Binding IsLoadButtonEnabled}"/>
                 <Button Content="Compile" Grid.Column="2"
                         Margin="5,0,0,0"
-
+                        IsEnabled="{Binding IsCodeDocumentEnabled}"
                         Command="{Binding CmdCompile}" />
 
 
@@ -91,7 +91,7 @@
             <avalonEdit:TextEditor Background="White" DockPanel.Dock="Bottom"
                                    x:Name="avalonEdit"
                                    Document="{Binding CodeDocument}"
-
+                                   IsEnabled="{Binding IsCodeDocumentEnabled}"
                                    FontFamily="Consolas"
                                    FontSize="10pt"
                                    HorizontalScrollBarVisibility="Auto"

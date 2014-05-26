@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.IO;
+using System.Windows.Controls;
 using WpfClient.ViewModels;
 
 namespace WpfClient.Views
@@ -14,7 +16,9 @@ namespace WpfClient.Views
                 DataContext = vm;
 
 #if DEBUG
-                vm.Types.FilesPath = @"C:\dev\GitHub\collections\Collections\Samples\sourcefiles";
+                vm.Types.FilesPath =
+                    @"C:\Users\grillo\Documents\GitHub\Espera\Espera\Espera.Core\bin\Debug\Espera.Core.dll";
+                //vm.Types.FilesPath = Path.Combine(Environment.CurrentDirectory, "samples");
 #endif
                 TypesView.DataContext = vm.Types;
             };

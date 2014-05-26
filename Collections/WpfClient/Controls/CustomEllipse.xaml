@@ -14,7 +14,7 @@
                         <ExponentialEase EasingMode="EaseOut" Exponent="5"/>
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:7" Value="2.5"/>
+                <EasingDoubleKeyFrame x:Name="test" KeyTime="0:0:7" Value="2.5"/>
                 <EasingDoubleKeyFrame KeyTime="0:0:9" Value="2.7"/>
                 <EasingDoubleKeyFrame KeyTime="0:0:20" Value="3.5"/>
             </DoubleAnimationUsingKeyFrames>

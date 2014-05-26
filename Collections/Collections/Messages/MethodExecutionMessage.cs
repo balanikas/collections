@@ -26,7 +26,7 @@ namespace Collections.Messages
         public TimeSpan TotalExecutionTime { get; private set; }
         public MethodExecutionResult MethodExecutionResult { get; private set; }
 
-        public MethodExecutionResultAggregation Summary { get; set; }
+        public MethodExecutionResultAggregation Aggregation { get; set; }
 
        
 

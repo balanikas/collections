@@ -9,7 +9,7 @@
                  d:DesignWidth="300"
                  Width="250"
                  x:Name="aboutFlyout"
-                 CloseCommand="{Binding ElementName=customFlyout, Path=CloseCmd}">
+                 CloseCommand="{Binding ElementName=customFlyout, Path=CloseCmd}"  >
 
     <controls:Flyout.Resources>
         <ResourceDictionary>
@@ -18,20 +18,29 @@
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListView.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            
-
         </ResourceDictionary>
     </controls:Flyout.Resources>
 
     <StackPanel Orientation="Vertical"
                 Margin="10">
-        <TextBlock TextWrapping="Wrap" Text="ABOUT" />
-        <TextBlock x:Name="txtAbout" TextWrapping="Wrap"
-                   Text="This is free software that can be used to something good, possibly" />
-        <TextBlock TextWrapping="Wrap" Text="LICENSES/EXTERNAL SOFTWARE" />
+        <Label Content="About" FontSize="20" HorizontalContentAlignment="Center"  Height="50"/>
+        <TextBlock TextWrapping="Wrap"
+                   Text="[App name], a tool for investigating, playing with, and visualizing the execution of methods." />
 
-        <TextBlock x:Name="txtLicenses" TextWrapping="Wrap" />
+        <Label Content="Version" FontSize="20" HorizontalContentAlignment="Center"  Height="50"/>
+        <TextBlock TextWrapping="Wrap" FontStyle="Oblique" Text="Version x.x.x.x" />
+
+        <Label Content="Contact" FontSize="20" HorizontalContentAlignment="Center"  Height="50" />
+        <TextBlock TextWrapping="Wrap">
+            <Run>Your feedback is highly appreciated. Submit your comments and/or questions by sending an email to me at </Run>
+            <Hyperlink NavigateUri="mailto:c_balanikas@hotmail.com">c_balanikas@hotmail.com</Hyperlink>
+            <Run> or visit </Run>
+            <Hyperlink NavigateUri="https://github.com/balanikas/collections" 
+                       RequestNavigate="Hyperlink_OnRequestNavigate"> the github page</Hyperlink>
+        </TextBlock>
+
+        <Label Content="License" FontSize="20" HorizontalContentAlignment="Center"  Height="50"/>
+        <TextBlock TextWrapping="Wrap" Text="This software is under the MIT license." />
 
 
     </StackPanel>

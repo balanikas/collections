@@ -4,10 +4,16 @@
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
     xmlns:views="clr-namespace:WpfClient.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF45"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:WpfClient" x:Class="WpfClient.MainWindow"
+    xmlns:local="clr-namespace:WpfClient"
+    xmlns:viewModels="clr-namespace:WpfClient.ViewModels"
+    x:Class="WpfClient.MainWindow"
+    mc:Ignorable="d"
+     d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=True}"
     Title="Collections" Height="852.5" Width="1844.5" ShowIconOnTitleBar="True" ResizeMode="CanResizeWithGrip">
     <Controls:MetroWindow.Resources>
 
@@ -38,16 +44,21 @@
                     <ResourceDictionary
                         Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
                 </Grid.Resources>
-                <TabControl x:Name="TabControl" SelectionChanged="TabControl_SelectionChanged">
-
-                    <Controls:MetroTabItem Header="Explore" x:Name="Tab0">
+                <TabControl x:Name="TabControl" >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <cmd:EventToCommand PassEventArgsToCommand="True"
+                                                    Command="{Binding  CmdTabSelectionChanged}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <Controls:MetroTabItem Header="Explore" x:Name="Blue">
                         <views:ExploreMode />
 
                     </Controls:MetroTabItem>
-                    <Controls:MetroTabItem Header="Play" x:Name="Tab1">
+                    <Controls:MetroTabItem Header="Play" x:Name="Green">
                         <views:PlayMode />
                     </Controls:MetroTabItem>
-                    <Controls:MetroTabItem Header="Other" x:Name="Tab2">
+                    <Controls:MetroTabItem Header="Other" x:Name="Purple">
                         <TextBlock FontSize="30" Text="Not yet implemented" />
                     </Controls:MetroTabItem>
                 </TabControl>

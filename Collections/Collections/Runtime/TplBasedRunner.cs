@@ -20,6 +20,7 @@ namespace Collections.Runtime
         private Task _task;
         private readonly Stopwatch _watch;
         private readonly MethodExecutionResultAggregation _aggregation;
+        private MethodExecutionMessage _lastMessage;
 
         public string Id { get; private set; }
 
@@ -27,6 +28,7 @@ namespace Collections.Runtime
         {
             _uiListeners = new List<IGui>();
             _aggregation = new MethodExecutionResultAggregation();
+            _lastMessage = new MethodExecutionMessage();
             _runnableItem = runnableItem;
             _settings = settings;
             _logger = logger;
@@ -125,9 +127,9 @@ namespace Collections.Runtime
         }
 
 
-        public MethodExecutionResultAggregation GetCurrentState()
+        public MethodExecutionMessage GetCurrentState()
         {
-            return new MethodExecutionResultAggregation(_aggregation);
+            return _lastMessage;
         }
 
         private void DoWork()
@@ -170,18 +172,18 @@ namespace Collections.Runtime
         private void ReportProgress(MethodExecutionResult methodExecution, int progress)
         {
 
-            var msg = new MethodExecutionMessage(
+            _lastMessage = new MethodExecutionMessage(
                 _runnableItem.ObjectType,
                 _runnableItem.Method,
                 methodExecution,
                 _watch.Elapsed,
                 progress);
 
-            msg.Summary = GetCurrentState();
+            _lastMessage.Aggregation = _aggregation;
            
             foreach (IGui listener in _uiListeners)
             {
-                listener.Update(msg);
+                listener.Update(_lastMessage);
             }
         }
     }

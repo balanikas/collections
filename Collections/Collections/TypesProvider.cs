@@ -5,17 +5,20 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Collections.Compiler;
+using Collections.Logging;
 
 namespace Collections
 {
     public class TypesProvider
     {
         private ICompiler _activeCompilerService;
-        private IEnumerable<ICompiler> _services;
+        private readonly IEnumerable<ICompiler> _services;
+        private readonly ILogger _logger;
 
-        public TypesProvider(IEnumerable<ICompiler> services )
+        public TypesProvider(IEnumerable<ICompiler> services , ILogger logger)
         {
             _services = services.ToList();
+            _logger = logger;
         }
 
       
@@ -23,184 +26,121 @@ namespace Collections
         {
             _activeCompilerService = _services.First(x => x.Type == type);
         }
-        public async Task<List<LoadedType>> FromDiscAsync(string filePath)
+        public async Task<List<LoadedType>> FromSourceFolderAsync(string filePath)
         {
-            return await Task.Factory.StartNew(() => { return FromDisc(filePath); });
+            return await Task.Factory.StartNew(() => { return FromSourceFolder(filePath); });
         }
 
-        public async Task<List<LoadedType>> FromBaseClassLibraryAsync()
+        public async Task<List<LoadedType>> FromSourceFileAsync(string filePath)
         {
-            return await Task.Factory.StartNew(() => { return FromBaseClassLibrary(); });
+            return await Task.Factory.StartNew(() => { return FromSourceFile(filePath); });
         }
 
-        public async Task<List<LoadedType>> FromAssemblyAsync(string filePath)
+        public async Task<List<LoadedType>> FromAssemblyFileAsync(string filePath)
         {
-            return await Task.Factory.StartNew(() => { return FromAssembly(filePath); });
+            return await Task.Factory.StartNew(() => { return FromAssemblyFile(filePath); });
         }
 
 
-    
-
-        public List<LoadedType> FromDisc(string filePath)
+        public List<LoadedType> FromSourceFile(string filePath)
         {
-            //bool isEmpty = String.IsNullOrEmpty(filePath);
-            //bool isValid = filePath.IndexOfAny(Path.GetInvalidPathChars()) == -1;
-            //if (isEmpty || !isValid)
-            //{
-            //    throw new ArgumentException("bad args: " + filePath);
-            //}
-
-            bool isFile = filePath.EndsWith(".cs") || filePath.EndsWith(".vb");
-
             var types = new List<LoadedType>();
-
-            if (isFile)
+            string fileContent = File.ReadAllText(filePath);
+            Assembly compiledAssembly;
+            if (!_activeCompilerService.TryCompile(fileContent, out compiledAssembly))
             {
-                string fileContent = File.ReadAllText(filePath);
-                var compiledAssembly = CompileFromFile(filePath);
+                return types;
+            }
+            foreach (TypeInfo definedType in compiledAssembly.DefinedTypes)
+            {
+
+                types.Add(new LoadedType
+                {
+                    MethodsInfos = new List<MethodInfo>(definedType.GetMethods()),
+                    FilePath = filePath,
+                    Source = fileContent,
+                    TypeInfo = definedType,
+                    IsCompilable = true,
+                    AllowEditSource = true
+                });
+
+            }
+            return types;
+        }
+
+        public List<LoadedType> FromSourceFolder(string filePath)
+        {
+            var types = new List<LoadedType>();
+            var files = Directory.EnumerateFiles(filePath, "*.cs", SearchOption.TopDirectoryOnly);
+
+            foreach (string file in files)
+            {
+                string fileContent = File.ReadAllText(file);
+
+                Assembly compiledAssembly;
+
+
+                if (!_activeCompilerService.TryCompile(fileContent, out compiledAssembly))
+                {
+                    continue;
+                }
+
                 foreach (TypeInfo definedType in compiledAssembly.DefinedTypes)
                 {
 
                     types.Add(new LoadedType
                     {
                         MethodsInfos = new List<MethodInfo>(definedType.GetMethods()),
-                        FilePath = filePath,
+                        FilePath = Path.Combine(filePath, file),
                         Source = fileContent,
                         TypeInfo = definedType,
-                        IsCompilable = true
+                        IsCompilable = true,
+                        AllowEditSource = true
                     });
-                    
                 }
-               
             }
-            else
-            {
-                IEnumerable<string> files = Directory.EnumerateFiles(filePath, "*.*", SearchOption.AllDirectories)
-               .Where(s => s.EndsWith(".cs")/* || s.EndsWith(".vb")*/);
-                foreach (string file in files)
-                {
-                    //string fileName = Path.GetFileNameWithoutExtension(file);
-                    string fileContent = File.ReadAllText(file);
-
-                    var compiledAssembly = CompileFromFile(file);
-
-
-                    foreach (TypeInfo definedType in compiledAssembly.DefinedTypes)
-                    {
-
-                        types.Add(new LoadedType
-                        {
-                            MethodsInfos = new List<MethodInfo>(definedType.GetMethods()),
-                            FilePath = Path.Combine(filePath, file),
-                            Source = fileContent,
-                            TypeInfo = definedType,
-                            IsCompilable = true
-                        });
-                    }
-                }
-            
-            }
-
-           
             return types;
         }
 
 
-        public List<LoadedType> FromBaseClassLibrary()
-        {
-            var data = new List<LoadedType>();
-
-
-            data.Add(new LoadedType
-            {
-                TypeInfo = typeof (int).GetTypeInfo(),
-                Source = "N/A",
-                FilePath = "N/A",
-                IsCompilable = false
-            });
-            data.Add(new LoadedType
-            {
-                TypeInfo = typeof (string).GetTypeInfo(),
-                Source = "N/A",
-                FilePath = "N/A",
-                IsCompilable = false
-            });
-
-            return data;
-        }
-
-        public List<LoadedType> FromAssembly(string filePath)
+        public List<LoadedType> FromAssemblyFile(string filePath)
         {
             var types = new List<LoadedType>();
 
-            bool isEmpty = String.IsNullOrEmpty(filePath);
-            bool isValid = filePath.IndexOfAny(Path.GetInvalidPathChars()) == -1;
-            if (isEmpty || !isValid)
+            Assembly assembly = Assembly.LoadFile(filePath);
+
+            try
             {
-                throw new ArgumentException("bad args: " + filePath);
+                assembly.DefinedTypes.Any();
             }
-
-
-            bool isFile = filePath.EndsWith(".dll") || filePath.EndsWith(".exe");
-
-            var filePaths = new List<string>();
-            if (isFile)
+            catch (ReflectionTypeLoadException e)
             {
-                filePaths.Add(filePath);
-            }
-            else
-            {
-                IEnumerable<string> files = Directory.EnumerateFiles(filePath, "*.*", SearchOption.AllDirectories)
-                    .Where(s => s.EndsWith(".dll") || s.EndsWith(".exe"));
-                filePaths.AddRange(files);
-            }
-
-            foreach (string path in filePaths)
-            {
-                Assembly assembly = Assembly.LoadFile(path);
-                foreach (TypeInfo definedType in assembly.DefinedTypes)
+                foreach (var le in e.LoaderExceptions)
                 {
-                    if (definedType.IsInterface ||
-                        definedType.IsAbstract)
-                    {
-                        continue;
-                    }
-                    types.Add(new LoadedType
-                    {
-                        TypeInfo = definedType,
-                        FilePath = filePath,
-                        Source = "N/A",
-                        IsCompilable = false
-                    });
+                    _logger.ErrorNow(le.Message);
+
                 }
+                return types;
             }
 
+            foreach (TypeInfo definedType in assembly.DefinedTypes)
+            {
+                if (definedType.IsInterface ||
+                    definedType.IsAbstract)
+                {
+                    continue;
+                }
+                types.Add(new LoadedType
+                {
+                    MethodsInfos = new List<MethodInfo>(definedType.GetMethods()),
+                    TypeInfo = definedType,
+                    FilePath = filePath,
+                    Source = "N/A",
+                    IsCompilable = false
+                });
+            }
             
             return types;
-        }
-
-
-
-        private  Assembly CompileFromFile(string filePath)
-        {
-            //string language;
-
-            //if (filePath.EndsWith(".cs"))
-            //{
-            //    language = "CSharp";
-            //}
-            //else if (filePath.EndsWith(".vb"))
-            //{
-            //    language = "VisualBasic";
-            //}
-            //else
-            //{
-            //    throw new ArgumentException();
-            //}
-
-            string source = File.ReadAllText(filePath);
-
-            return _activeCompilerService.Compile(source);
         }
 
         public void SaveType(LoadedType type)
@@ -218,12 +158,11 @@ namespace Collections
         public List<LoadedType> TryCompileFromText(string source, out List<string> errors)
         {
             var types = new List<LoadedType>();
-            var compiledAssembly = _activeCompilerService.TryCompile(source, out errors);
-            if (compiledAssembly != null)
+            Assembly compiledAssembly;
+            if( _activeCompilerService.TryCompile(source, out compiledAssembly,out errors))
             {
                 foreach (TypeInfo definedType in compiledAssembly.DefinedTypes)
                 {
-
                     types.Add(new LoadedType
                     {
                         MethodsInfos = new List<MethodInfo>(definedType.GetMethods()),
@@ -232,7 +171,6 @@ namespace Collections
                         TypeInfo = definedType,
                         IsCompilable = true
                     });
-
                 }
             }
            

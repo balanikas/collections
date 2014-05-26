@@ -53,6 +53,11 @@ namespace WpfClient
                 return false;
             }
 
+            if (path.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+            {
+                return false;
+            }
+
             if (Directory.Exists(path))
             {
                 return true;

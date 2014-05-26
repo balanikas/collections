@@ -90,10 +90,6 @@ namespace Collections
 
         public static  bool IsValidAssembly(string assemblyPath)
         {
-            if (!File.Exists(assemblyPath))
-            {
-                return false;
-            }
             string extension = Path.GetExtension(assemblyPath);
             if (extension == ".dll" ||
                 extension == ".exe")

@@ -26,32 +26,52 @@ namespace WpfClient.ViewModels
 
             public void Update(MethodExecutionMessage msg)
             {
-                TypeName = msg.ObjectType.ToString();
-                MethodName = msg.Method.ToString();
+                TypeName = msg.ObjectType != null ? msg.ObjectType.ToString() : null;
+                MethodName = msg.Method != null ? msg.Method.ToString() : null;
+                
                 Progress = msg.Progress;
+
+               
                 TotalExecutionTime = Math.Round(msg.TotalExecutionTime.TotalMilliseconds,3);
-                AvgMethodExecutionTime = Math.Round(msg.Summary.AvgMethodExecutionTime, 3);
-                MinMethodExecutionTime = Math.Round(msg.Summary.MinMethodExecutionTime, 3);
-                MaxMethodExecutionTime = Math.Round(msg.Summary.MaxMethodExecutionTime, 3);
-                ExecutionsCount = msg.Summary.ExecutionsCount;
-                FailedExecutionsCount = msg.Summary.FailedExecutionsCount;
-                if (msg.MethodExecutionResult.ArgsValues != null)
+
+                if (msg.Aggregation != null)
                 {
-                    MethodArgs = string.Join(",", msg.MethodExecutionResult.ArgsValues.Select(x => x.ToString()));
+                    AvgMethodExecutionTime = Math.Round(msg.Aggregation.AvgMethodExecutionTime, 3);
+                    MinMethodExecutionTime = Math.Round(msg.Aggregation.MinMethodExecutionTime, 3);
+                    MaxMethodExecutionTime = Math.Round(msg.Aggregation.MaxMethodExecutionTime, 3);
+                    ExecutionsCount = msg.Aggregation.ExecutionsCount;
+                    FailedExecutionsCount = msg.Aggregation.FailedExecutionsCount;
                 }
                 else
                 {
-                    MethodArgs = null;
+                    AvgMethodExecutionTime = default(double);
+                    MinMethodExecutionTime = default(double);
+                    MaxMethodExecutionTime = default(double);
+                    ExecutionsCount = default(int);
+                    FailedExecutionsCount = default(int);
                 }
 
-                if (msg.MethodExecutionResult.ReturnValue != null)
+                if (msg.MethodExecutionResult != null)
                 {
-                    MethodReturnValue = msg.MethodExecutionResult.ReturnValue.ToString();
+                    if (msg.MethodExecutionResult.ArgsValues != null)
+                    {
+                        MethodArgs = string.Join(",", msg.MethodExecutionResult.ArgsValues.Select(x => x.ToString()));
+                    }
+                    else
+                    {
+                        MethodArgs = null;
+                    }
+
+                    if (msg.MethodExecutionResult.ReturnValue != null)
+                    {
+                        MethodReturnValue = msg.MethodExecutionResult.ReturnValue.ToString();
+                    }
+                    else
+                    {
+                        MethodReturnValue = null;
+                    }
                 }
-                else
-                {
-                    MethodReturnValue = null;
-                }
+               
                 
             }
             public string TypeName { get; set; }

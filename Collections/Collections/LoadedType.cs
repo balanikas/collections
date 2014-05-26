@@ -11,5 +11,6 @@ namespace Collections
         public string FilePath { get; set; }
         public string Source { get; set; }
         public bool IsCompilable { get; set; }
+        public bool AllowEditSource { get; set; }
     }
 }
