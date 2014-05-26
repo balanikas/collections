@@ -47,34 +47,27 @@ namespace Collections.Logging
 
         public void Info(string message)
         {
-            _logBuffer.Enqueue(new LogMessage { IsError = false, Message = message });
+            _logBuffer.Enqueue(new LogMessage ( message,false ));
         }
 
         public void InfoNow(string message)
         {
 
-            NotifySubscribers(new LogMessage
-            {
-                IsError = false,
-                Message = message
-            });
+            NotifySubscribers(new LogMessage(message, false));
+            
            
         }
 
         public void Error(string message)
         {
             _errorCount++;
-            _logBuffer.Enqueue(new LogMessage { IsError = true, Message = message });
+            _logBuffer.Enqueue(new LogMessage (message,true));
         }
 
         public void ErrorNow(string message)
         {
             _errorCount++;
-            NotifySubscribers(new LogMessage
-            {
-                IsError = true,
-                Message = message
-            });
+            NotifySubscribers(new LogMessage(message, true));
         }
 
         public void Flush()
