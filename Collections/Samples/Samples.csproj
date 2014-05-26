@@ -53,6 +53,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="GenericClass.cs" />
     <Compile Include="GenericMethods.cs" />
+    <Compile Include="Interfaces.cs" />
     <Compile Include="Loops.cs" />
     <Compile Include="ManyConstructors.cs" />
     <Compile Include="MethodInvocations.cs" />

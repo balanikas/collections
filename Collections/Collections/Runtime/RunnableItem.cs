@@ -111,6 +111,11 @@ namespace Collections.Runtime
         {
             object obj;
 
+            if (type.IsInterface)
+            {
+                throw new Exception("interfaces are not allowed");
+            }
+
             if (type.IsValueType)
             {
                 obj = Activator.CreateInstance(type);
