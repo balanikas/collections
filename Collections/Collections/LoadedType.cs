@@ -12,5 +12,10 @@ namespace Collections
         public string Source { get; set; }
         public bool IsCompilable { get; set; }
         public bool AllowEditSource { get; set; }
+
+        public LoadedType()
+        {
+            
+        }
     }
 }

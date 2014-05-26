@@ -8,7 +8,6 @@ namespace Collections.Runtime
     public class Runtime : IRuntime
     {
         private readonly CancellationTokenSource _cts;
-
         private bool _isRunning;
 
         public Runtime(ILogger logger)
@@ -54,8 +53,6 @@ namespace Collections.Runtime
             Start();
         }
 
-       
-
         public void Start()
         {
             if (_isRunning)
@@ -67,7 +64,7 @@ namespace Collections.Runtime
             {
                 while (_isRunning)
                 {
-                    Task.Delay(TimeSpan.FromMilliseconds(10000));
+                    Task.Delay(TimeSpan.FromMilliseconds(1000));
                 }
 
                 Runners.RemoveAll();
@@ -75,7 +72,6 @@ namespace Collections.Runtime
 
             _isRunning = true;
         }
-
 
         public bool IsRunning()
         {

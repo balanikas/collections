@@ -233,15 +233,13 @@ namespace WpfClient.ViewModels
                         {
                             r.Destroy();
                         }
-                        //return new RunnerServiceOutputMessage();
                     }
 
-                    var settings = new RunnerSettings()
-                    {
-                        CompilerServiceType = Settings.Instance.Get(Settings.Keys.CompilerServiceType),
-                        Iterations = Settings.Instance.Get(Settings.Keys.PlayModeIterationCount),
-                        RunnerType = Settings.Instance.Get(Settings.Keys.ThreadingType)
-                    };
+                    var settings = new RunnerSettings(
+                         Settings.Instance.Get(Settings.Keys.ExploreModeIterationCount),
+                         Settings.Instance.Get(Settings.Keys.ThreadingType),
+                         Settings.Instance.Get(Settings.Keys.CompilerServiceType)
+                         );
 
                     try
                     {

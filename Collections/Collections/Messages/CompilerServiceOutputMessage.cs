@@ -17,12 +17,5 @@ namespace Collections.Messages
             Types = types.ToList();
             State = state;
         }
-
-       
-
-        //public override string ToString()
-        //{
-        //    return "errors: " + CompilerErrors.Count;
-        //}
     }
 }

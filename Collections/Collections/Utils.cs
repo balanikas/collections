@@ -90,25 +90,15 @@ namespace Collections
             return validTypes;
         }
 
-        public static  bool IsValidAssembly(string assemblyPath)
+    
+        public static TimeSpan MeasureExecutionTime<T>(Action action)
         {
-            string extension = Path.GetExtension(assemblyPath);
-            if (extension == ".dll" ||
-                extension == ".exe")
-            {
-                return true;
-            }
-            return false;
+            var watch = new Stopwatch();
+            watch.Start();
+            action();
+            watch.Stop();
+            return watch.Elapsed;
         }
-
-        //public static TimeSpan MeasureExecutionTime<T>(Action action)
-        //{
-        //    var watch = new Stopwatch();
-        //    watch.Start();
-        //    action();
-        //    watch.Stop();
-        //    return watch.Elapsed;
-        //}
 
         public static TimeSpan MeasureExecutionTime<T>(Action<T> action, T obj)
         {

@@ -90,11 +90,11 @@ namespace WpfClient.ViewModels
                 return;
             }
 
-            var settings = new RunnerSettings
-            {
-                Iterations = Settings.Instance.Get(Settings.Keys.ExploreModeIterationCount),
-                RunnerType =  Settings.Instance.Get(Settings.Keys.ThreadingType)
-            };
+            var settings = new RunnerSettings(
+                Settings.Instance.Get(Settings.Keys.ExploreModeIterationCount),
+                Settings.Instance.Get(Settings.Keys.ThreadingType),
+                Settings.Instance.Get(Settings.Keys.CompilerServiceType)
+                );
 
 
             var runner = _runtime.CreateAndAddRunner(runnable, settings);

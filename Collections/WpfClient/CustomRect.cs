@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using Collections.Messages;
@@ -7,11 +8,15 @@ namespace WpfClient
 {
     internal class CustomRect : CustomShape
     {
-        public Controls.CustomRect _control;
-        private UIElementCollection _parent;
+        private readonly Controls.CustomRect _control;
+        private readonly UIElementCollection _parent;
         public override void Destroy()
         {
-            _parent.Remove(_control);
+            Application.Current.Dispatcher.BeginInvoke((Action)(() =>
+            {
+                _parent.Remove(_control);
+            }));
+          
         }
 
         public override void AddContextMenu(ContextMenu ctxMenu)
@@ -35,22 +40,25 @@ namespace WpfClient
 
         public override void Initialize()
         {
-            _control.LayoutRoot.Visibility = Visibility.Visible;
-            _control.Freeze = false;
+
             var sb = _control.Resources["SBGrowth"] as Storyboard;
             sb.Begin();
+            _control.LayoutRoot.Visibility = Visibility.Visible;
+            _control.Freeze = false;
 
         }
 
         public override void Update(MethodExecutionMessage msg)
         {
 
-            _control.UpdateText = msg.ToString();
-
-            if (msg.Progress >= 100)
+            Application.Current.Dispatcher.BeginInvoke((Action)(() =>
             {
-                _control.Freeze = true;
-            }
+                _control.UpdateText = msg.ToString();
+                if (msg.Progress >= 100)
+                {
+                    _control.Freeze = true;
+                }
+            }));
         }
     }
 }

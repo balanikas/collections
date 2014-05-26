@@ -55,12 +55,6 @@ namespace WpfClient.Controls
                     sb.Pause();
                     Shape.Opacity = 0.7;
                 }
-                else
-                {
-                    //var sb = Resources["SBColor"] as Storyboard;
-                    //sb.Resume();
-                    //Shape.Opacity = 1.0;
-                }
                
             }
         }

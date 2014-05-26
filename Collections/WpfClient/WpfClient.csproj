@@ -108,7 +108,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AnimationsHelper.cs" />
     <Compile Include="Controls\CollapsibleLogEntry.cs" />
     <Compile Include="Controls\CustomRect.xaml.cs">
       <DependentUpon>CustomRect.xaml</DependentUpon>

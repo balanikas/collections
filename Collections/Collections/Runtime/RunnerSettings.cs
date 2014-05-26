@@ -4,10 +4,15 @@ namespace Collections.Runtime
 {
     public struct RunnerSettings
     {
-        public int Iterations { get; set; }
-        public RunnerType RunnerType { get; set; }
+        public readonly int Iterations;
+        public readonly RunnerType RunnerType;
+        public readonly CompilerType CompilerServiceType;
 
-        public CompilerType CompilerServiceType { get; set; } 
-        
+        public RunnerSettings(int iterations, RunnerType runnerType, CompilerType compilerType)
+        {
+            Iterations = iterations;
+            RunnerType = runnerType;
+            CompilerServiceType = compilerType;
+        }
     }
 }

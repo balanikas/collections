@@ -8,8 +8,8 @@ namespace WpfClient
 {
     internal class CustomEllipse : CustomShape
     {
-        public Controls.CustomEllipse _control;
-        private UIElementCollection _parent;
+        private readonly Controls.CustomEllipse _control;
+        private readonly UIElementCollection _parent;
         public override void Destroy()
         {
             Application.Current.Dispatcher.BeginInvoke((Action)(() =>
@@ -40,11 +40,11 @@ namespace WpfClient
 
         public override void Initialize()
         {
-            _control.LayoutRoot.Visibility = Visibility.Visible;
-            _control.Freeze = false;
+
             var sb = _control.Resources["SBGrowth"] as Storyboard;
             sb.Begin();
-           
+            _control.LayoutRoot.Visibility = Visibility.Visible;
+            _control.Freeze = false;
         }
 
 
@@ -53,7 +53,6 @@ namespace WpfClient
             Application.Current.Dispatcher.BeginInvoke((Action)(() =>
             {
                 _control.UpdateText = msg.ToString();
-
                 if (msg.Progress >= 100)
                 {
                     _control.Freeze = true;
