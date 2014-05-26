@@ -8,8 +8,7 @@ namespace Collections.Logging
     {
         private readonly ConcurrentQueue<LogMessage> _logBuffer;
         private readonly List<ILogSubscriber> _subscribers; 
-        private int _errorCount;
-
+        private static readonly object _syncLock = new object();
         public Logger()
         {
             _subscribers = new List<ILogSubscriber>();
@@ -21,28 +20,13 @@ namespace Collections.Logging
 
         public void Subscribe(ILogSubscriber subscriber)
         {
-            _subscribers.Add(subscriber);
-        }
-
-        private void NotifySubscribers(LogMessage message)
-        {
-            foreach (var subscriber in _subscribers)
+            lock (_syncLock)
             {
-                subscriber.Notify(message);
+                if (!_subscribers.Contains(subscriber))
+                {
+                    _subscribers.Add(subscriber);
+                }
             }
-        }
-        public void AddTraceListener(TraceWriterHandler handler)
-        {
-
-        }
-        public int Count
-        {
-            get { return _logBuffer.Count; }
-        }
-
-        public int ErrorCount
-        {
-            get { return _errorCount; }
         }
 
         public void Info(string message)
@@ -52,35 +36,45 @@ namespace Collections.Logging
 
         public void InfoNow(string message)
         {
-
-            NotifySubscribers(new LogMessage(message, false));
-            
-           
+            lock (_syncLock)
+            {
+                NotifySubscribers(new LogMessage(message, false));
+            }
         }
 
         public void Error(string message)
         {
-            _errorCount++;
             _logBuffer.Enqueue(new LogMessage (message,true));
         }
 
         public void ErrorNow(string message)
         {
-            _errorCount++;
-            NotifySubscribers(new LogMessage(message, true));
+            lock (_syncLock)
+            {
+                NotifySubscribers(new LogMessage(message, true));
+            }
         }
 
         public void Flush()
         {
-           
-            while (_logBuffer.Count > 0)
+            lock (_syncLock)
             {
-                LogMessage logMessage;
-                if (_logBuffer.TryDequeue(out logMessage))
+                while (_logBuffer.Count > 0)
                 {
-                    NotifySubscribers(logMessage);
+                    LogMessage logMessage;
+                    if (_logBuffer.TryDequeue(out logMessage))
+                    {
+                        NotifySubscribers(logMessage);
+                    }
                 }
-                
+            }
+        }
+
+        private void NotifySubscribers(LogMessage message)
+        {
+            foreach (var subscriber in _subscribers)
+            {
+                subscriber.Notify(message);
             }
         }
     }

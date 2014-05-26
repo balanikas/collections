@@ -139,7 +139,7 @@ namespace Collections.Runtime
 
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            _logger.Flush();
+
             if (e.Cancelled || e.Error != null)
             {
                 foreach (IGui listener in _uiListeners.ToList())
