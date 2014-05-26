@@ -82,6 +82,8 @@ namespace Collections
                 typeof (Object),
                 typeof (Char*),
                 typeof (String),
+                typeof (Byte[]),
+                typeof(String[]),
                 typeof (void)
             });
 

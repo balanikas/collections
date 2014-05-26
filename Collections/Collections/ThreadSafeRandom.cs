@@ -116,16 +116,17 @@ namespace Collections
                 case "Char*":
                 case "String":
                 {
-                    int size = 10;
-                    var builder = new StringBuilder();
-                    char ch;
-                    for (int i = 0; i < size; i++)
-                    {
-                        ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26*_local.NextDouble() + 65)));
-                        builder.Append(ch);
-                    }
-
-                    return builder.ToString();
+                    return NextString(5);
+                }
+                case "Byte[]":
+                {
+                    var bytes = new byte[_local.Next(1,3)];
+                    _local.NextBytes(bytes);
+                    return bytes;
+                }
+                case "String[]":
+                {
+                    return NextStringArray(_local.Next(1, 3), _local.Next(1, 3));
                 }
                 default:
                     return null;
@@ -140,6 +141,28 @@ namespace Collections
                 int lastBits = _local.Next(0, 1 << 28);
                 return firstBits | lastBits;
             }
+        }
+
+        private string NextString(int size)
+        {
+            var builder = new StringBuilder();
+            for (int i = 0; i < size; i++)
+            {
+                char ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * _local.NextDouble() + 65)));
+                builder.Append(ch);
+            }
+
+            return builder.ToString();
+        }
+
+        private string[] NextStringArray(int sizeOfArray, int sizeOfString)
+        {
+            var strings = new string[sizeOfArray];
+            for (int i = 0; i < sizeOfArray; i++)
+            {
+                strings[i] = NextString(sizeOfString);
+            }
+            return strings;
         }
     }
 }

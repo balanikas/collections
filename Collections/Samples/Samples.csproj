@@ -45,6 +45,7 @@
     <Compile Include="AbstractClass.cs" />
     <Compile Include="Accessibility.cs" />
     <Compile Include="Arrays.cs" />
+    <Compile Include="ArraysInParams.cs" />
     <Compile Include="Boxing.cs" />
     <Compile Include="CheckForEmptyString.cs" />
     <Compile Include="ComplexClass.cs" />
