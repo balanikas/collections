@@ -38,11 +38,12 @@ namespace WpfClient.ViewModels
                 {
                     case "Blue":
                         ViewModelLocator.PlayModeMode.IsActivated = false;
+                        ViewModelLocator.LogViewer.LogEntries.Clear();
                         accentName = "Blue";
                         break;
                     case "Green":
-                        ViewModelLocator.PlayModeMode.IsActivated = true;
-
+                        ViewModelLocator.ExploreMode.IsActivated = false;
+                        ViewModelLocator.LogViewer.LogEntries.Clear();
                         accentName = "Green";
                         break;
                     case "Purple":

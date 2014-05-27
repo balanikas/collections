@@ -12,9 +12,9 @@ namespace Collections.Messages
         public ServiceMessageState State { get; private set; }
         public CompilerServiceOutputMessage(List<string> errors, List<LoadedType> types,ServiceMessageState state = ServiceMessageState.NotHandled)
         {
-            CompilerErrors = errors.ToList();
+            CompilerErrors = errors;
 
-            Types = types.ToList();
+            Types = types;
             State = state;
         }
     }

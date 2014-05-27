@@ -116,6 +116,7 @@ namespace WpfClient.ViewModels
                    OnDeactivated();
                 }
                 _isActivated = value;
+                RaisePropertyChanged("IsActivated");
             }
         }
 
@@ -280,7 +281,7 @@ namespace WpfClient.ViewModels
 
             if (!IsActivated || String.IsNullOrEmpty(message.Source))
             {
-                return new CompilerServiceOutputMessage(null,null);
+                return new CompilerServiceOutputMessage(new List<string>(),new List<LoadedType>());
             }
             List<string> errors;
             var types = _typesProvider.TryCompileFromText(message.Source, out errors);
@@ -318,6 +319,7 @@ namespace WpfClient.ViewModels
             _runnerService.Start(RunnerAction);
             _compilerServiceMsgBuf.Post(new CompilerServiceMessage(CodeDocument.Text));
             _timer.Start();
+            OnClearLog();
             _runtime.Logger.InfoNow("Services started, running live code");
         }
 
@@ -326,16 +328,18 @@ namespace WpfClient.ViewModels
             _timer.Stop();
             _compilerService.Stop();
             _runnerService.Stop();
+            _runtime.Runners.RemoveAll();
             _uiListeners.Clear();
             CompiledMethods = null;
-            _runtime.Logger.InfoNow("Services stopped");
+            OnClearLog();
+   
 
         }
 
         
         private void LogServices(object sender, EventArgs e)
         {
-           // OnClearLog();
+  
             CompilerServiceOutputMessage compilerResults = _compilerServiceOutputMsgBuf.Receive();
 
             switch (compilerResults.State)
@@ -343,9 +347,9 @@ namespace WpfClient.ViewModels
                 case ServiceMessageState.NotHandled:
                     break;
                 case ServiceMessageState.Succeeded:
-                    //_runtime.Logger.InfoNow("Code compiled successfully");
                     break;
                 case ServiceMessageState.Failed:
+                    OnClearLog();
                     _runtime.Logger.ErrorNow(string.Join("\n", compilerResults.CompilerErrors.ToArray()));
                     break;
                 default:
@@ -360,9 +364,9 @@ namespace WpfClient.ViewModels
                 case ServiceMessageState.NotHandled:
                     break;
                 case ServiceMessageState.Succeeded:
-                    //_runtime.Logger.InfoNow("Runner completed successfully");
                     break;
                 case ServiceMessageState.Failed:
+                    OnClearLog();
                     _runtime.Logger.ErrorNow("Runner failed to complete");
                     _runtime.Logger.ErrorNow(runnerResults.ErrorMessage);
                     break;

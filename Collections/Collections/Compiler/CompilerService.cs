@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using Collections.Messages;
@@ -116,7 +117,7 @@ namespace Collections.Compiler
 
         private CompilerServiceOutputMessage DefaultCompilerExecution(CompilerServiceMessage msg)
         {
-            return new CompilerServiceOutputMessage(null,null);
+            return new CompilerServiceOutputMessage(new List<string>(), new List<LoadedType>());
         }
 
         public void Dispose()

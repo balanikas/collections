@@ -134,6 +134,7 @@ namespace Collections.Runtime
 
         private void DoWork()
         {
+            _logger.InfoNow(string.Format("started executing {0}.{1}", _runnableItem.ObjectType, _runnableItem.Method));
             _watch.Start();
 
             var methodExecution = new MethodExecutionResult();

@@ -34,7 +34,7 @@ namespace Collections.Messages
         {
 
             var sb = new StringBuilder(50);
-            sb.AppendFormat("{1}\nin\n {0}\nEllapsed: {2}\nProgress: {3} %\n",
+            sb.AppendFormat("{1}\n{0}\nEllapsed: {2}\nProgress: {3} %\n",
                 ObjectType,
                 Method.Name,
                 TotalExecutionTime.Seconds + ":" + TotalExecutionTime.Milliseconds,

@@ -94,7 +94,7 @@ namespace Collections.Runtime
 
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-
+            _logger.InfoNow(string.Format("started executing {0}.{1}",_runnableItem.ObjectType, _runnableItem.Method));
             var worker = sender as BackgroundWorker;
          
             _watch.Start();

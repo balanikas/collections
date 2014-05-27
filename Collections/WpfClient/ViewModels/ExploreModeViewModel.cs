@@ -14,6 +14,7 @@ namespace WpfClient.ViewModels
     public class ExploreModeViewModel : ViewModelBase
     {
         private readonly IRuntime _runtime;
+        private bool _isActivated;
 
         public ExploreModeViewModel(IRuntime runtime)
         {
@@ -34,6 +35,40 @@ namespace WpfClient.ViewModels
         public RelayCommand<MouseEventArgs> CmdMouseDown { get; private set; }
         public RelayCommand CmdClearLog { get; private set; }
         public RelayCommand CmdClearCanvas { get; private set; }
+
+        public bool IsActivated
+        {
+            get
+            {
+                return _isActivated;
+            }
+            set
+            {
+                if (value)
+                {
+                    OnActivated();
+                }
+                else
+                {
+                    OnDeactivated();
+                }
+                _isActivated = value;
+            }
+        }
+
+        private void OnActivated()
+        {
+            _runtime.Runners.RemoveAll();
+            OnClearLog();
+            
+        }
+
+        private void OnDeactivated()
+        {
+            _runtime.Runners.RemoveAll();
+            OnClearLog();
+
+        }
 
         private void OnMouseDown(MouseEventArgs e)
         {
@@ -56,8 +91,6 @@ namespace WpfClient.ViewModels
         private void OnClearCanvas()
         {
             _runtime.Runners.RemoveAll();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
             OnClearLog();
             InfoView.IsExpanded = false;
         }
