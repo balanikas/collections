@@ -54,8 +54,8 @@
 
         
         <Expander Grid.Row="0" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Stretch"
-                  Opacity="0.7" IsExpanded="True" Height="300" VerticalAlignment="Bottom">
-            <DockPanel>
+                  IsExpanded="True" Height="300" VerticalAlignment="Bottom">
+            <DockPanel   Background="{DynamicResource AccentColorBrush}">
                 <Button Content="Clear log" Command="{Binding CmdClearLog}" DockPanel.Dock="Top" />
 
                 <controls:LogViewer />
@@ -64,8 +64,8 @@
 
         </Expander>
         <Expander DataContext="{Binding InfoView}" Grid.Row="0" Grid.Column="2" Header="Info" ExpandDirection="Down" HorizontalAlignment="Stretch"
-                  Opacity="0.7" IsExpanded="{Binding Path=IsExpanded}" Height="200" VerticalAlignment="Top">
-            <Grid>
+                   IsExpanded="{Binding Path=IsExpanded}" Height="200" VerticalAlignment="Top">
+            <Grid   Background="{DynamicResource AccentColorBrush}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="3*"/>

@@ -56,7 +56,8 @@ namespace Collections
 
                 types.Add(new LoadedType
                 {
-                    MethodsInfos = new List<MethodInfo>(definedType.GetMethods()),
+                    MethodsInfos = new List<MethodInfo>(definedType.GetMethods(
+                           BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public)),
                     FilePath = filePath,
                     Source = fileContent,
                     TypeInfo = definedType,
@@ -87,10 +88,10 @@ namespace Collections
 
                 foreach (TypeInfo definedType in compiledAssembly.DefinedTypes)
                 {
-
                     types.Add(new LoadedType
                     {
-                        MethodsInfos = new List<MethodInfo>(definedType.GetMethods()),
+                        MethodsInfos = new List<MethodInfo>(definedType.GetMethods(
+                            BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public)),
                         FilePath = Path.Combine(filePath, file),
                         Source = fileContent,
                         TypeInfo = definedType,
@@ -132,7 +133,8 @@ namespace Collections
                 }
                 types.Add(new LoadedType
                 {
-                    MethodsInfos = new List<MethodInfo>(definedType.GetMethods()),
+                    MethodsInfos = new List<MethodInfo>(definedType.GetMethods(
+                           BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public)),
                     TypeInfo = definedType,
                     FilePath = filePath,
                     Source = "N/A",
@@ -165,7 +167,8 @@ namespace Collections
                 {
                     types.Add(new LoadedType
                     {
-                        MethodsInfos = new List<MethodInfo>(definedType.GetMethods()),
+                        MethodsInfos = new List<MethodInfo>(definedType.GetMethods(
+                           BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public)),
                         FilePath = "",
                         Source = source,
                         TypeInfo = definedType,

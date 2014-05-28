@@ -92,8 +92,8 @@
 
 
         <Expander Grid.Row="1" Grid.Column="2" Header="Log" ExpandDirection="Up" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom"
-                  Opacity="0.9" IsExpanded="True" Height="300" VerticalAlignment="Bottom" Margin="5,0,5,5" >
-            <DockPanel>
+                  IsExpanded="True" Height="300" VerticalAlignment="Bottom" >
+            <DockPanel Background="{DynamicResource AccentColorBrush}">
                 <Button Content="Clear log" Command="{Binding CmdClearLog}" DockPanel.Dock="Top" />
                 <controls:LogViewer DockPanel.Dock="Bottom" />
             </DockPanel>

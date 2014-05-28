@@ -7,8 +7,50 @@ using System.Reflection;
 
 namespace Collections
 {
-    public static class Utils
+    public class Utils
     {
+        private static readonly List<Type> _supportedTypes = new List<Type>();
+        static Utils()
+        {
+            _supportedTypes.AddRange(new[]
+            {
+                typeof (SByte),
+                typeof (Byte),
+                typeof (Int16),
+                typeof (UInt16),
+                typeof (Int32),
+                typeof (UInt32),
+                typeof (Int64),
+                typeof (UInt64),
+                typeof (Single),
+                typeof (Double),
+                typeof (Decimal),
+                typeof (Boolean),
+                typeof (Char),
+                typeof (Object),
+                typeof (Char*),
+                typeof (String),
+                typeof (SByte[]),
+                typeof (Byte[]),
+                typeof (Int16[]),
+                typeof (UInt16[]),
+                typeof (Int32[]),
+                typeof (UInt32[]),
+                typeof (Int64[]),
+                typeof (UInt64[]),
+                typeof (Single[]),
+                typeof (Double[]),
+                typeof (Decimal[]),
+                typeof (Boolean[]),
+                typeof (Char[]),
+                typeof (Object[]),
+                typeof (Char*[]),
+                typeof (String[]),
+                typeof (void)
+            });
+
+        }
+
         public static bool MethodsUseSupportedTypes(IEnumerable<MethodInfo> methods)
         {
             foreach (MethodInfo method in methods)
@@ -27,7 +69,7 @@ namespace Collections
  
             foreach (ParameterInfo p in method.GetParameters())
             {
-                Type isValidType = GetValidMethodTypes().
+                Type isValidType = _supportedTypes.
                     FirstOrDefault(t => t.FullName == p.ParameterType.FullName);
                 if (isValidType == null)
                 {
@@ -36,7 +78,7 @@ namespace Collections
             }
 
 
-            Type isValidReturnType = GetValidMethodTypes().
+            Type isValidReturnType = _supportedTypes.
                 FirstOrDefault(t => t.FullName == method.ReturnType.FullName);
             if (isValidReturnType == null)
             {
@@ -47,48 +89,51 @@ namespace Collections
             return true;
         }
 
-        public static List<MethodInfo> GetSupportedMethods(IEnumerable<MethodInfo> methods)
-        {
-            var supportedMethods = new List<MethodInfo>();
-            foreach (MethodInfo method in methods)
-            {
-                if (IsMethodSupported(method))
-                {
-                    supportedMethods.Add(method);
-                }
-            }
-            return supportedMethods;
-        }
+  
 
 
-        private static IEnumerable<Type> GetValidMethodTypes()
-        {
-            var validTypes = new List<Type>();
-            validTypes.AddRange(new[]
-            {
-                typeof (SByte),
-                typeof (Byte),
-                typeof (Int16),
-                typeof (UInt16),
-                typeof (Int32),
-                typeof (UInt32),
-                typeof (Int64),
-                typeof (UInt64),
-                typeof (Single),
-                typeof (Double),
-                typeof (Decimal),
-                typeof (Boolean),
-                typeof (Char),
-                typeof (Object),
-                typeof (Char*),
-                typeof (String),
-                typeof (Byte[]),
-                typeof(String[]),
-                typeof (void)
-            });
+        //private static IEnumerable<Type> GetValidMethodTypes()
+        //{
+        //    var validTypes = new List<Type>();
+        //    validTypes.AddRange(new[]
+        //    {
+        //        typeof (SByte),
+        //        typeof (Byte),
+        //        typeof (Int16),
+        //        typeof (UInt16),
+        //        typeof (Int32),
+        //        typeof (UInt32),
+        //        typeof (Int64),
+        //        typeof (UInt64),
+        //        typeof (Single),
+        //        typeof (Double),
+        //        typeof (Decimal),
+        //        typeof (Boolean),
+        //        typeof (Char),
+        //        typeof (Object),
+        //        typeof (Char*),
+        //        typeof (String),
+        //        typeof (SByte[]),
+        //        typeof (Byte[]),
+        //        typeof (Int16[]),
+        //        typeof (UInt16[]),
+        //        typeof (Int32[]),
+        //        typeof (UInt32[]),
+        //        typeof (Int64[]),
+        //        typeof (UInt64[]),
+        //        typeof (Single[]),
+        //        typeof (Double[]),
+        //        typeof (Decimal[]),
+        //        typeof (Boolean[]),
+        //        typeof (Char[]),
+        //        typeof (Object[]),
+        //        typeof (Char*[]),
+        //        typeof (String[]),
+        //        typeof (void)
+        //    });
 
-            return validTypes;
-        }
+        //    return validTypes;
+        //}
 
     
         public static TimeSpan MeasureExecutionTime<T>(Action action)
