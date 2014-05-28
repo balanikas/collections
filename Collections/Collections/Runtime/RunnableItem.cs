@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Collections.Utilities;
 
 namespace Collections.Runtime
 {
@@ -17,15 +18,17 @@ namespace Collections.Runtime
 
         public RunnableItem(Type type, List<MethodInfo> methods)
         {
-            ObjectType = type;
-            Method = methods[0];
-            bool areMethodsValid = Utils.MethodsUseSupportedTypes(methods);
-            if (!areMethodsValid)
-            {
-                throw new ArgumentException(string.Format("method {0}  in type {1} contains unsupported types",methods[0], type));
-            }
+            var methodValidator = new MethodValidator();
 
-            _objectInstance = CreateInstanceFromType(ObjectType);
+            foreach (var methodInfo in methods)
+            {
+                methodValidator.ValidateParametersTypes(methodInfo);
+                methodValidator.ValidateReturnType(methodInfo);
+                methodValidator.ValidateMethodKind(methodInfo);
+
+            }
+            
+            _objectInstance = CreateInstanceFromType(type);
             if (_objectInstance == null)
             {
                 IEnumerable<MethodInfo> staticMethods = methods.Where(m => !m.IsStatic);
@@ -34,6 +37,9 @@ namespace Collections.Runtime
                     throw new ArgumentException(string.Format("cannot invoke non-static method of static class {0}", type));
                 }
             }
+
+            ObjectType = type;
+            Method = methods[0];
 
             _executionInfos = new List<ExecutionInfo>();
             foreach (MethodInfo methodInfo in methods)
@@ -64,7 +70,16 @@ namespace Collections.Runtime
                     for (int index = 0; index < paramCount; index++)
                     {
                         ParameterInfo p = reflectedParams[index];
-                        object paramValue = Randomizer.RandomizeParamValue(p.ParameterType.Name);
+                        object paramValue;
+                        if (p.ParameterType.IsGenericParameter)
+                        {
+                            paramValue = new object();
+                        }
+                        else
+                        {
+                            paramValue = Randomizer.RandomizeParamValue(p.ParameterType.Name);
+                        }
+                        
                         parameters[index] = paramValue;
                     }
                 }
@@ -72,17 +87,15 @@ namespace Collections.Runtime
 
                 try
                 {
-                    object result;
-                    if (execInfo.Cached != null)
-                    {
-                        //special optimization when method has no return value and no params
-                        execInfo.Cached();
-                        result = null;
-                    }
-                    else
-                    {
-                        result = execInfo.MethodInfo.Invoke(_objectInstance, parameters);
-                    }
+                    //if (execInfo.Cached != null)
+                    //{
+                    //    //special optimization when method has no return value and no params
+                    //    execInfo.Cached();
+                    //    result = null;
+                    //}
+
+                    object result = execInfo.Execute(_objectInstance, parameters);
+
 
                     if (log)
                     {
@@ -135,6 +148,8 @@ namespace Collections.Runtime
                         //static class
                         return null;
                     }
+                    
+
                     throw new Exception("only types with empty constructors are allowed");
                 }
                 //constructor is paramless

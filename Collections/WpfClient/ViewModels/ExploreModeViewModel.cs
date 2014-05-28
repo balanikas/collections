@@ -81,7 +81,7 @@ namespace WpfClient.ViewModels
 
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (element is Canvas)
+                if (element is Canvas && Types.SelectedMethod != null)
                 {
                     CreateRunner(element as Canvas);
                 }

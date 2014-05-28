@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -23,6 +24,19 @@ namespace Collections
                 {
                     Cached = (Action) Delegate.CreateDelegate(typeof (Action), objectInstance, methodInfo);
                 }
+            }
+        }
+
+        public object Execute(object instance, object[] parameters)
+        {
+           
+            if (MethodInfo.IsGenericMethod)
+            {
+                return null;
+            }
+            else
+            {
+                return MethodInfo.Invoke(instance, parameters);
             }
         }
 

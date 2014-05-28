@@ -88,7 +88,6 @@ namespace WpfClient.ViewModels
             public string MethodReturnValue { get; set; }
         }
 
-        private MethodExecutionMessage _message;
         private IRunner _runner;
         private bool _isExpanded;
         private InfoView _infoView;

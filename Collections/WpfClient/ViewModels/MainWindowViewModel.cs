@@ -46,9 +46,6 @@ namespace WpfClient.ViewModels
                         ViewModelLocator.LogViewer.LogEntries.Clear();
                         accentName = "Green";
                         break;
-                    case "Purple":
-                        accentName = "Purple";
-                        break;
                     default:
                         accentName = "Blue";
                         break;

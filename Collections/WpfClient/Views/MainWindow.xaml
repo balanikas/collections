@@ -58,9 +58,7 @@
                     <Controls:MetroTabItem Header="Play" x:Name="Green">
                         <views:PlayMode />
                     </Controls:MetroTabItem>
-                    <Controls:MetroTabItem Header="Other" x:Name="Purple">
-                        <TextBlock FontSize="30" Text="Not yet implemented" />
-                    </Controls:MetroTabItem>
+                   
                 </TabControl>
 
             </Grid>

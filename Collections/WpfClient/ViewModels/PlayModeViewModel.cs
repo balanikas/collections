@@ -237,7 +237,7 @@ namespace WpfClient.ViewModels
                     }
 
                     var settings = new RunnerSettings(
-                         Settings.Instance.Get(Settings.Keys.ExploreModeIterationCount),
+                         Settings.Instance.Get(Settings.Keys.PlayModeIterationCount),
                          Settings.Instance.Get(Settings.Keys.ThreadingType),
                          Settings.Instance.Get(Settings.Keys.CompilerServiceType)
                          );

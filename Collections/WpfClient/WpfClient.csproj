@@ -117,6 +117,7 @@
     </Compile>
     <Compile Include="Controls\PropertyChangedBase.cs" />
     <Resource Include="Resources\Sample.cs" />
+    <Compile Include="Converters\MethodToColorValueConverter.cs" />
     <Compile Include="CustomEllipse.cs" />
     <Compile Include="CustomRect.cs" />
     <Compile Include="PathValidator.cs" />

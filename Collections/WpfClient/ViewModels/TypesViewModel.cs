@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using Collections;
@@ -33,7 +34,11 @@ namespace WpfClient.ViewModels
             _codeDocument = new TextDocument();
 
 
-            CmdLoadTypes = new RelayCommand(LoadTypes);
+            CmdLoadTypes = new RelayCommand(() =>
+            {
+                LoadTypes(false);
+                
+            });
 
             CmdTypesSelectionChanged = new RelayCommand<SelectionChangedEventArgs>(e =>
             {
@@ -59,16 +64,11 @@ namespace WpfClient.ViewModels
                 if (_typesProvider.TryCompileFromText(CodeDocument.Text, out errors).Any())
                 {
 
-                    _typesProvider.SaveType(new LoadedType
-                    {
-                        FilePath = SelectedType.FilePath,
-                        Source = CodeDocument.Text,
-                        TypeInfo = SelectedType.TypeInfo
-                    });
+                    _typesProvider.SaveType(new LoadedType(SelectedType.TypeInfo, SelectedType.FilePath, CodeDocument.Text));
 
                     ViewModelLocator.Logger.InfoNow("Compilation succeeded");
 
-                    LoadTypes();
+                    LoadTypes(true);
                 }
                 else
                 {
@@ -158,18 +158,6 @@ namespace WpfClient.ViewModels
             {
                 _filesPath = value;
 
-                //if (!UIHelper.IsPathValid(_filesPath))
-                //{
-                //    IsLoadButtonEnabled = false;
-                //    ViewModelLocator.Logger.ErrorNow(_filesPath + " is not a valid path for a code file, assembly file, or directory containing code files");
-                    
-                //}
-                //else
-                //{
-                //    IsLoadButtonEnabled = true;
-                //}
-
-
                 RaisePropertyChanged("FilesPath");
             }
         }
@@ -184,7 +172,7 @@ namespace WpfClient.ViewModels
         }
 
 
-        private async void LoadTypes()
+        private async void LoadTypes(bool rememberSelection)
         {
             if (!PathValidator.IsWellFormedPath(FilesPath))
             {
@@ -197,17 +185,22 @@ namespace WpfClient.ViewModels
                 return;
             }
 
-            ProgressDialogController controller = await MainWindow.ShowProgress(
+            ProgressDialogController progressDialogController = await MainWindow.ShowProgress(
                 "Please wait...",
                 "loading types from " + FilesPath);
 
-            var previousSelectedTypeName = SelectedType != null? SelectedType.TypeInfo.FullName:null;
-            var previousSelectedMethodName = SelectedMethod != null? SelectedMethod.Name:null;
+            string previousSelectedTypeName = null;
+            string previousSelectedMethodName = null;
+            if (rememberSelection)
+            {
+                previousSelectedTypeName = SelectedType != null ? SelectedType.TypeInfo.FullName : null;
+                previousSelectedMethodName = SelectedMethod != null ? SelectedMethod.Name : null;
+            }
+           
 
             _typesProvider.SetActiveCompilerService(Settings.Instance.Get(Settings.Keys.CompilerServiceType));
-            
-            
 
+           
             try
             {
                 List<LoadedType> types = null;
@@ -224,7 +217,7 @@ namespace WpfClient.ViewModels
                         break;
                 }
                 Types = new ObservableCollection<LoadedType>(types);
-     
+                
             }
             catch (Exception e)
             {
@@ -242,7 +235,7 @@ namespace WpfClient.ViewModels
                 }
             }
             
-            await controller.CloseAsync();
+            await progressDialogController.CloseAsync();
         }
     }
 }

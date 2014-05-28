@@ -25,6 +25,7 @@ namespace WpfClient
         public static Task<ProgressDialogController> ShowProgress(string title, string message)
         {
             return _self.ShowProgressAsync(title, message);
+            
         }
 
         public static void ToggleFlyout(int index,bool keepOpenIfOpened = false)

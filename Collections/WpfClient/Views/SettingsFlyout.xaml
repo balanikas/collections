@@ -51,7 +51,7 @@
         <Slider x:Name="SldExploreModeIterationCount" HorizontalAlignment="Stretch" VerticalAlignment="Top" Maximum="10000000" Minimum="1"
                 SmallChange="1000" Value="100000" AutoToolTipPlacement="TopLeft" 
                 ValueChanged="SldExploreModeIterationCount_OnValueChanged"  LargeChange="100000" />
-
+        <!--<controls:NumericUpDown Minimum = "1" Maximum = "10000000" StringFormat="C2"/>-->
         <!-- play mode-->
         <Label Content="Play Mode" FontSize="20" HorizontalContentAlignment="Center" Height="50" />
 

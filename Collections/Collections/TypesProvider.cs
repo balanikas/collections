@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Collections.Compiler;
 using Collections.Logging;
@@ -24,7 +25,8 @@ namespace Collections
       
         public void SetActiveCompilerService(CompilerType type)
         {
-            _activeCompilerService = _services.First(x => x.Type == type);
+            //todo enable support for roslyn compiler
+            _activeCompilerService = _services.First(x => x.Type == CompilerType.Default);
         }
         public async Task<List<LoadedType>> FromSourceFolderAsync(string filePath)
         {
@@ -53,18 +55,7 @@ namespace Collections
             }
             foreach (TypeInfo definedType in compiledAssembly.DefinedTypes)
             {
-
-                types.Add(new LoadedType
-                {
-                    MethodsInfos = new List<MethodInfo>(definedType.GetMethods(
-                           BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public)),
-                    FilePath = filePath,
-                    Source = fileContent,
-                    TypeInfo = definedType,
-                    IsCompilable = true,
-                    AllowEditSource = true
-                });
-
+                types.Add(new LoadedType(definedType, filePath, fileContent));
             }
             return types;
         }
@@ -80,7 +71,6 @@ namespace Collections
 
                 Assembly compiledAssembly;
 
-
                 if (!_activeCompilerService.TryCompile(fileContent, out compiledAssembly))
                 {
                     continue;
@@ -88,16 +78,7 @@ namespace Collections
 
                 foreach (TypeInfo definedType in compiledAssembly.DefinedTypes)
                 {
-                    types.Add(new LoadedType
-                    {
-                        MethodsInfos = new List<MethodInfo>(definedType.GetMethods(
-                            BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public)),
-                        FilePath = Path.Combine(filePath, file),
-                        Source = fileContent,
-                        TypeInfo = definedType,
-                        IsCompilable = true,
-                        AllowEditSource = true
-                    });
+                    types.Add(new LoadedType(definedType, Path.Combine(filePath, file), fileContent));
                 }
             }
             return types;
@@ -131,15 +112,7 @@ namespace Collections
                 {
                     continue;
                 }
-                types.Add(new LoadedType
-                {
-                    MethodsInfos = new List<MethodInfo>(definedType.GetMethods(
-                           BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public)),
-                    TypeInfo = definedType,
-                    FilePath = filePath,
-                    Source = "N/A",
-                    IsCompilable = false
-                });
+                types.Add(new LoadedType(definedType, filePath, "N/A"));
             }
             
             return types;
@@ -165,15 +138,7 @@ namespace Collections
             {
                 foreach (TypeInfo definedType in compiledAssembly.DefinedTypes)
                 {
-                    types.Add(new LoadedType
-                    {
-                        MethodsInfos = new List<MethodInfo>(definedType.GetMethods(
-                           BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public)),
-                        FilePath = "",
-                        Source = source,
-                        TypeInfo = definedType,
-                        IsCompilable = true
-                    });
+                    types.Add(new LoadedType(definedType, "", source));
                 }
             }
            

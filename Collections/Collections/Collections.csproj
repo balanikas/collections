@@ -54,6 +54,7 @@
     <Compile Include="Messages\CompilerServiceMessage.cs" />
     <Compile Include="Compiler\CompilerService.cs" />
     <Compile Include="Messages\ServiceMessageState.cs" />
+    <Compile Include="Utilities\MethodValidator.cs" />
     <Compile Include="Runtime\IRunnerCollection.cs" />
     <Compile Include="Runtime\RunnerCollection.cs" />
     <Compile Include="Runtime\RunnerService.cs" />

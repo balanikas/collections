@@ -25,11 +25,22 @@
                 Margin="10">
         <Label Content="About" FontSize="20" HorizontalContentAlignment="Center"  Height="50"/>
         <TextBlock TextWrapping="Wrap"
-                   Text="[App name], a tool for investigating, playing with, and visualizing the execution of methods." />
+                   Text="Collections, a tool for investigating, playing with, and visualizing the execution of methods." />
 
         <Label Content="Version" FontSize="20" HorizontalContentAlignment="Center"  Height="50"/>
         <TextBlock TextWrapping="Wrap" FontStyle="Oblique" Text="Version x.x.x.x" />
 
+        <Label Content="License" FontSize="20" HorizontalContentAlignment="Center"  Height="50"/>
+        <TextBlock TextWrapping="Wrap">
+            <Run>This software is under the MIT license.</Run>
+             <Hyperlink NavigateUri=" http://opensource.org/licenses/MIT" 
+                       RequestNavigate="Hyperlink_OnRequestNavigate">MIT License</Hyperlink>
+        </TextBlock>
+        <Label Content="Aknowledgments" FontSize="20" HorizontalContentAlignment="Center"  Height="50"/>
+        <TextBlock TextWrapping="Wrap">
+            <Run> </Run>
+            
+        </TextBlock>
         <Label Content="Contact" FontSize="20" HorizontalContentAlignment="Center"  Height="50" />
         <TextBlock TextWrapping="Wrap">
             <Run>Your feedback is highly appreciated. Submit your comments and/or questions by sending an email to me at </Run>
@@ -38,11 +49,6 @@
             <Hyperlink NavigateUri="https://github.com/balanikas/collections" 
                        RequestNavigate="Hyperlink_OnRequestNavigate"> the github page</Hyperlink>
         </TextBlock>
-
-        <Label Content="License" FontSize="20" HorizontalContentAlignment="Center"  Height="50"/>
-        <TextBlock TextWrapping="Wrap" Text="This software is under the MIT license." />
-
-
     </StackPanel>
 
 </controls:Flyout>
