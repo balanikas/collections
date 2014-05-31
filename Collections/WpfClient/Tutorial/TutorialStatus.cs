@@ -5,16 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfClient
+namespace WpfClient.Tutorial
 {
     class TutorialStatus
     {
-        private static string _fileName = "06B6212A-350C-4622-9A05-471A7F5188DF";
+        private const string FileName = "06B6212A-350C-4622-9A05-471A7F5188DF";
+
         public static bool HasRun
         {
             get
             {
-                if (File.Exists(Path.Combine(Environment.CurrentDirectory, _fileName)))
+                if (File.Exists(Path.Combine(Environment.CurrentDirectory, FileName)))
                 {
                     return true;
                 }
@@ -25,11 +26,11 @@ namespace WpfClient
             {
                 if (value)
                 {
-                    File.Create(Path.Combine(Environment.CurrentDirectory, _fileName));
+                    File.Create(Path.Combine(Environment.CurrentDirectory, FileName));
                 }
                 else
                 {
-                    File.Delete(Path.Combine(Environment.CurrentDirectory, _fileName));
+                    File.Delete(Path.Combine(Environment.CurrentDirectory, FileName));
                 }
                 
             }

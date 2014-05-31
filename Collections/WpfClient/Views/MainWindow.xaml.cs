@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using Collections.Messages;
 using Collections.Runtime;
 using MahApps.Metro;
@@ -31,11 +32,36 @@ namespace WpfClient
                 {
                     TutorialStatus.HasRun = true;
                     ShowTutorial();
-                    
                 }
                 
             };
 
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            var source = PresentationSource.FromVisual(this) as HwndSource;
+            if (source != null)
+            {
+                source.AddHook(WndProc);
+            }
+            
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == NativeMethods.WM_SHOWME)
+            {
+                if (WindowState == WindowState.Minimized)
+                {
+                    WindowState =WindowState.Normal;
+                }
+                bool top = Topmost;
+                Topmost = true;
+                Topmost = top;
+            }
+            return IntPtr.Zero;
         }
 
         public static Task<ProgressDialogController> ShowProgress(string title, string message)

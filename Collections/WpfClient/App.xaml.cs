@@ -4,38 +4,50 @@ using System.Globalization;
 using System.Threading;
 using System.Windows;
 using System.Windows.Navigation;
+using System.Windows.Threading;
 
 namespace WpfClient
 {
-    /// <summary>
-    ///     Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
+
+        static Mutex mutex = new Mutex(true, "{8F6F0AC4-B9A1-45fd-A8CF-72F04E6BDE8F}");
         public App()
         {
-            App.Current.Properties.Add("startup",DateTime.Now);
-            Debug.WriteLine("App ctor");
-            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("en");
-            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CreateSpecificCulture("en");
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en");
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en");
+            DispatcherUnhandledException +=App_DispatcherUnhandledException;
+            
         }
 
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show(e.Exception.ToString(), "Fatal Error");
 
+        }
 
+        [STAThread]
         protected override void OnStartup(StartupEventArgs e)
         {
-            //CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("zh-CN");
-            base.OnStartup(e);
 
-            var window = new MainWindow();
+            if (mutex.WaitOne(TimeSpan.Zero, true))
+            {
+                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("en");
+                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CreateSpecificCulture("en");
 
-            
-            window.Show();
-          
+                var window = new MainWindow();
+                window.Show();
+
+                base.OnStartup(e);
+            }
+            else
+            {
+                NativeMethods.PostMessage(
+                    (IntPtr)NativeMethods.HWND_BROADCAST,
+                    NativeMethods.WM_SHOWME,
+                    IntPtr.Zero,
+                    IntPtr.Zero);
+                Shutdown();
+                
+            }
         }
-
-       
     }
 }
