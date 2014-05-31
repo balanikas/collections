@@ -4,19 +4,19 @@ namespace Samples
 {
     internal class Exceptions
     {
-        public static void NoCheck(int i)
+        public static void NoCheck(uint i)
         {
-            if (i == 0)
+            if (i < int.MaxValue / 100)
             {
                 throw new Exception();
             }
         }
 
-        public static void GenericCheck(int i)
+        public static void GenericCheck(uint i)
         {
             try
             {
-                if (i == 0)
+                if (i < int.MaxValue / 100)
                 {
                     throw new Exception();
                 }
@@ -26,11 +26,11 @@ namespace Samples
             }
         }
 
-        public static void GenericCheckWithFinally(int i)
+        public static void GenericCheckWithFinally(uint i)
         {
             try
             {
-                if (i == 0)
+                if (i < int.MaxValue / 100)
                 {
                     throw new Exception();
                 }

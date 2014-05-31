@@ -16,6 +16,8 @@ namespace WpfClient
         public AboutFlyout()
         {
             InitializeComponent();
+
+            TxtVersion.Text = "0.1.0";
         }
 
         public bool CanCloseFlyout

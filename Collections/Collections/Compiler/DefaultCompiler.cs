@@ -95,7 +95,10 @@ namespace Collections.Compiler
         {
             compiledAssembly = null;
             errors = new List<string>();
-
+            if (String.IsNullOrEmpty(sourceCode))
+            {
+                return false;
+            }
             CompilerResults compilationResults = _compiler.CompileAssemblyFromSource(_compilerParams, sourceCode);
 
             if (compilationResults.Errors.Count > 0)

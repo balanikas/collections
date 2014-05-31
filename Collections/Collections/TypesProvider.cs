@@ -133,6 +133,7 @@ namespace Collections
         public List<LoadedType> TryCompileFromText(string source, out List<string> errors)
         {
             var types = new List<LoadedType>();
+
             Assembly compiledAssembly;
             if( _activeCompilerService.TryCompile(source, out compiledAssembly,out errors))
             {
