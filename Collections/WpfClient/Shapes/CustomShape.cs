@@ -4,7 +4,7 @@ using System.Windows.Input;
 using Collections;
 using Collections.Messages;
 
-namespace WpfClient
+namespace WpfClient.Shapes
 {
     public abstract class CustomShape : IGui
     {

@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using Collections.Messages;
 
-namespace WpfClient
+namespace WpfClient.Shapes
 {
     internal class CustomEllipse : CustomShape
     {

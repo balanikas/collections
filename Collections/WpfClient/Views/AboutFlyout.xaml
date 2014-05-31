@@ -27,7 +27,7 @@
         <TextBlock TextWrapping="Wrap" FontSize="14"
                    Text="Collections, a tool for investigating, playing with, and visualizing the execution of methods. Authored by Kristoffer Balanikas" />
 
-        <Label Content="Contact" FontSize="20" HorizontalContentAlignment="Center"  />
+        <Label Content="Contact" FontSize="20" Margin="0,20,0,0" />
         <TextBlock TextWrapping="Wrap" FontSize="14" >
             <Run>Your feedback is highly appreciated. Submit your comments and/or questions by sending an email to me at </Run>
             <Hyperlink NavigateUri="mailto:c_balanikas@hotmail.com" Foreground="{StaticResource AccentColorBrush}">c_balanikas@hotmail.com</Hyperlink>
@@ -36,16 +36,16 @@
                        RequestNavigate="Hyperlink_OnRequestNavigate"> the github page</Hyperlink>
         </TextBlock>
 
-        <Label Content="Version" FontSize="20" HorizontalContentAlignment="Center"  />
+        <Label Content="Version" FontSize="20" Margin="0,20,0,0" />
         <TextBlock x:Name="TxtVersion" TextWrapping="Wrap" FontSize="14" />
 
-        <Label Content="License" FontSize="20" HorizontalContentAlignment="Center"  />
+        <Label Content="License" FontSize="20"  Margin="0,20,0,0" />
         <TextBlock TextWrapping="Wrap" FontSize="14" >
             <Run>This software is under the MIT license.</Run>
              <Hyperlink NavigateUri=" http://opensource.org/licenses/MIT" Foreground="{StaticResource AccentColorBrush}"
                        RequestNavigate="Hyperlink_OnRequestNavigate">MIT License</Hyperlink>
         </TextBlock>
-        <Label Content="Aknowledgments" FontSize="20" HorizontalContentAlignment="Center" />
+        <Label Content="Aknowledgments" FontSize="20" Margin="0,20,0,0"/>
         <Grid >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"></ColumnDefinition>

@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Collections
+namespace Collections.Utilities
 {
-    public class Utils
+    public class Timing
     {
       
         public static TimeSpan MeasureExecutionTime<T>(Action action)

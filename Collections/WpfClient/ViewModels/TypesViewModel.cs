@@ -12,6 +12,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using ICSharpCode.AvalonEdit.Document;
 using MahApps.Metro.Controls.Dialogs;
+using Collections.Utilities;
 
 namespace WpfClient.ViewModels
 {

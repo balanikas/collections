@@ -80,7 +80,8 @@
     <Compile Include="Runtime\BWBasedRunner.cs" />
     <Compile Include="ThreadSafeRandom.cs" />
     <Compile Include="Runtime\TplBasedRunner.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Utilities\PathValidator.cs" />
+    <Compile Include="Utilities\Timing.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

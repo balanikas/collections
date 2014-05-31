@@ -10,7 +10,6 @@ namespace Collections
     {
         public ExecutionInfo(MethodInfo methodInfo, object objectInstance)
         {
-            Debug.Assert(methodInfo != null);
 
             MethodInfo = methodInfo;
             ParameterInfos = methodInfo.GetParameters();

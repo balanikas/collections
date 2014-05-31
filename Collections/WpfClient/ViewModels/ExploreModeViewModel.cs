@@ -8,6 +8,7 @@ using Collections;
 using Collections.Runtime;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using WpfClient.Shapes;
 
 namespace WpfClient.ViewModels
 {

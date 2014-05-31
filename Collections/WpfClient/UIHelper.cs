@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Microsoft.Expression.Media.Effects;
+using WpfClient.Shapes;
 
 namespace WpfClient
 {
@@ -83,19 +83,19 @@ namespace WpfClient
             return false;
         }
 
-        public static void AddPixelation(FrameworkElement el, double pixelation)
-        {
-            var pixelateEffect = el.Effect as PixelateEffect;
-            if (pixelateEffect == null)
-            {
-                pixelateEffect = new PixelateEffect { Pixelation = 0 };
-                el.Effect = pixelateEffect;
-            }
-            if (pixelateEffect.Pixelation <= 0.8)
-            {
-                pixelateEffect.Pixelation += pixelation;
-            }
-        }
+        //public static void AddPixelation(FrameworkElement el, double pixelation)
+        //{
+        //    var pixelateEffect = el.Effect as PixelateEffect;
+        //    if (pixelateEffect == null)
+        //    {
+        //        pixelateEffect = new PixelateEffect { Pixelation = 0 };
+        //        el.Effect = pixelateEffect;
+        //    }
+        //    if (pixelateEffect.Pixelation <= 0.8)
+        //    {
+        //        pixelateEffect.Pixelation += pixelation;
+        //    }
+        //}
 
         public static Control FindChild(Control parent, string controlName)
         {

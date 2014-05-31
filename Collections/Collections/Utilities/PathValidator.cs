@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfClient
+namespace Collections.Utilities
 {
-    class PathValidator
+    public class PathValidator
     {
         public enum PathType
         {
