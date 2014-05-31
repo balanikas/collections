@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Collections.Compiler;
 using Collections.Runtime;
 using MahApps.Metro.Controls;
+using WpfClient.Tutorial;
 
 namespace WpfClient
 {
@@ -110,6 +111,13 @@ namespace WpfClient
         private void SldExploreModeIterationCount_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Settings.Instance.Set(Settings.Keys.ExploreModeIterationCount, (int)e.NewValue);
+        }
+
+        private void OnTutorialClick(object sender, RoutedEventArgs e)
+        {
+            MainWindow.ToggleFlyout(0);
+            MainWindow.ShowTutorial();
+            
         }
     }
 }

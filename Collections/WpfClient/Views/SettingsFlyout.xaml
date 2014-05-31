@@ -10,7 +10,7 @@
                  Width="500"
                  x:Name="settingsFlyout"
                  CloseCommand="{Binding ElementName=customFlyout, Path=CloseCmd}">
-
+                
     <controls:Flyout.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -43,7 +43,8 @@
                      Content="Use Background Workers"
                      GroupName="1"
                      IsChecked="True" />
-
+        
+        <Button Content="Tutorial" Click="OnTutorialClick" Margin="20,5,20,5"></Button>
         <!-- explore mode-->
         <Label Content="Explore Mode" FontSize="20" HorizontalContentAlignment="Center"  Height="50" />
         <Label Content="Iterations (set how many times the selected method will execute)" />

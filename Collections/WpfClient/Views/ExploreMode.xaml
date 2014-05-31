@@ -63,7 +63,7 @@
             </DockPanel>
 
         </Expander>
-        <Expander DataContext="{Binding InfoView}" Grid.Row="0" Grid.Column="2" Header="Info" ExpandDirection="Down" HorizontalAlignment="Stretch"
+        <Expander x:Name="ExpInfoView" DataContext="{Binding InfoView}" Grid.Row="0" Grid.Column="2" Header="Info" ExpandDirection="Down" HorizontalAlignment="Stretch"
                    IsExpanded="{Binding Path=IsExpanded}" Height="200" VerticalAlignment="Top">
             <Grid   Background="{DynamicResource AccentColorBrush}">
                 <Grid.ColumnDefinitions>

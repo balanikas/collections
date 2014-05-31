@@ -35,9 +35,9 @@
                     <ColumnDefinition Width="5*" />
                 </Grid.ColumnDefinitions>
 
-                <ToggleButton Content="ACTIVATE" IsChecked="{Binding IsActivated}" Grid.Column="0"/>
+                <ToggleButton x:Name="BtnActivate" Content="ACTIVATE" IsChecked="{Binding IsActivated}" Grid.Column="0"/>
 
-                <ComboBox Grid.Column="1" Margin="5,0,0,0" x:Name="CmbCompiledMethods" 
+                <ComboBox   Grid.Column="1" Margin="5,0,0,0" x:Name="CmbCompiledMethods" 
                       SelectedItem="{Binding SelectedCompiledMethod, Mode=OneWay}" 
                       ItemsSource="{Binding CompiledMethods}" 
                       IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=HasItems}"
@@ -53,7 +53,7 @@
             </Grid>
 
             <avalonedit:TextEditor  Background="White"
-                                   x:Name="AvalonEdit"
+                                   x:Name="AvalonEditPlayMode"
                                    FontFamily="Consolas"
                                    FontSize="10pt"
                                    HorizontalScrollBarVisibility="Auto"

@@ -30,41 +30,43 @@
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
 
-            <local:SettingsFlyout Header="Settings" Position="Right" Width="500" CanCloseFlyout="True" />
-            <local:AboutFlyout Header="About" Position="Right" Width="500" CanCloseFlyout="True" />
+            <local:SettingsFlyout x:Name="SettingsFlyout" Header="Settings" Position="Right" Width="500" CanCloseFlyout="True" />
+            <local:AboutFlyout x:Name="AboutFlyout" Header="About" Position="Right" Width="500" CanCloseFlyout="True" />
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
+    <AdornerDecorator>
+        <Grid>
 
-
-    <Grid>
-
-        <DockPanel>
-            <Grid DockPanel.Dock="Bottom">
-                <Grid.Resources>
-                    <ResourceDictionary
+            <DockPanel >
+                <Grid DockPanel.Dock="Bottom" >
+                    <Grid.Resources>
+                        <ResourceDictionary
                         Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
-                </Grid.Resources>
-                <TabControl x:Name="TabControl" >
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <cmd:EventToCommand PassEventArgsToCommand="True"
+                    </Grid.Resources>
+                    <TabControl x:Uid="1" x:Name="TabControl" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <cmd:EventToCommand PassEventArgsToCommand="True"
                                                     Command="{Binding  CmdTabSelectionChanged}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <Controls:MetroTabItem Header="Explore" x:Name="Blue">
-                        <views:ExploreMode />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Controls:MetroTabItem Header="Explore" x:Name="Blue">
+                            <views:ExploreMode />
 
-                    </Controls:MetroTabItem>
-                    <Controls:MetroTabItem Header="Play" x:Name="Green">
-                        <views:PlayMode />
-                    </Controls:MetroTabItem>
-                   
-                </TabControl>
+                        </Controls:MetroTabItem>
+                        <Controls:MetroTabItem Header="Play" x:Name="Green">
+                            <views:PlayMode />
+                        </Controls:MetroTabItem>
 
-            </Grid>
+                    </TabControl>
 
-        </DockPanel>
+                </Grid>
+
+            </DockPanel>
 
 
-    </Grid>
+        </Grid>
+    </AdornerDecorator>
+
+   
 </Controls:MetroWindow>

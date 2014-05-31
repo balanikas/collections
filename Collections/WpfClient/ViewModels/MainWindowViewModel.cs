@@ -19,7 +19,8 @@ namespace WpfClient.ViewModels
             
             CmdTabSelectionChanged = new RelayCommand< SelectionChangedEventArgs>(args =>
             {
-                if (args.OriginalSource is TabControl == false)
+                
+                if (args == null || args.OriginalSource is TabControl == false)
                 {
                     return;
                 }
@@ -30,29 +31,35 @@ namespace WpfClient.ViewModels
                     return;
                 }
                 
-               
-                var theme = ThemeManager.DetectAppStyle(Application.Current);
-
-                string accentName;
-                switch (selectedItem.Name)
-                {
-                    case "Blue":
-                        ViewModelLocator.PlayModeMode.IsActivated = false;
-                        ViewModelLocator.LogViewer.LogEntries.Clear();
-                        accentName = "Blue";
-                        break;
-                    case "Green":
-                        ViewModelLocator.ExploreMode.IsActivated = false;
-                        ViewModelLocator.LogViewer.LogEntries.Clear();
-                        accentName = "Green";
-                        break;
-                    default:
-                        accentName = "Blue";
-                        break;
-                }
-                Accent accent = ThemeManager.Accents.First(x => x.Name == accentName);
-                ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1);
+                ChangeTheme(selectedItem.Name);
+              
             });
+        }
+
+        private void ChangeTheme(string themeName)
+        {
+
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
+
+            string accentName;
+            switch (themeName)
+            {
+                case "Blue":
+                    ViewModelLocator.PlayModeMode.IsActivated = false;
+                    ViewModelLocator.LogViewer.LogEntries.Clear();
+                    accentName = "Blue";
+                    break;
+                case "Green":
+                    ViewModelLocator.ExploreMode.IsActivated = false;
+                    ViewModelLocator.LogViewer.LogEntries.Clear();
+                    accentName = "Green";
+                    break;
+                default:
+                    accentName = "Blue";
+                    break;
+            }
+            Accent accent = ThemeManager.Accents.First(x => x.Name == accentName);
+            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1);
         }
 
 

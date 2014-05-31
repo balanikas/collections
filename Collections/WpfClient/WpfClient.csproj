@@ -121,6 +121,14 @@
     <Compile Include="CustomEllipse.cs" />
     <Compile Include="CustomRect.cs" />
     <Compile Include="PathValidator.cs" />
+    <Compile Include="TutorialStatus.cs" />
+    <Compile Include="Tutorial\CustomAdorner.cs" />
+    <Compile Include="Tutorial\StepOptions.cs" />
+    <Compile Include="Tutorial\Tutorial.cs" />
+    <Compile Include="Tutorial\TutorialStep.cs" />
+    <Compile Include="Tutorial\TutorialWindow.xaml.cs">
+      <DependentUpon>TutorialWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UIHelper.cs" />
     <Compile Include="ViewModels\CanvasViewModel.cs" />
     <Compile Include="ViewModels\MethodExecutionView.cs" />
@@ -162,6 +170,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\LogViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tutorial\TutorialWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

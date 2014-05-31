@@ -83,7 +83,8 @@ namespace WpfClient.ViewModels
             {
                 if (element is Canvas && Types.SelectedMethod != null)
                 {
-                    CreateRunner(element as Canvas);
+                    var shape = UIHelper.CreateDrawingShape((Canvas)element);
+                    CreateRunner((Canvas)element, shape);
                 }
             }
         }
@@ -101,7 +102,7 @@ namespace WpfClient.ViewModels
             
         }
 
-        private void CreateRunner(Canvas element)
+        public void CreateRunner(Canvas element, CustomShape shape)
         {
             LoadedType type = Types.SelectedType;
             if (type == null)
@@ -109,7 +110,7 @@ namespace WpfClient.ViewModels
                 return;
             }
 
-            var shape = UIHelper.CreateDrawingShape(element);
+            
 
             IRunnable runnable;
             try

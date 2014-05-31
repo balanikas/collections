@@ -6,7 +6,7 @@ using Collections.Messages;
 
 namespace WpfClient
 {
-    internal abstract class CustomShape : IGui
+    public abstract class CustomShape : IGui
     {
         public event RightClickEventHandler OnRightClick;
         public event LeftClickEventHandler OnLeftClick;

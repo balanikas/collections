@@ -11,7 +11,7 @@
               d:DataContext="{d:DesignInstance Type=viewModels:TypesViewModel, IsDesignTimeCreatable=True}"
              mc:Ignorable="d">
 
-        <DockPanel LastChildFill="True">
+    <DockPanel LastChildFill="True" >
             <Grid Margin="0,5" DockPanel.Dock="Top">
 
 
@@ -22,7 +22,8 @@
                 </Grid.ColumnDefinitions>
 
 
-                <TextBox Grid.Column="0"
+            <TextBox x:Name="TxtFilePath"
+                     Grid.Column="0"
                          controls:TextboxHelper.Watermark="Drag an assembly,folder or source file here, or enter a path"
                          AllowDrop="True"
                          Drop="txtFolderLocation_Drop"
@@ -30,10 +31,13 @@
                          PreviewDragOver="TxtFolderLocation_OnPreviewDragOver"
 
                          TextWrapping="Wrap" />
-                <Button Content="Load" Grid.Column="1"
+
+            <Button  x:Name="BtnLoad" Content="Load" Grid.Column="1"
                         Margin="5,0,0,0"
                         Command="{Binding CmdLoadTypes}" IsEnabled="{Binding IsLoadButtonEnabled}"/>
-                <Button Content="Compile" Grid.Column="2"
+
+
+            <Button  x:Name="BtnCompile"  Content="Compile" Grid.Column="2"
                         Margin="5,0,0,0"
                         IsEnabled="{Binding IsCodeDocumentEnabled}"
                         Command="{Binding CmdCompile}" />
@@ -41,7 +45,7 @@
 
             </Grid>
             <StackPanel  DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
-                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="224"
+            <ListView x:Name="LstTypes" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="224"
                           VerticalAlignment="Top" Width="500" RenderTransformOrigin="0.5,0.5" SelectedIndex="0"
                           SelectionMode="Single"
                           ItemsSource="{Binding Types}" IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding Path=SelectedType}">
@@ -64,7 +68,8 @@
 
                 </ListView>
 
-                <ListView ItemsSource="{Binding Path=Types/MethodsInfos}" IsSynchronizedWithCurrentItem="true" SelectedItem="{Binding Path=SelectedMethod}"
+            <ListView x:Name="LstMethods"
+                      ItemsSource="{Binding Path=Types/MethodsInfos}" IsSynchronizedWithCurrentItem="true" SelectedItem="{Binding Path=SelectedMethod}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           Height="224"
                           VerticalAlignment="Top" Width="500" SelectedIndex="0" RenderTransformOrigin="0.5,0.5">
@@ -89,7 +94,7 @@
 
 
             <avalonEdit:TextEditor Background="White" DockPanel.Dock="Bottom"
-                                   x:Name="avalonEdit"
+                                   x:Name="AvalonTextEditor"
                                    Document="{Binding CodeDocument}"
                                    IsEnabled="{Binding IsCodeDocumentEnabled}"
                                    FontFamily="Consolas"

@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractClass.cs" />
+    <Compile Include="ClassIsAbstract.cs" />
     <Compile Include="Accessibility.cs" />
     <Compile Include="Arrays.cs" />
     <Compile Include="ArraysInParams.cs" />
@@ -86,7 +86,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)WpfClient\bin\Debug\samples\" 
+    <PostBuildEvent>rd /S /Q "$(SolutionDir)WpfClient\bin\Debug\samples\" 
+mkdir  "$(SolutionDir)WpfClient\bin\Debug\samples\" 
 copy /Y "$(ProjectDir)*.*" "$(SolutionDir)WpfClient\bin\Debug\samples\"
 
 </PostBuildEvent>

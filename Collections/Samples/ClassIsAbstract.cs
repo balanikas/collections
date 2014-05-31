@@ -1,6 +1,6 @@
 ﻿namespace Samples
 {
-    public abstract class AbstractClass
+    public abstract class ClassIsAbstract
     {
         public abstract void Calculate();
 
